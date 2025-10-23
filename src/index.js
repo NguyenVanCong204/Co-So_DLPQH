@@ -3,6 +3,7 @@ import cors from "cors";
 const app = express();
 import mongoose from "mongoose";
 import apiRouter from "./Admin/router/api.js";
+import apiRouterMember from "./Member/router/api.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -16,6 +17,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", apiRouter);
+app.use("/api/member", apiRouterMember);
 
 app.get("/", (req, res) => {
   res.send("Hello, Express.js!");

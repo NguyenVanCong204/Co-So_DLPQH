@@ -56,8 +56,10 @@ export const createUser = async (req, res) => {
   res.json(user);
 };
 export const getUser = async (req, res) => {
-  const user = await User.getUser();
-  res.json(user);
+  const id = parseInt(req.params.id);
+  const user = await User.getUser(id);
+  const { level, password, ...userWithoutPassword } = user.toObject;
+  res.json(userWithoutPassword);
 };
 function createJWT(id, level) {
   const token = jwt.sign({ id, level }, "van-cong", { expiresIn: "5h" });
