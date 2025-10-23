@@ -1,0 +1,70 @@
+.login input {
+  border: 1px solid rgb(222, 222, 222);
+}
+.login select {
+  cursor: pointer;
+}
+.login input:focus {
+  border: 1px solid #0866ff;
+}
+.login .login_member {
+  color: white;
+  border: none;
+  background-color: #0866ff;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 17px;
+  width: 200px;
+  justify-content: center;
+}
+.login .register_member {
+  color: white;
+  border: none;
+  background-color: #42b72a;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 17px;
+  width: 200px;
+  justify-content: center;
+}
+.login .login_member:hover,
+.login .register_member:hover {
+  color: rgb(194, 194, 194);
+}
+
+.login h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.login form {
+  text-align: center;
+}
+.login input {
+  width: 80%;
+  box-sizing: border-box;
+  outline: none;
+  font-size: 16px;
+  padding: 5px;
+  border-radius: 3px;
+  border: 1px solid rgb(206, 206, 206);
+}
+.login select {
+  font-size: 16px;
+  padding: 3px 5px;
+  outline: none;
+  width: 80%;
+  border-radius: 3px;
+}
+.login button {
+  font-size: 16px;
+  box-sizing: border-box;
+  padding: 5px 15px;
+  display: flex;
+  margin: 20px auto;
+  cursor: pointer;
+}
+.login p {
+  margin-top: 3px;
+  color: red;
+  margin-left: 5px;
+}

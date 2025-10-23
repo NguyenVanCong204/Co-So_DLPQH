@@ -1,0 +1,104 @@
+.Blog_list {
+  width: 100%;
+  display: flex;
+  margin: auto;
+  justify-content: center;
+}
+.Blog_list .Blog_table {
+  width: 100%;
+}
+.Blog_list .Blog_table h2 {
+  text-align: center;
+  margin-bottom: 50px;
+  margin-top: 0px;
+}
+.Blog_list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+.Blog_list th,
+td {
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+.Blog_list th {
+  background-color: #f2f2f2;
+}
+.Blog_list tr:hover {
+  background-color: #f9f9f9;
+}
+.Blog_list img {
+  width: 100px;
+  height: 90px;
+}
+.Blog_list i {
+  font-size: 17px;
+  color: white;
+}
+.Blog_list button {
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  padding: 5px;
+  background-color: aqua;
+  margin-right: 10px;
+}
+.Blog_list button:hover {
+  background-color: rgb(40, 184, 184);
+}
+.country {
+  display: flex;
+  align-items: center;
+}
+.country input {
+  margin-left: 5px;
+  margin-right: 20px;
+  height: 20px;
+  outline: none;
+  border: 1px solid rgb(192, 192, 192);
+  border-radius: 3px;
+}
+.country .country_input {
+  display: flex;
+  align-items: center;
+}
+.action_admin_blog .action {
+  display: flex;
+}
+.Blog_list .Blog_table h2 {
+  color: #fe980f;
+}
+.Blog_table .add-blog {
+  float: right;
+  padding: 7px 10px;
+  margin-bottom: 10px;
+  color: white;
+  background: rgb(5, 215, 215);
+  font-weight: 500;
+}
+.register h3 {
+  font-size: 30px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fe980f;
+}
+.register .add-blog,
+.register .update-blog {
+  border-radius: 5px;
+  font-size: 18px;
+  border: none;
+  background: #fe980f;
+  color: white;
+}
+.register .add-blog:hover,
+.register .update-blog:hover {
+  background: #fb9e23;
+  color: rgb(232, 232, 232);
+}
+.Blog_list .err {
+  color: red;
+}

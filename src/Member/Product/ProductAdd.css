@@ -1,0 +1,72 @@
+.product-add {
+  width: 900px;
+  margin: auto;
+}
+.product-add h2 {
+  text-align: center;
+  font-size: 28px;
+}
+.product-add form {
+  font-size: 25px;
+  width: 100%;
+}
+.product-add form input:not([type="file"]) {
+  width: 100%;
+  padding-left: 10px;
+  outline: none;
+  height: 30px;
+  border: 1px solid rgb(157, 157, 157);
+  font-size: 18px;
+}
+.product-add form input[type="file"] {
+  padding-left: 12px;
+  border: 1px solid rgb(157, 157, 157);
+  height: 40px;
+  width: 100%;
+  line-height: 40px;
+  font-size: 16px;
+}
+.product-add form select {
+  width: 20%;
+  height: 40px;
+  outline: none;
+  display: block;
+  border: 1px solid rgb(157, 157, 157);
+  font-size: 17px;
+}
+.product-add form .sale1 {
+  font-size: 15px;
+  width: 7%;
+  display: flex;
+  align-items: center;
+}
+.product-add form .sale1 p {
+  margin-bottom: 0;
+  margin-left: 3px;
+  color: black;
+}
+.product-add form button {
+  padding: 5px 15px;
+  font-size: 15px;
+  cursor: pointer;
+  display: block;
+  margin: 30px auto;
+}
+.product-add p {
+  font-size: 15px;
+  color: red;
+}
+.List-avatar {
+  display: flex;
+  gap: 30px;
+}
+.List-avatar img {
+  width: 100px;
+  height: 100px;
+}
+.List-avatar .avatar input {
+  display: block;
+  margin: 10px auto;
+  width: 17px !important;
+  height: 17px !important;
+}

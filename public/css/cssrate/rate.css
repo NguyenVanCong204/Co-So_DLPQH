@@ -1,0 +1,28 @@
+.rate .ratings_stars{
+    height:     15px;
+    width:      16px;
+    background: url(../images/200/start2.png) no-repeat;
+    background-size: 16px;
+    float: left !important;
+    margin-right: 4px;
+}
+.rate .ratings_over {
+    background: url(../images/200/start-active2.png) no-repeat;
+     background-size: 16px;
+}
+.rate .ratings_hover {
+    background: url(../images/200/start-hover2.png) no-repeat;
+    background-size: 16px;
+}
+.rate .vote{
+    display: inline-block;
+}
+.rate .rate-np {
+    font-size: 12px;
+    color: #c89805;
+    display: inline-block;
+    margin-left: 3px;
+    font-weight: bold;
+    margin-top:0px;
+    vertical-align: top;
+}

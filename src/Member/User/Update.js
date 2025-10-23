@@ -1,0 +1,253 @@
+import { useEffect, useState } from "react";
+import api from "../../API/api";
+import { toast } from "react-toastify";
+function UpdateMember() {
+  let [input, SetInput] = useState({
+    email: "",
+    name: "",
+    pass: "",
+    phone: "",
+    address: "",
+    country: "",
+    avatar: [],
+  });
+  let iduser = localStorage.getItem("IdUser");
+  let token = localStorage.getItem("token");
+  let tokenReferesh = localStorage.getItem("tokenReferesh");
+  let config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+    },
+  };
+  let [country, SetCountry] = useState([]);
+
+  let [FileNew, SetFileNew] = useState([]);
+  let [err, SetErr] = useState({});
+  useEffect(() => {
+    api
+      .get("country/getall")
+      .then((res) => {
+        SetCountry(res.data);
+      })
+      .catch((errors) => console.log(errors));
+  }, []);
+  useEffect(() => {
+    getDataUser();
+  }, []);
+  function getDataUser() {
+    api.get("/getuser/" + iduser).then((res) => {
+      console.log(res.data);
+      SetInput({
+        email: res.data.email,
+        name: res.data.name,
+        pass: "",
+        phone: res.data.phone,
+        address: res.data.address,
+        country: res.data.id_country,
+        avatar: JSON.parse(res.data.avatar),
+      });
+    });
+  }
+  function changInput(e) {
+    const name = e.target.name;
+    const value = e.target.value;
+    SetInput((states) => ({ ...states, [name]: value }));
+  }
+  function changInputFile(e) {
+    const value = Array.from(e.target.files);
+    SetFileNew(value);
+  }
+
+  function renderImage() {
+    return input.avatar.map((value, index) => {
+      return (
+        <div key={index} className="avatar_list">
+          <img src={`http://localhost:3001/${value}`}></img>
+        </div>
+      );
+    });
+  }
+  function checkInput(e) {
+    e.preventDefault();
+    const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+    let allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    let errAll = {};
+    let check = true;
+    if (input.name == "") {
+      errAll.name = "Vui lòng nhập name";
+      check = false;
+    }
+    if (input.pass == "") {
+      errAll.pass = "Vui lòng nhập password";
+      check = false;
+    }
+    if (input.phone == "") {
+      errAll.phone = "Vui lòng nhập phone";
+      check = false;
+    } else {
+      if (!phoneRegex.test(input.phone)) {
+        errAll.phone = "Vui lòng nhập phone đúng định dạng";
+        check = false;
+      }
+    }
+    if (input.address == "") {
+      errAll.address = "Vui lòng nhập address";
+      check = false;
+    }
+    if (input.country == "") {
+      errAll.country = "Vui lòng chọn country";
+      check = false;
+    }
+    if (FileNew.length <= 0) {
+      errAll.file = "Vui lòng chọn file";
+      check = false;
+    }
+    if (FileNew.length > 3) {
+      errAll.file = "Upload tối đa 3 file";
+      check = false;
+    } else {
+      FileNew.map((value, index) => {
+        if (value.size > 1024 * 1024) {
+          errAll.file = "Chọn file có size < 1mb";
+          check = false;
+        }
+        if (!allowedTypes.includes(value.type)) {
+          errAll.file = "Chọn đúng định dạng file";
+          check = false;
+        }
+      });
+    }
+    if (!check) {
+      SetErr(errAll);
+    } else {
+      let data = new FormData();
+      data.append("name", input.name);
+      data.append("password", input.pass);
+      data.append("phone", input.phone);
+      data.append("address", input.address);
+      data.append("id_country", input.country);
+      FileNew.map((value, index) => {
+        data.append("avatar", value);
+      });
+      api
+        .put("member/user/update/" + iduser, data, config)
+        .then((res) => {
+          SetErr({});
+          console.log(res);
+          toast.success("Update thành công");
+          getDataUser();
+        })
+        .catch(async (error) => {
+          if (error.response && error.response.status == 401) {
+            try {
+              const newtoken = await refershAccessToken();
+              if (newtoken) {
+                let config = {
+                  headers: {
+                    Authorization: `Bearer ${newtoken}`,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json",
+                  },
+                };
+                const userupdate = await api.put(
+                  "member/user/update/" + iduser,
+                  data,
+                  config
+                );
+                toast.success("Update thành công sau khi refresh token!");
+                SetErr({});
+                console.log(userupdate);
+              } else {
+                toast.error("Không thể làm mới token. Vui lòng đăng nhập lại");
+              }
+            } catch (error) {
+              toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại");
+              console.error(error);
+            }
+          } else {
+            alert("Lỗi khi cập nhật: " + error.message);
+          }
+        });
+    }
+  }
+  async function refershAccessToken() {
+    const res = await api.post(
+      "member/user/token",
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${tokenReferesh}`,
+        },
+      }
+    );
+    return res.data.token;
+  }
+  return (
+    <div>
+      <div className="register">
+        <h3>Update Admin</h3>
+        <form encType="multipart/form-data">
+          <input name="email" type="text" readOnly value={input.email} />
+          <p></p>
+          <input
+            name="name"
+            type="text"
+            placeholder="Nhập name"
+            value={input.name}
+            onChange={changInput}
+          ></input>
+          <p>{err.name}</p>
+          <input
+            name="pass"
+            type="password"
+            placeholder="Nhập password"
+            onChange={changInput}
+            value={input.pass}
+          ></input>
+          <p>{err.pass}</p>
+          <input
+            name="phone"
+            type="text"
+            placeholder="Nhập phone"
+            onChange={changInput}
+            value={input.phone}
+          ></input>
+          <p>{err.phone}</p>
+          <input
+            name="address"
+            type="text"
+            placeholder="Nhập address"
+            onChange={changInput}
+            value={input.address}
+          ></input>
+          <p>{err.address}</p>
+          <select name="country" value={input.country} onChange={changInput}>
+            <option value="">---Chọn country---</option>
+            {country &&
+              country.map((value, index) => {
+                return (
+                  <option key={index} value={value.id}>
+                    {value.name}
+                  </option>
+                );
+              })}
+          </select>
+          <p>{err.country}</p>
+          <input
+            name="avatar"
+            type="file"
+            placeholder="Nhập avatar"
+            multiple
+            onChange={changInputFile}
+          ></input>
+          <p>{err.file}</p>
+          <div className="avatar">{renderImage()}</div>
+          <button onClick={(e) => checkInput(e)}>Update</button>
+        </form>
+      </div>
+    </div>
+  );
+}
+export default UpdateMember;

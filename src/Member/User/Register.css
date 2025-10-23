@@ -1,0 +1,33 @@
+.register input {
+  border: 1px solid rgb(222, 222, 222);
+}
+.register select {
+  cursor: pointer;
+}
+.register input:focus {
+  border: 1px solid #0866ff;
+}
+.register .login_member {
+  color: white;
+  border: none;
+  background-color: #0866ff;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 17px;
+  width: 200px;
+  justify-content: center;
+}
+.register .register_member {
+  color: white;
+  border: none;
+  background-color: #42b72a;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 17px;
+  width: 200px;
+  justify-content: center;
+}
+.register .login_member:hover,
+.register .register_member:hover {
+  color: rgb(194, 194, 194);
+}
