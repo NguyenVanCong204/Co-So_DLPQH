@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import path from "path";
 import multer from "multer";
-import User from "../models/User.js";
-import CreateUserValidation from "../validation/CreateUserValidation.js";
+import User from "../../models/User.js";
+import CreateUserValidation from "../../validation/CreateUserValidation.js";
 
 const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
 

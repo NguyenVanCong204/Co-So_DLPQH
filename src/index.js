@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 const app = express();
 import mongoose from "mongoose";
-import apiRouter from "./Admin/router/api.js";
-import apiRouterMember from "./Member/router/api.js";
+import apiRouter from "./router/Admin/api.js";
+import apiRouterMember from "./router/Member/api.js";
 import dotenv from "dotenv";
 
 dotenv.config();
