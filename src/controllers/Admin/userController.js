@@ -1,9 +1,9 @@
-import User from "../models/User.js";
+import User from "../../models/User.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import path from "path";
 import multer from "multer";
-import CreateUserValidation from "../validation/CreateUserValidation.js";
+import CreateUserValidation from "../../validation/CreateUserValidation.js";
 
 const RefreshTokens = [];
 const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
