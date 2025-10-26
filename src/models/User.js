@@ -27,8 +27,8 @@ userSchema.statics.checkEmail = async function (email) {
   }
   return error;
 };
-userSchema.statics.getUser = async function (id) {
-  return await this.findOne({ id });
+userSchema.statics.getUser = async function (_id) {
+  return await this.findOne({ _id });
 };
 userSchema.statics.checkLoginUser = async function (data) {
   data.level = parseInt(data.level);

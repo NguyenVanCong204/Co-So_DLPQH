@@ -20,6 +20,6 @@ router.post("/user/login", checkLoginUser);
 
 router.post("/country/create", createCountry);
 // router.get("/country/getall", requireAuth, authorize(1), getCountry);
-router.get("/country/getall", requireAuth, authorize(1), getCountry);
+router.get("/country/getall", getCountry);
 
 export default router;
