@@ -1,7 +1,8 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useEffect, useState } from "react";
 import api from "../../API/api";
-import { confirmDialog } from "../Component/confirmDialog";
+import { confirmDialog } from "../../component/confirmDialog";
+import { toast } from "react-toastify";
 function ListCountry() {
   const [err, SetErr] = useState({});
   const [input, SetInput] = useState([]);
@@ -32,7 +33,7 @@ function ListCountry() {
         .post("country/create", data)
         .then((res) => {
           console.log(res);
-          alert("ok");
+          toast.success("Thêm country thành công");
           getData();
           SetErr({});
           SetName({ name: "" });
@@ -92,19 +93,19 @@ function ListCountry() {
     return input.map((value, index) => {
       return (
         <tr key={index}>
-          <td>{value.id}</td>
+          <td>{index}</td>
           <td>{value.name}</td>
           <td>
             <button>
               <i
                 class="fa-solid fa-pen-to-square"
-                onClick={() => updateCountry(value.id, value.name)}
+                onClick={() => updateCountry(value._id, value.name)}
               ></i>
             </button>
             <button>
               <i
                 class="fa-solid fa-trash"
-                onClick={() => deleteCountry(value.id)}
+                onClick={() => deleteCountry(value._id)}
               ></i>
             </button>
           </td>

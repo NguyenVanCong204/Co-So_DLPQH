@@ -45,11 +45,11 @@ function LoginTest() {
         .post("user/login", data)
         .then((res) => {
           SetErr({});
-          localStorage.setItem("IdUser", res.data.user.id);
+          localStorage.setItem("IdUser", res.data.user._id);
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("tokenReferesh", res.data.tokenReferesh);
 
-          navigate("/admin/update/admin");
+          navigate("/dashboard/update/admin");
           toast.success("Đăng nhập thành công");
         })
         .catch((error) => {
@@ -117,7 +117,7 @@ function LoginTest() {
             </button>
           </div>
           <div className="col-12">
-            <Link to="/addmin/register">
+            <Link to="/admin/register">
               <button className="btn-register">Đăng Kí</button>
             </Link>
           </div>

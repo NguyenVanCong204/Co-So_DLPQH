@@ -74,7 +74,7 @@ function AddBlog() {
           console.log(res);
           SetErr({});
           toast.success("Add Blog thành công");
-          navigate("/admin/blog/list");
+          navigate("/dashboard/blog/list");
         })
         .catch((error) => {
           if (

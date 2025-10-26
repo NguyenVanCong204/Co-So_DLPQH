@@ -88,7 +88,7 @@ function UpdateBlog() {
         .then((res) => {
           console.log(res);
           toast.success("Update Blog thành công");
-          navigate("/admin/blog/list");
+          navigate("/dashboard/blog/list");
           SetErr({});
         })
         .catch((error) => {

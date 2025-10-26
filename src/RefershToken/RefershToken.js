@@ -1,6 +1,6 @@
-import api from "../../API/api";
+import api from "../API/api";
 
-async function refershTokenAdmin() {
+async function refershToken() {
   try {
     let tokenReferesh = localStorage.getItem("tokenReferesh");
     if (!tokenReferesh) {
@@ -8,7 +8,7 @@ async function refershTokenAdmin() {
     }
 
     const res = await api.post(
-      "/admin/token",
+      "/refershtoken",
       {},
       {
         headers: {
@@ -23,4 +23,4 @@ async function refershTokenAdmin() {
     return alert("Lỗi máy chủ");
   }
 }
-export default refershTokenAdmin;
+export default refershToken;

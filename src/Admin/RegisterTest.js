@@ -121,7 +121,7 @@ function RegisterTest() {
         .then((res) => {
           SetErr({});
           toast.success("Đăng kí thành công");
-          navigate("/addmin/login");
+          navigate("/admin/login");
           console.log(res);
         })
         .catch((error) => {
@@ -211,7 +211,7 @@ function RegisterTest() {
               {country &&
                 country.map((value, index) => {
                   return (
-                    <option key={index} value={value.id}>
+                    <option key={index} value={value._id}>
                       {value.name}
                     </option>
                   );

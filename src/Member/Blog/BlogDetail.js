@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../../API/api";
-import refershToken from "../RefershToken/RefershToken";
+import refershToken from "../../RefershToken/RefershToken";
 import { toast } from "react-toastify";
 function BlogDetail() {
   const token = localStorage.getItem("token");

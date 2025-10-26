@@ -12,7 +12,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   function Logout() {
     localStorage.clear();
-    navigate("/addmin/login");
+    navigate("/admin/login");
     toast.success("Logout thành công");
   }
   return (
@@ -28,19 +28,19 @@ const Sidebar = () => {
           </a>
         </li>
         <li>
-          <Link to="/admin/update/admin">
+          <Link to="/dashboard/update/admin">
             <FaUser className="icon" />
             <span>Profile</span>
           </Link>
         </li>
         <li>
-          <Link to="/admin/blog/list">
+          <Link to="/dashboard/blog/list">
             <FaNewspaper className="icon" />
             <span>Blogs</span>
           </Link>
         </li>
         <li>
-          <Link to="/admin/country/list">
+          <Link to="/dashboard/country/list">
             <FaGlobeAsia className="icon" />
             <span>Country</span>
           </Link>

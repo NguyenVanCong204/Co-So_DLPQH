@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Link } from "react-router-dom";
-import MemberCartContext from "../Context/MemberCartContext";
+import MemberCartContext from "../../Context/MemberCartContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { Search } from "../features/cart/CartSlider";
+import { Search } from "../../features/cart/CartSlider";
 function Header() {
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();

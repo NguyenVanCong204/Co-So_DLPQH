@@ -1,28 +1,28 @@
 import logo from "./logo.svg";
 import "./App.css";
-import Header from "./component/Header";
+import Header from "./component/Member/Header";
 import { UserProvider } from "./Context/MemberCartContext";
 import store from "./Store/store";
 import { Provider } from "react-redux";
-import Footer from "./component/Footer";
-import LeftSide from "./component/LeftSide";
+import Footer from "./component/Member/Footer";
+import LeftSide from "./component/Member/LeftSide";
 import { useLocation } from "react-router-dom";
 import { ToastContainer, Bounce } from "react-toastify";
-import LeftSideMyPD from "./component/LeftSideMyPD";
-import HeaderAdmin from "./Admin/Component/HeaderAdmin";
-import Sidebar from "./Admin/Component/Sidebar";
+import LeftSideMyPD from "./component/Member/LeftSideMyPD";
+import HeaderAdmin from "./component/Admin/HeaderAdmin";
+import Sidebar from "./component/Admin/Sidebar";
 function App(props) {
   const location = useLocation();
   const isCheckoutPage = location.pathname.includes("/checkout");
   const isMyProduct = location.pathname.includes("/account");
-  const admin = location.pathname.includes("/admin");
-  const addmin = location.pathname.includes("/addmin");
+  const dashboard = location.pathname.includes("/dashboard");
+  const admin = location.pathname.includes("/admin/");
 
   return (
     <div>
-      {addmin ? (
+      {admin ? (
         <div>{props.children}</div>
-      ) : admin ? (
+      ) : dashboard ? (
         <div className="admin-layout">
           <Sidebar />
           <div className="admin-right">

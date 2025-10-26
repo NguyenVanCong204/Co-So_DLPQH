@@ -3,9 +3,9 @@ import "./ListBlog.css";
 import api from "../../API/api";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Link, useNavigate } from "react-router-dom";
-import { confirmDialog } from "../Component/confirmDialog";
+import { confirmDialog } from "../../component/confirmDialog";
 import { toast } from "react-toastify";
-import refershTokenAdmin from "../RefershToken/RefershTokenAdmin";
+import refershTokenAdmin from "../../RefershToken/RefershToken";
 
 function ListBlog() {
   const token = localStorage.getItem("token");
@@ -31,7 +31,7 @@ function ListBlog() {
     getData();
   }, []);
   function editBlog(id) {
-    navigate("/admin/blog/update/" + id);
+    navigate("/dashboard/blog/update/" + id);
   }
   async function deleteBlog(id) {
     const result = await confirmDialog({

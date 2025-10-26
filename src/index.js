@@ -31,13 +31,13 @@ root.render(
     <BrowserRouter>
       <App>
         <Routes>
-          <Route path="/addmin/register" element={<RegisterTest />} />
-          <Route path="/addmin/login" element={<LoginTest />} />
-          <Route path="/admin/update/admin" element={<UpdateAdmin />} />
-          <Route path="/admin/blog/add" element={<AddBlog />} />
-          <Route path="/admin/blog/list" element={<ListBlog />} />
-          <Route path="/admin/blog/update/:id" element={<UpdateBlog />} />
-          <Route path="/admin/country/list" element={<ListCountry />} />
+          <Route path="/admin/register" element={<RegisterTest />} />
+          <Route path="/admin/login" element={<LoginTest />} />
+          <Route path="/dashboard/update/admin" element={<UpdateAdmin />} />
+          <Route path="/dashboard/blog/add" element={<AddBlog />} />
+          <Route path="/dashboard/blog/list" element={<ListBlog />} />
+          <Route path="/dashboard/blog/update/:id" element={<UpdateBlog />} />
+          <Route path="/dashboard/country/list" element={<ListCountry />} />
           <Route path="/member/register" element={<RegisterMember />} />
           <Route index path="/" element={<LoginMember />} />
           <Route path="/member/account/update" element={<UpdateMember />} />

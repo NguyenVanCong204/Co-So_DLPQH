@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../API/api";
 import { useParams } from "react-router-dom";
-import refershToken from "../RefershToken/RefershToken";
+import refershToken from "../../RefershToken/RefershToken";
 import { toast } from "react-toastify";
 
 function ProductUpdate() {
