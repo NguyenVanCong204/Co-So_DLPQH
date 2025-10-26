@@ -56,9 +56,9 @@ export const createUser = async (req, res) => {
   res.json(user);
 };
 export const getUser = async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
   const user = await User.getUser(id);
-  const { level, password, ...userWithoutPassword } = user.toObject;
+  const { level, password, ...userWithoutPassword } = user.toObject();
   res.json(userWithoutPassword);
 };
 function createJWT(id, level) {
