@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./ListBlog.css";
-import api from "../../API/api";
+import apiAdmin from "../../API/apiAdmin";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { Link, useNavigate } from "react-router-dom";
 import { confirmDialog } from "../../component/confirmDialog";
@@ -19,11 +19,11 @@ function ListBlog() {
   const navigate = useNavigate();
   const [input, SetInput] = useState([]);
   function getData() {
-    api
-      .get("blog/getall")
+    apiAdmin
+      .get("/blog", config)
       .then((res) => {
-        console.log(res.data);
-        SetInput(res.data);
+        console.log(res.data.data);
+        SetInput(res.data.data);
       })
       .catch((error) => console.log(error));
   }
@@ -39,8 +39,8 @@ function ListBlog() {
       text: "Bạn có chắc chắn muốn xóa blog này không?",
     });
     if (!result.isConfirmed) return;
-    api
-      .post("blog/delete/" + id, null, config)
+    apiAdmin
+      .delete("/blog/" + id, config)
       .then((res) => {
         console.log(res);
         toast.success(res.data.message);
@@ -72,7 +72,7 @@ function ListBlog() {
               };
 
               // Gọi lại API sau khi refresh token
-              const res2 = await api.post("blog/delete/" + id, null, config);
+              const res2 = await apiAdmin.post("blog/delete/" + id, config);
               toast.success(res2.data.message + " (sau khi refresh token)");
               getData();
             } catch (refreshError) {
@@ -98,7 +98,7 @@ function ListBlog() {
     return input.map((value, index) => {
       return (
         <tr key={index}>
-          <td>{value.id}</td>
+          <td>{index}</td>
           <td>{value.title}</td>
           <td>
             <img src={`http://localhost:3001/${value.image}`}></img>
@@ -110,13 +110,13 @@ function ListBlog() {
               <button>
                 <i
                   className="fa-solid fa-pen-to-square"
-                  onClick={() => editBlog(value.id)}
+                  onClick={() => editBlog(value._id)}
                 ></i>
               </button>
               <button>
                 <i
                   className="fa-solid fa-trash"
-                  onClick={() => deleteBlog(value.id)}
+                  onClick={() => deleteBlog(value._id)}
                 ></i>
               </button>
             </div>
@@ -129,7 +129,7 @@ function ListBlog() {
     <div className="Blog_list">
       <div className="Blog_table">
         <h2>Danh sách Blog</h2>
-        <Link to="/admin/blog/add">
+        <Link to="/dashboard/blog/add">
           <button className="add-blog">Add Blog</button>
         </Link>
         <table>

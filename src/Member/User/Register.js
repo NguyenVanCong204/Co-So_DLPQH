@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import "./Register.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,7 @@ function RegisterMember() {
   };
   let [err, SetErr] = useState({});
   useEffect(() => {
-    api
+    apiMember
       .get("country/getall")
       .then((res) => {
         SetCountry(res.data);
@@ -118,7 +118,7 @@ function RegisterMember() {
       input.avatar.map((value, index) => {
         data.append("avatar", value);
       });
-      api
+      apiMember
         .post("member/user/create", data, config)
         .then((res) => {
           SetErr({});

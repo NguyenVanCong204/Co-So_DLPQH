@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./RegisterTest.css";
-import api from "../API/api";
+import apiAdmin from "../API/apiAdmin";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 function RegisterTest() {
@@ -24,8 +24,8 @@ function RegisterTest() {
   };
   let [err, SetErr] = useState({});
   useEffect(() => {
-    let res = api
-      .get("country/getall")
+    let res = apiAdmin
+      .get("/country")
       .then((res) => {
         SetCountry(res.data);
       })
@@ -116,8 +116,8 @@ function RegisterTest() {
       input.avatar.map((value, index) => {
         data.append("avatar", value);
       });
-      api
-        .post("user/create", data, config)
+      apiAdmin
+        .post("/user", data, config)
         .then((res) => {
           SetErr({});
           toast.success("Đăng kí thành công");

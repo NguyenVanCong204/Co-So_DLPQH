@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../../API/api";
+import apiAdmin from "../../API/apiAdmin";
 import { toast } from "react-toastify";
 
 function UpdateBlog() {
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   let config = {
     headers: {
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/x-www-form-urlencoded",
       Accept: "application/json",
     },
@@ -30,14 +32,15 @@ function UpdateBlog() {
     SetFileNew(value);
   }
   useEffect(() => {
-    api
-      .get("blog/getblog/" + id)
+    apiAdmin
+      .get("/blog/" + id, config)
       .then((res) => {
+        console.log(res.data.data);
         SetInput({
-          title: res.data.title,
-          description: res.data.description,
-          content: res.data.content,
-          avatar: res.data.image,
+          title: res.data.data.title,
+          description: res.data.data.description,
+          content: res.data.data.content,
+          avatar: res.data.data.image,
         });
       })
       .catch((error) => console.log(error));
@@ -83,8 +86,8 @@ function UpdateBlog() {
       data.append("description", input.description);
       data.append("content", input.content);
       data.append("image", FileNew[0]);
-      api
-        .put("blog/update/" + id, data, config)
+      apiAdmin
+        .put("/blog/" + id, data, config)
         .then((res) => {
           console.log(res);
           toast.success("Update Blog thành công");

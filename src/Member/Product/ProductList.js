@@ -1,6 +1,6 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useEffect, useState } from "react";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import refershToken from "../../RefershToken/RefershToken";
 import { Link } from "react-router-dom";
 import("./ProductList.css");
@@ -14,7 +14,7 @@ function ProductList() {
   };
   const [input, SetInput] = useState([]);
   function getListProduct() {
-    api
+    apiMember
       .get("member/user/product/list/" + idUser, config)
       .then((res) => {
         console.log(res.data);
@@ -30,7 +30,7 @@ function ProductList() {
                   Authorization: `Bearer ${tokenNew}`,
                 },
               };
-              api
+              apiMember
                 .get("member/user/product/list/" + idUser, config)
                 .then((res) => {
                   console.log(res.data);
@@ -61,7 +61,7 @@ function ProductList() {
     getListProduct();
   }, []);
   function deleteProduct(id) {
-    api
+    apiMember
       .delete("member/user/product/delete/" + id, config)
       .then((res) => {
         console.log(res.data);
@@ -78,7 +78,7 @@ function ProductList() {
                   Authorization: `Bearer ${tokenNew}`,
                 },
               };
-              api
+              apiMember
                 .delete("member/user/product/delete/" + idUser, config)
                 .then((res) => {
                   console.log(res.data);

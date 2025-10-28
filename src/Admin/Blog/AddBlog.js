@@ -1,13 +1,15 @@
 import { useState } from "react";
-import api from "../../API/api";
+import apiAdmin from "../../API/apiAdmin";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 function AddBlog() {
   const navigate = useNavigate();
   const [err, SetErr] = useState({});
+  const token = localStorage.getItem("token");
   let config = {
     headers: {
+      Authorization: `Bearer ${token}`,
       "Content-Type": "application/x-www-form-urlencoded",
       Accept: "application/json",
     },
@@ -68,8 +70,8 @@ function AddBlog() {
       data.append("description", input.description);
       data.append("content", input.content);
       data.append("image", input.avatar[0]);
-      api
-        .post("blog/create", data, config)
+      apiAdmin
+        .post("/blog", data, config)
         .then((res) => {
           console.log(res);
           SetErr({});
@@ -82,7 +84,7 @@ function AddBlog() {
             error.response.data &&
             error.response.data.errors
           ) {
-            errAll.api = error.response.data.errors;
+            errAll.apiAdmin = error.response.data.errors;
             toast.error(error.response.data.errors);
             console.log(error.response.data.errors);
             SetErr(errAll);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import { toast } from "react-toastify";
 function UpdateMember() {
   let [input, SetInput] = useState({
@@ -26,7 +26,7 @@ function UpdateMember() {
   let [FileNew, SetFileNew] = useState([]);
   let [err, SetErr] = useState({});
   useEffect(() => {
-    api
+    apiMember
       .get("country/getall")
       .then((res) => {
         SetCountry(res.data);
@@ -37,7 +37,7 @@ function UpdateMember() {
     getDataUser();
   }, []);
   function getDataUser() {
-    api.get("/getuser/" + iduser).then((res) => {
+    apiMember.get("/getuser/" + iduser).then((res) => {
       console.log(res.data);
       SetInput({
         email: res.data.email,
@@ -131,7 +131,7 @@ function UpdateMember() {
       FileNew.map((value, index) => {
         data.append("avatar", value);
       });
-      api
+      apiMember
         .put("member/user/update/" + iduser, data, config)
         .then((res) => {
           SetErr({});
@@ -151,7 +151,7 @@ function UpdateMember() {
                     Accept: "application/json",
                   },
                 };
-                const userupdate = await api.put(
+                const userupdate = await apiMember.put(
                   "member/user/update/" + iduser,
                   data,
                   config
@@ -173,7 +173,7 @@ function UpdateMember() {
     }
   }
   async function refershAccessToken() {
-    const res = await api.post(
+    const res = await apiMember.post(
       "member/user/token",
       {},
       {

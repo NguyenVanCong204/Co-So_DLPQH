@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import "./ProductDetail.css";
 import { useContext, useEffect, useState } from "react";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import { addToCart } from "../../features/cart/CartSlider";
 import { useDispatch } from "react-redux";
 import MemberCartContext from "../../Context/MemberCartContext";
@@ -14,7 +14,7 @@ function ProductDetail() {
   const dispatch = useDispatch();
   let totallocal = useContext(MemberCartContext);
   useEffect(() => {
-    api.get("member/user/product/getproduct/" + id).then((res) => {
+    apiMember.get("member/user/product/getproduct/" + id).then((res) => {
       SetInput(res.data);
       if (res.data?.image) {
         const avatar = JSON.parse(res.data.image);

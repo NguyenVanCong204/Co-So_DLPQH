@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import { useParams } from "react-router-dom";
 import refershToken from "../../RefershToken/RefershToken";
 import { toast } from "react-toastify";
@@ -31,7 +31,7 @@ function ProductUpdate() {
     },
   };
   function getData() {
-    api
+    apiMember
       .get("member/user/product/getproduct/" + id)
       .then((res) => {
         SetInput({
@@ -51,13 +51,13 @@ function ProductUpdate() {
       });
   }
   useEffect(() => {
-    api
+    apiMember
       .get("member/user/brand")
       .then((res) => {
         Setbrand(res.data);
       })
       .catch((error) => console.log(error));
-    api
+    apiMember
       .get("member/user/category")
       .then((res) => {
         Setcategory(res.data);
@@ -152,7 +152,7 @@ function ProductUpdate() {
       avatarNew.map((value, index) => {
         data.append("image", value);
       });
-      api
+      apiMember
         .put("member/user/product/update/" + id, data, config)
         .then((res) => {
           console.log(res);
@@ -172,7 +172,7 @@ function ProductUpdate() {
                   Accept: "application/json",
                 },
               };
-              api
+              apiMember
                 .put("member/user/product/update/" + id, data, config)
                 .then((res) => {
                   console.log(res);
