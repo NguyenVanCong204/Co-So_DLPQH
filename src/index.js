@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api", apiRouter);
+app.use("/api/admin", apiRouter);
 app.use("/api/member", apiRouterMember);
 
 app.get("/", (req, res) => {

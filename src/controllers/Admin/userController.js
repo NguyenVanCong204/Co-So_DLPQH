@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import path from "path";
 import multer from "multer";
 import CreateUserValidation from "../../validation/CreateUserValidation.js";
+import UpdateUserValidation from "../../validation/UpdateUserValidation.js";
 
 const RefreshTokens = [];
 const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
@@ -106,4 +107,31 @@ export const checkLoginUser = async (req, res) => {
     token: token,
     tokenReferesh: tokenReferesh,
   });
+};
+export const updateUser = async (req, res) => {
+  try {
+    const data = req.body;
+    const userId = req.params.id;
+    const avatarFiles = req.files;
+    const err = UpdateUserValidation(data, avatarFiles);
+    if (Object.keys(err).length > 0) {
+      return res.status(400).json({
+        errors: err,
+      });
+    }
+    data.avatar = avatarFiles ? avatarFiles.map((file) => file.path) : [];
+    data.avatar = JSON.stringify(data.avatar);
+    data.password = await bcrypt.hash(data.password, 10);
+    const user = await User.updateUser(userId, data);
+    const { level, password, ...userWithoutPassword } = user.toObject();
+    return res.status(200).json({
+      message: "Update User thành công",
+      data: userWithoutPassword,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Lỗi server !",
+      error: error.message,
+    });
+  }
 };
