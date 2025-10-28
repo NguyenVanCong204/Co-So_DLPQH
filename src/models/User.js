@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import Country from "./Country.js";
 
 const userSchema = new mongoose.Schema({
   name: String,
@@ -10,7 +11,7 @@ const userSchema = new mongoose.Schema({
   id_country: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Country",
-    require: true,
+    required: true,
   },
   avatar: String,
   level: { type: Number, default: 1 },
@@ -24,6 +25,14 @@ userSchema.statics.checkEmail = async function (email) {
   const error = {};
   if (existingUser) {
     error.email = "Email đã tồn tại";
+  }
+  return error;
+};
+userSchema.static.checkCountry = async function (id_country) {
+  const country = await Country.findById(id_country);
+  const error = {};
+  if (!country) {
+    error.id_country = "Quốc gia không tồn tại trong hệ thống";
   }
   return error;
 };
@@ -41,6 +50,9 @@ userSchema.statics.checkLoginUser = async function (data) {
     return false;
   }
   return user;
+};
+userSchema.statics.updateUser = async function (id, data) {
+  return await this.findByIdAndUpdate(id, data, { new: true });
 };
 
 const User = mongoose.model("User", userSchema);

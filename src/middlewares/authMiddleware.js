@@ -19,8 +19,6 @@ export const requireAuth = (req, res, next) => {
 };
 export const authorize = (requiredLevel) => {
   return (req, res, next) => {
-    console.log("User hiện tại:", req.user.level);
-    console.log("Level yêu cầu:", requiredLevel);
     if (!req.user) {
       return res.status(401).json({ error: "Chưa xác thực" });
     }
