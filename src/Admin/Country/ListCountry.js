@@ -1,9 +1,17 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useEffect, useState } from "react";
-import api from "../../API/api";
+import apiAdmin from "../../API/apiAdmin";
 import { confirmDialog } from "../../component/confirmDialog";
 import { toast } from "react-toastify";
 function ListCountry() {
+  const token = localStorage.getItem("token");
+  let config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+    },
+  };
   const [err, SetErr] = useState({});
   const [input, SetInput] = useState([]);
   const [name, SetName] = useState({
@@ -29,8 +37,8 @@ function ListCountry() {
       const data = {
         name: name.name,
       };
-      api
-        .post("country/create", data)
+      apiAdmin
+        .post("country", data, config)
         .then((res) => {
           console.log(res);
           toast.success("Thêm country thành công");
@@ -49,12 +57,17 @@ function ListCountry() {
     const data = {
       name: name.name,
     };
-    api
-      .put("country/update/" + name.id, data)
+    apiAdmin
+      .put("/country/" + name.id, data, config)
       .then((res) => {
         console.log(res);
-        alert("ok");
-        getData();
+        toast.success(res.data.message);
+        SetCheckUpdate(true);
+        SetInput((states) =>
+          states.map((item) =>
+            name.id === item._id ? { ...item, name: res.data.data.name } : item
+          )
+        );
         SetName({
           name: "",
           id: "",
@@ -68,18 +81,21 @@ function ListCountry() {
       text: "Bạn có chắc chắn muốn xóa country này không?",
     });
     if (!result.isConfirmed) return;
-    api
-      .post("country/delete/" + id)
+    apiAdmin
+      .delete("/country/" + id, config)
       .then((res) => {
         console.log(res);
-        alert(res.data.message);
+        toast.success(res.data.message);
         getData();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.response.data.message);
+      });
   }
   function getData() {
-    api
-      .get("country/getall")
+    apiAdmin
+      .get("/country", config)
       .then((res) => {
         console.log(res);
         SetInput(res.data);
@@ -119,10 +135,6 @@ function ListCountry() {
         <h2>Danh sách Country</h2>
         <p className="err">{err.name}</p>
         <div className="country">
-          <div className="country_input">
-            <p>Id : </p>
-            <input type="text" readOnly value={name.id}></input>
-          </div>
           <div className="country_input">
             <p>Name : </p>
             <input

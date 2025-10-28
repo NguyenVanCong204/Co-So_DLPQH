@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import "./Login.css";
 import { toast } from "react-toastify";
 function LoginMember() {
@@ -40,7 +40,7 @@ function LoginMember() {
         password: input.password,
         level: input.level,
       };
-      api
+      apiMember
         .post("member/user/login", data)
         .then((res) => {
           console.log(res.data.user);

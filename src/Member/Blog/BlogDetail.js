@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import refershToken from "../../RefershToken/RefershToken";
 import { toast } from "react-toastify";
 function BlogDetail() {
@@ -22,7 +22,7 @@ function BlogDetail() {
     },
   };
   function getDataBlog() {
-    api
+    apiMember
       .get("blog/getblog/" + id)
       .then((res) => {
         SetInput(res.data);
@@ -31,7 +31,7 @@ function BlogDetail() {
       .catch((error) => console.log(error));
   }
   function getDataComment() {
-    api
+    apiMember
       .get("member/user/getcomment/" + id)
       .then((res) => {
         SetInputComment(res.data);
@@ -89,7 +89,7 @@ function BlogDetail() {
           image_user: image[0],
           id_comment: id_comment,
         };
-        api
+        apiMember
           .post("member/user/comment", data, config)
           .then((res) => {
             console.log(res);
@@ -110,7 +110,7 @@ function BlogDetail() {
                       Accept: "application/json",
                     },
                   };
-                  api
+                  apiMember
                     .post("member/user/comment", data, config)
                     .then((res) => {
                       toast.success(
@@ -275,7 +275,7 @@ function BlogDetail() {
           comment: comment,
           image_user: image[0],
         };
-        api
+        apiMember
           .post("member/user/comment", data, config)
           .then((res) => {
             console.log(res);
@@ -295,7 +295,7 @@ function BlogDetail() {
                       Accept: "application/json",
                     },
                   };
-                  api
+                  apiMember
                     .post("member/user/comment", data, config)
                     .then((res) => {
                       toast.success(

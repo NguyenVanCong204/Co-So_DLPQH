@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
-import api from "../API/api";
+import apiAdmin from "../API/apiAdmin";
 import "./UpdateAdmin.css";
 import { toast } from "react-toastify";
 
 function UpdateAdmin() {
+  const token = localStorage.getItem("token");
+  let config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+    },
+  };
   let [input, SetInput] = useState({
     email: "",
     name: "",
@@ -13,20 +21,15 @@ function UpdateAdmin() {
     country: "",
     avatar: [],
   });
-  let config = {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json",
-    },
-  };
   let [country, SetCountry] = useState([]);
   let iduser = localStorage.getItem("IdUser");
   let [FileNew, SetFileNew] = useState([]);
   let [err, SetErr] = useState({});
   useEffect(() => {
-    api
-      .get("country/getall")
+    apiAdmin
+      .get("/country", config)
       .then((res) => {
+        console.log(res.data);
         SetCountry(res.data);
       })
       .catch((errors) => console.log(errors));
@@ -35,7 +38,7 @@ function UpdateAdmin() {
     getDataUser();
   }, []);
   function getDataUser() {
-    api.get("/getuser/" + iduser).then((res) => {
+    apiAdmin.get("/user/" + iduser, config).then((res) => {
       console.log(res.data);
       SetInput({
         email: res.data.email,
@@ -129,13 +132,22 @@ function UpdateAdmin() {
       FileNew.map((value, index) => {
         data.append("avatar", value);
       });
-      api
-        .put("user/update/" + iduser, data, config)
+      apiAdmin
+        .put("/user/" + iduser, data, config)
         .then((res) => {
           toast.success("Update thành công");
-          getDataUser();
+          // getDataUser();
           SetErr({});
           console.log(res);
+          SetInput({
+            email: res.data.data.email,
+            name: res.data.data.name,
+            pass: "",
+            phone: res.data.data.phone,
+            address: res.data.data.address,
+            country: res.data.data.id_country,
+            avatar: JSON.parse(res.data.data.avatar),
+          });
         })
         .catch((error) => {
           toast.error(error.response.data.message);
@@ -162,6 +174,7 @@ function UpdateAdmin() {
             name="pass"
             type="password"
             placeholder="Nhập password"
+            value={input.pass}
             onChange={changInput}
           ></input>
           <p>{err.pass}</p>
@@ -186,7 +199,7 @@ function UpdateAdmin() {
             {country &&
               country.map((value, index) => {
                 return (
-                  <option key={index} value={value.id}>
+                  <option key={index} value={value._id}>
                     {value.name}
                   </option>
                 );

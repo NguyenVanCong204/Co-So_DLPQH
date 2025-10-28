@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import "./CartProduct.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -20,14 +20,16 @@ function CartProduct() {
   const [input, SetInput] = useState([]);
   useEffect(() => {
     let tongQualtyCart = 0;
-    api.post("member/user/product/getproductcart", cartredux).then((res) => {
-      console.log(res.data);
-      SetInput(res.data);
-      res.data.map((value, index) => {
-        tongQualtyCart += value.price * value.qty;
+    apiMember
+      .post("member/user/product/getproductcart", cartredux)
+      .then((res) => {
+        console.log(res.data);
+        SetInput(res.data);
+        res.data.map((value, index) => {
+          tongQualtyCart += value.price * value.qty;
+        });
+        SetAllQualtyCart(tongQualtyCart);
       });
-      SetAllQualtyCart(tongQualtyCart);
-    });
   }, [cartredux]);
   function removeQualtyCartProduct(id, qty) {
     dispatch(removeQualtyCart(id));

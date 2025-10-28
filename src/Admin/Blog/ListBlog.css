@@ -66,9 +66,9 @@ td {
   display: flex;
   align-items: center;
 }
-.action_admin_blog .action {
+/* .action_admin_blog .action {
   display: flex;
-}
+} */
 .Blog_list .Blog_table h2 {
   color: #fe980f;
 }

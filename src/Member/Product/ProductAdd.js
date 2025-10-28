@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./ProductAdd.css";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import refershToken from "../../RefershToken/RefershToken";
 function ProductAdd() {
   const [err, SetErr] = useState({});
@@ -27,13 +27,13 @@ function ProductAdd() {
     },
   };
   useEffect(() => {
-    api
+    apiMember
       .get("member/user/brand")
       .then((res) => {
         Setbrand(res.data);
       })
       .catch((error) => console.log(error));
-    api
+    apiMember
       .get("member/user/category")
       .then((res) => {
         Setcategory(res.data);
@@ -119,7 +119,7 @@ function ProductAdd() {
       input.avatar.map((value, index) => {
         data.append("image", value);
       });
-      api
+      apiMember
         .post("member/user/product/add", data, config)
         .then((res) => {
           alert("Thành công");
@@ -138,7 +138,7 @@ function ProductAdd() {
                     Accept: "application/json",
                   },
                 };
-                api
+                apiMember
                   .post("member/user/product/add", data, config)
                   .then((res) => {
                     alert("Add product thành công sau khi referesh token");

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import { useSelector, useDispatch } from "react-redux";
 import refershToken from "../../RefershToken/RefershToken";
 import {
@@ -28,7 +28,7 @@ function CheckOut() {
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
     let tongQualtyCart = 0;
-    api.post("member/user/product/getproductcart", cart).then((res) => {
+    apiMember.post("member/user/product/getproductcart", cart).then((res) => {
       console.log(res.data);
       SetInput(res.data);
       res.data.map((value, index) => {
@@ -119,7 +119,7 @@ function CheckOut() {
     });
   }
   function Order() {
-    api
+    apiMember
       .post("member/user/product/order", { user, cart }, config)
       .then((res) => {
         toast.success(res.data.message);
@@ -135,7 +135,7 @@ function CheckOut() {
                 Accept: "application/json",
               },
             };
-            api
+            apiMember
               .post("member/user/product/order", { user, cart }, config)
               .then((res) => {
                 toast.success(res.data.message + "sau khi refesh token");

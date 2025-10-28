@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import "./HomeList.css";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import { Link } from "react-router-dom";
 import MemberCartContext from "../../Context/MemberCartContext";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +18,7 @@ function HomeList() {
     if (!search) {
       getAllProduct();
     } else {
-      api
+      apiMember
         .get("member/user/product/search?name=" + search)
         .then((res) => {
           console.log(res);
@@ -76,7 +76,7 @@ function HomeList() {
     getAllProduct();
   }, []);
   function getAllProduct() {
-    api
+    apiMember
       .get("member/user/product/getnewproduct")
       .then((res) => {
         console.log(res);

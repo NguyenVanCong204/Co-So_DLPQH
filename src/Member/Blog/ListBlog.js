@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import "./ListBlog.css";
-import api from "../../API/api";
+import apiMember from "../../API/apiMember";
 import { useNavigate } from "react-router-dom";
 function ListBlogMember() {
   const navigate = new useNavigate();
   const [input, SetInput] = useState([]);
   useEffect(() => {
-    api
+    apiMember
       .get("blog/getall")
       .then((res) => {
         console.log(res.data);
