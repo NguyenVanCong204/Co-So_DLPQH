@@ -4,6 +4,7 @@ const app = express();
 import mongoose from "mongoose";
 import apiRouter from "./router/Admin/api.js";
 import apiRouterMember from "./router/Member/api.js";
+import authRouter from "./router/Auth/auth.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/admin", apiRouter);
 app.use("/api/member", apiRouterMember);
+app.use("/api", authRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello, Express.js!");

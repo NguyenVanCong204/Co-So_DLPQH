@@ -24,6 +24,18 @@ const productSchema = new mongoose.Schema({
   detail: String,
   company: String,
 });
+productSchema.statics.createProduct = async function (data) {
+  return await this.create(data);
+};
+productSchema.statics.getProduct = async function () {
+  return await this.find();
+};
+productSchema.statics.getProductById = async function (userId) {
+  return await this.find({ id_user: userId });
+};
+productSchema.statics.deleteProduct = async function (id) {
+  return await this.findOneAndDelete({ _id: id });
+};
 const Product = mongoose.model("Product", productSchema);
 
 export default Product;

@@ -1,9 +1,8 @@
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import User from "../../models/User.js";
 import path from "path";
 import multer from "multer";
-import User from "../../models/User.js";
-import CreateUserValidation from "../../validation/CreateUserValidation.js";
+import bcrypt from "bcryptjs";
+import UpdateUserValidation from "../../validation/UpdateUserValidation.js";
 
 const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
 
@@ -36,21 +35,36 @@ export const upload = multer({
   fileFilter,
 }).array("avatar", 3);
 
-export const createUser = async (req, res) => {
-  const data = req.body;
-  const avatarFiles = req.files;
-  const err = CreateUserValidation(data, avatarFiles);
-  const errEmail = await User.checkEmail(data.email);
-  if (Object.keys(err).length > 0) {
-    return res.status(400).json({ errors: err });
+export const getUser = async (req, res) => {
+  const id = req.params.id;
+  const user = await User.getUser(id);
+  const { level, password, ...userWithoutPassword } = user.toObject();
+  res.json(userWithoutPassword);
+};
+export const updateUser = async (req, res) => {
+  try {
+    const data = req.body;
+    const userId = req.params.id;
+    const avatarFiles = req.files;
+    const err = UpdateUserValidation(data, avatarFiles);
+    if (Object.keys(err).length > 0) {
+      return res.status(400).json({
+        errors: err,
+      });
+    }
+    data.avatar = avatarFiles ? avatarFiles.map((file) => file.path) : [];
+    data.avatar = JSON.stringify(data.avatar);
+    data.password = await bcrypt.hash(data.password, 10);
+    const user = await User.updateUser(userId, data);
+    const { level, password, ...userWithoutPassword } = user.toObject();
+    return res.status(200).json({
+      message: "Update User thành công",
+      data: userWithoutPassword,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Lỗi server !",
+      error: error.message,
+    });
   }
-  if (Object.keys(errEmail).length > 0) {
-    return res.status(400).json({ errors: errEmail });
-  }
-  data.avatar = avatarFiles ? avatarFiles.map((file) => file.path) : [];
-  data.avatar = JSON.stringify(data.avatar);
-  data.password = await bcrypt.hash(data.password, 10);
-  data.level = parseInt(data.level);
-  const user = await User.createUser(data);
-  res.json(user);
 };
