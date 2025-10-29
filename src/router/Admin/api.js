@@ -1,11 +1,8 @@
 import express from "express";
 import {
-  createUser,
-  upload,
   getUser,
-  handleRefreshToken,
-  checkLoginUser,
   updateUser,
+  upload,
 } from "../../controllers/Admin/userController.js";
 import {
   createCountry,
@@ -21,15 +18,15 @@ import {
   updateBlog,
   deleteBlog,
 } from "../../controllers/Admin/blogController.js";
+import { createBrand } from "../../controllers/Admin/brandController.js";
+import { createCategory } from "../../controllers/Admin/categoryController.js";
 import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-//Login - register
-router.post("/user", upload, createUser);
-router.post("/refershtoken", handleRefreshToken);
-router.post("/login", checkLoginUser);
 router.get("/country", getCountry);
+router.post("/brand", createBrand);
+router.post("/category", createCategory);
 
 //middleware
 router.use(requireAuth, authorize(1));
@@ -39,15 +36,15 @@ router.put("/user/:id", upload, updateUser);
 router.get("/user/:id", getUser);
 
 //country
-router.post("/country", requireAuth, authorize(1), createCountry);
-router.delete("/country/:id", requireAuth, authorize(1), deleteCountry);
-router.put("/country/:id", requireAuth, authorize(1), updateCountry);
+router.post("/country", createCountry);
+router.delete("/country/:id", deleteCountry);
+router.put("/country/:id", updateCountry);
 
 //blog
-router.post("/blog", requireAuth, authorize(1), uploadBlog, createBlog);
+router.post("/blog", uploadBlog, createBlog);
 router.get("/blog", getBlog);
 router.get("/blog/:id", getBlogbyId);
-router.put("/blog/:id", requireAuth, authorize(1), uploadBlog, updateBlog);
-router.delete("/blog/:id", requireAuth, authorize(1), deleteBlog);
+router.put("/blog/:id", uploadBlog, updateBlog);
+router.delete("/blog/:id", deleteBlog);
 
 export default router;
