@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import apiMember from "../../API/apiMember";
+import auth from "../../API/auth";
 import { toast } from "react-toastify";
+import refershToken from "../../RefershToken/RefershToken";
 function UpdateMember() {
   let [input, SetInput] = useState({
     email: "",
@@ -27,7 +29,7 @@ function UpdateMember() {
   let [err, SetErr] = useState({});
   useEffect(() => {
     apiMember
-      .get("country/getall")
+      .get("/country")
       .then((res) => {
         SetCountry(res.data);
       })
@@ -37,7 +39,7 @@ function UpdateMember() {
     getDataUser();
   }, []);
   function getDataUser() {
-    apiMember.get("/getuser/" + iduser).then((res) => {
+    apiMember.get("/user/" + iduser).then((res) => {
       console.log(res.data);
       SetInput({
         email: res.data.email,
@@ -132,7 +134,7 @@ function UpdateMember() {
         data.append("avatar", value);
       });
       apiMember
-        .put("member/user/update/" + iduser, data, config)
+        .put("/user/" + iduser, data, config)
         .then((res) => {
           SetErr({});
           console.log(res);
@@ -140,10 +142,20 @@ function UpdateMember() {
           getDataUser();
         })
         .catch(async (error) => {
-          if (error.response && error.response.status == 401) {
-            try {
-              const newtoken = await refershAccessToken();
-              if (newtoken) {
+          if (error.response) {
+            const status = error.response.status;
+            const message =
+              error.response.data?.error ||
+              error.response.data?.message ||
+              error.message;
+            if (status == 401) {
+              try {
+                const newtoken = await refershToken();
+                if (!newtoken) {
+                  return toast.error(
+                    "Không thể làm mới token. Vui lòng đăng nhập lại."
+                  );
+                }
                 let config = {
                   headers: {
                     Authorization: `Bearer ${newtoken}`,
@@ -151,38 +163,29 @@ function UpdateMember() {
                     Accept: "application/json",
                   },
                 };
-                const userupdate = await apiMember.put(
-                  "member/user/update/" + iduser,
+                const res2 = await apiMember.put(
+                  "/user/" + iduser,
                   data,
                   config
                 );
-                toast.success("Update thành công sau khi refresh token!");
+                toast.success(res2.data.message + " (sau khi refresh token)");
                 SetErr({});
-                console.log(userupdate);
-              } else {
-                toast.error("Không thể làm mới token. Vui lòng đăng nhập lại");
+                console.log(res2);
+                getDataUser();
+              } catch (refreshError) {
+                toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+                console.error(refreshError);
               }
-            } catch (error) {
-              toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại");
-              console.error(error);
+            } else if (status === 403) {
+              toast.error(message);
+            } else {
+              toast.error("Lỗi khi delete: " + message);
             }
           } else {
-            alert("Lỗi khi cập nhật: " + error.message);
+            toast.error("Không thể kết nối đến server: " + error.message);
           }
         });
     }
-  }
-  async function refershAccessToken() {
-    const res = await apiMember.post(
-      "member/user/token",
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${tokenReferesh}`,
-        },
-      }
-    );
-    return res.data.token;
   }
   return (
     <div>
@@ -228,7 +231,7 @@ function UpdateMember() {
             {country &&
               country.map((value, index) => {
                 return (
-                  <option key={index} value={value.id}>
+                  <option key={index} value={value._id}>
                     {value.name}
                   </option>
                 );

@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./LoginTest.css";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import apiAdmin from "../API/apiAdmin";
+import auth from "../API/auth";
 
 function LoginTest() {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ function LoginTest() {
         password: input.password,
         level: input.level,
       };
-      apiAdmin
+      auth
         .post("login", data)
         .then((res) => {
           SetErr({});

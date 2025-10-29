@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import apiMember from "../../API/apiMember";
+import auth from "../../API/auth";
 import "./Register.css";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +28,7 @@ function RegisterMember() {
   let [err, SetErr] = useState({});
   useEffect(() => {
     apiMember
-      .get("country/getall")
+      .get("/country")
       .then((res) => {
         SetCountry(res.data);
       })
@@ -118,8 +119,8 @@ function RegisterMember() {
       input.avatar.map((value, index) => {
         data.append("avatar", value);
       });
-      apiMember
-        .post("member/user/create", data, config)
+      auth
+        .post("/register", data, config)
         .then((res) => {
           SetErr({});
           toast.success("Đăng kí tài khoản thành công");
@@ -188,7 +189,7 @@ function RegisterMember() {
           {country &&
             country.map((value, index) => {
               return (
-                <option key={index} value={value.id}>
+                <option key={index} value={value._id}>
                   {value.name}
                 </option>
               );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./RegisterTest.css";
 import apiAdmin from "../API/apiAdmin";
+import auth from "../API/auth";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 function RegisterTest() {
@@ -116,8 +117,8 @@ function RegisterTest() {
       input.avatar.map((value, index) => {
         data.append("avatar", value);
       });
-      apiAdmin
-        .post("/user", data, config)
+      auth
+        .post("/register", data, config)
         .then((res) => {
           SetErr({});
           toast.success("Đăng kí thành công");

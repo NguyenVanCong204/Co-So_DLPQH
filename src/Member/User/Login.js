@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiMember from "../../API/apiMember";
+import auth from "../../API/auth";
 import "./Login.css";
 import { toast } from "react-toastify";
 function LoginMember() {
@@ -40,12 +41,12 @@ function LoginMember() {
         password: input.password,
         level: input.level,
       };
-      apiMember
-        .post("member/user/login", data)
+      auth
+        .post("/login", data)
         .then((res) => {
           console.log(res.data.user);
           SetErr({});
-          localStorage.setItem("IdUser", res.data.user.id);
+          localStorage.setItem("IdUser", res.data.user._id);
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("tokenReferesh", res.data.tokenReferesh);
           localStorage.setItem("user", JSON.stringify(res.data.user));

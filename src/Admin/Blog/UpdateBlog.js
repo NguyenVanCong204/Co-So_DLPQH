@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import apiAdmin from "../../API/apiAdmin";
 import { toast } from "react-toastify";
+import refershToken from "../../RefershToken/RefershToken";
 
 function UpdateBlog() {
   const navigate = useNavigate();
@@ -94,18 +95,43 @@ function UpdateBlog() {
           navigate("/dashboard/blog/list");
           SetErr({});
         })
-        .catch((error) => {
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.errors
-          ) {
-            errAll.api = error.response.data.errors;
-            toast.error(error.response.data.errors);
-            console.log(error.response.data.errors);
-            SetErr(errAll);
+        .catch(async (error) => {
+          if (error.response) {
+            const status = error.response.status;
+            const message =
+              error.response.data?.error ||
+              error.response.data?.message ||
+              error.message;
+            if (status == 401) {
+              try {
+                const newtoken = await refershToken();
+                if (!newtoken) {
+                  return toast.error(
+                    "Không thể làm mới token. Vui lòng đăng nhập lại."
+                  );
+                }
+                let config = {
+                  headers: {
+                    Authorization: `Bearer ${newtoken}`,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json",
+                  },
+                };
+                const res2 = await apiAdmin.put("/blog/" + id, data, config);
+                toast.success(res2.data.message + " (sau khi refresh token)");
+                navigate("/dashboard/blog/list");
+                SetErr({});
+              } catch (refreshError) {
+                toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+                console.error(refreshError);
+              }
+            } else if (status === 403) {
+              toast.error(message);
+            } else {
+              toast.error("Lỗi khi delete: " + message);
+            }
           } else {
-            console.error("Lỗi không xác định:", error);
+            toast.error("Không thể kết nối đến server: " + error.message);
           }
         });
     }
