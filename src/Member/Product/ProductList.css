@@ -1,6 +1,6 @@
 .product-list {
-  width: 1000px;
-  margin: 50px auto;
+  /* width: 1000px;
+  margin: 50px auto; */
 }
 .product-list h2 {
   text-align: center;
@@ -9,6 +9,7 @@
 .product-list table {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 20px;
 }
 .product-list table thead tr {
   height: 50px;
@@ -30,4 +31,18 @@
   text-align: center;
   margin-right: 3px;
   margin-left: 3px;
+}
+.product-list .add-product {
+  margin-bottom: 10px;
+  float: right;
+  font-size: 16px;
+  background-color: rgb(245, 112, 55);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 10px;
+}
+.product-list .add-product:hover {
+  background-color: rgb(252, 128, 75);
+  color: rgb(235, 235, 235);
 }

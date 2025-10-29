@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import apiMember from "../../API/apiMember";
 import refershToken from "../../RefershToken/RefershToken";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { confirmDialog } from "../../component/confirmDialog";
 import("./ProductList.css");
 function ProductList() {
   const token = localStorage.getItem("token");
@@ -10,100 +12,111 @@ function ProductList() {
   let config = {
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
     },
   };
   const [input, SetInput] = useState([]);
   function getListProduct() {
     apiMember
-      .get("member/user/product/list/" + idUser, config)
+      .get("/product/" + idUser, config)
       .then((res) => {
         console.log(res.data);
-        SetInput(res.data);
+        SetInput(res.data.data);
       })
-      .catch(async (err) => {
-        if (err && err.response && err.response.status == 401) {
-          try {
-            const tokenNew = await refershToken();
-            if (tokenNew) {
+      .catch(async (error) => {
+        if (error.response) {
+          const status = error.response.status;
+          const message =
+            error.response.data?.error ||
+            error.response.data?.message ||
+            error.message;
+          if (status == 401) {
+            try {
+              const newtoken = await refershToken();
+              if (!newtoken) {
+                return toast.error(
+                  "Không thể làm mới token. Vui lòng đăng nhập lại."
+                );
+              }
               let config = {
                 headers: {
-                  Authorization: `Bearer ${tokenNew}`,
+                  Authorization: `Bearer ${newtoken}`,
+                  "Content-Type": "application/x-www-form-urlencoded",
+                  Accept: "application/json",
                 },
               };
-              apiMember
-                .get("member/user/product/list/" + idUser, config)
-                .then((res) => {
-                  console.log(res.data);
-                })
-                .catch((err) => {
-                  if (
-                    err &&
-                    err.response &&
-                    err.response.data &&
-                    err.response.data.errors
-                  ) {
-                    console.log(err.response.data.errors);
-                  } else {
-                    alert("Lỗi khi lấy dữ kiệu product" + err.message);
-                  }
-                });
-            } else {
-              alert("Không thể làm mới token");
+              const res2 = await apiMember.get("/product/" + idUser, config);
+              toast.success(res2.data.message + " (sau khi refresh token)");
+              console.log(res2.data);
+              SetInput(res2.data.data);
+            } catch (refreshError) {
+              toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+              console.error(refreshError);
             }
-          } catch (error) {
-            alert("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
-            console.error(error);
+          } else if (status === 403) {
+            toast.error(message);
+          } else {
+            toast.error("Lỗi khi delete: " + message);
           }
+        } else {
+          toast.error("Không thể kết nối đến server: " + error.message);
         }
       });
   }
   useEffect(() => {
     getListProduct();
   }, []);
-  function deleteProduct(id) {
+  async function deleteProduct(id) {
+    const result = await confirmDialog({
+      title: "Xác nhận xóa?",
+      text: "Bạn có chắc chắn muốn xóa product này không?",
+    });
+    if (!result.isConfirmed) return;
     apiMember
-      .delete("member/user/product/delete/" + id, config)
+      .delete("/product/" + id, config)
       .then((res) => {
         console.log(res.data);
-        alert("delete ok");
+        toast.success(res.data.message);
         getListProduct();
       })
-      .catch(async (err) => {
-        if (err && err.response && err.response.status == 401) {
-          try {
-            const tokenNew = await refershToken();
-            if (tokenNew) {
+      .catch(async (error) => {
+        if (error.response) {
+          const status = error.response.status;
+          const message =
+            error.response.data?.error ||
+            error.response.data?.message ||
+            error.message;
+          if (status == 401) {
+            try {
+              const newtoken = await refershToken();
+              if (!newtoken) {
+                return toast.error(
+                  "Không thể làm mới token. Vui lòng đăng nhập lại."
+                );
+              }
               let config = {
                 headers: {
-                  Authorization: `Bearer ${tokenNew}`,
+                  Authorization: `Bearer ${newtoken}`,
+                  "Content-Type": "application/x-www-form-urlencoded",
+                  Accept: "application/json",
                 },
               };
-              apiMember
-                .delete("member/user/product/delete/" + idUser, config)
-                .then((res) => {
-                  console.log(res.data);
-                  alert("delete ok");
-                  getListProduct();
-                })
-                .catch((err) => {
-                  if (
-                    err &&
-                    err.response &&
-                    err.response.data &&
-                    err.response.data.errors
-                  ) {
-                    console.log(err.response.data.errors);
-                  } else {
-                    alert("Lỗi khi lấy dữ kiệu product" + err.message);
-                  }
-                });
-            } else {
-              alert("Không thể làm mới token");
+              const res2 = await apiMember.delete("/product/" + id, config);
+              console.log(res2.data);
+              toast.success(res2.data.message);
+              getListProduct();
+            } catch (refreshError) {
+              toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+              console.error(refreshError);
             }
-          } catch (error) {
-            alert("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
-            console.error(error);
+          } else if (status === 403) {
+            toast.error(message);
+          } else {
+            toast.error("Lỗi khi delete: " + message);
           }
+        } else {
+          toast.error("Không thể kết nối đến server: " + error.message);
         }
       });
   }
@@ -112,7 +125,7 @@ function ProductList() {
       const image = JSON.parse(value.image);
       return (
         <tr key={index}>
-          <td>{value.id}</td>
+          <td>{index}</td>
           <td>{value.company}</td>
           <td>{value.detail}</td>
           <td>{value.name}</td>
@@ -122,12 +135,12 @@ function ProductList() {
           <td>{value.sale} %</td>
           <td>{value.price} VND</td>
           <td className="active">
-            <Link to={`/member/account/product/update/${value.id}`}>
+            <Link to={`/member/account/product/update/${value._id}`}>
               <i className="fa-solid fa-pen-to-square"></i>
             </Link>
             <i
               className="fa-solid fa-trash"
-              onClick={() => deleteProduct(value.id)}
+              onClick={() => deleteProduct(value._id)}
             ></i>
           </td>
         </tr>
@@ -137,6 +150,9 @@ function ProductList() {
   return (
     <div className="product-list">
       <h2>List Product</h2>
+      <Link to="/member/account/product/add">
+        <button className="add-product">Add Product</button>
+      </Link>
       <div>
         <table>
           <thead>

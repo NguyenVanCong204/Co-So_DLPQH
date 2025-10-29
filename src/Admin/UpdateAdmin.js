@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import apiAdmin from "../API/apiAdmin";
+import auth from "../API/auth";
 import "./UpdateAdmin.css";
 import { toast } from "react-toastify";
+import refershToken from "../RefershToken/RefershToken";
 
 function UpdateAdmin() {
   const token = localStorage.getItem("token");
@@ -136,7 +138,6 @@ function UpdateAdmin() {
         .put("/user/" + iduser, data, config)
         .then((res) => {
           toast.success("Update thành công");
-          // getDataUser();
           SetErr({});
           console.log(res);
           SetInput({
@@ -149,9 +150,58 @@ function UpdateAdmin() {
             avatar: JSON.parse(res.data.data.avatar),
           });
         })
-        .catch((error) => {
-          toast.error(error.response.data.message);
-          console.log(error);
+        .catch(async (error) => {
+          if (error.response) {
+            const status = error.response.status;
+            const message =
+              error.response.data?.error ||
+              error.response.data?.message ||
+              error.message;
+            if (status == 401) {
+              try {
+                const newtoken = await refershToken();
+                if (!newtoken) {
+                  return toast.error(
+                    "Không thể làm mới token. Vui lòng đăng nhập lại."
+                  );
+                }
+                let config = {
+                  headers: {
+                    Authorization: `Bearer ${newtoken}`,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json",
+                  },
+                };
+                const res2 = await apiAdmin.put(
+                  "/user/" + iduser,
+                  data,
+                  config
+                );
+                toast.success(res2.data.message + " (sau khi refresh token)");
+                toast.success("Update thành công");
+                SetErr({});
+                console.log(res2);
+                SetInput({
+                  email: res2.data.data.email,
+                  name: res2.data.data.name,
+                  pass: "",
+                  phone: res2.data.data.phone,
+                  address: res2.data.data.address,
+                  country: res2.data.data.id_country,
+                  avatar: JSON.parse(res2.data.data.avatar),
+                });
+              } catch (refreshError) {
+                toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+                console.error(refreshError);
+              }
+            } else if (status === 403) {
+              toast.error(message);
+            } else {
+              toast.error("Lỗi khi delete: " + message);
+            }
+          } else {
+            toast.error("Không thể kết nối đến server: " + error.message);
+          }
         });
     }
   }

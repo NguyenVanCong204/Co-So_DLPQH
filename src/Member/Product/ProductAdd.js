@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import "./ProductAdd.css";
 import apiMember from "../../API/apiMember";
 import refershToken from "../../RefershToken/RefershToken";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 function ProductAdd() {
+  const navigate = useNavigate();
   const [err, SetErr] = useState({});
   const [category, Setcategory] = useState([]);
   const [brand, Setbrand] = useState([]);
@@ -28,15 +31,15 @@ function ProductAdd() {
   };
   useEffect(() => {
     apiMember
-      .get("member/user/brand")
+      .get("/brand")
       .then((res) => {
-        Setbrand(res.data);
+        Setbrand(res.data.data);
       })
       .catch((error) => console.log(error));
     apiMember
-      .get("member/user/category")
+      .get("/category")
       .then((res) => {
-        Setcategory(res.data);
+        Setcategory(res.data.data);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -120,17 +123,28 @@ function ProductAdd() {
         data.append("image", value);
       });
       apiMember
-        .post("member/user/product/add", data, config)
+        .post("/product", data, config)
         .then((res) => {
-          alert("Thành công");
           console.log(res);
           SetErr({});
+          navigate("/member/account/product/list");
+          toast.success(res.data.message);
         })
-        .catch(async (err) => {
-          if (err && err.response.status == 401) {
-            try {
-              const newtoken = await refershToken();
-              if (newtoken) {
+        .catch(async (error) => {
+          if (error.response) {
+            const status = error.response.status;
+            const message =
+              error.response.data?.error ||
+              error.response.data?.message ||
+              error.message;
+            if (status == 401) {
+              try {
+                const newtoken = await refershToken();
+                if (!newtoken) {
+                  return toast.error(
+                    "Không thể làm mới token. Vui lòng đăng nhập lại."
+                  );
+                }
                 let config = {
                   headers: {
                     Authorization: `Bearer ${newtoken}`,
@@ -138,43 +152,23 @@ function ProductAdd() {
                     Accept: "application/json",
                   },
                 };
-                apiMember
-                  .post("member/user/product/add", data, config)
-                  .then((res) => {
-                    alert("Add product thành công sau khi referesh token");
-                    console.log(res);
-                    SetErr({});
-                  })
-                  .catch(async (err) => {
-                    if (
-                      err &&
-                      err.response &&
-                      err.response.data &&
-                      err.response.data.errors
-                    ) {
-                      console.log(err.response.data.errors);
-                    } else {
-                      alert("Lỗi khi add product" + err.message);
-                    }
-                  });
-              } else {
-                alert("Không thể làm mới token");
+                const res2 = await apiMember.post("/product", data, config);
+
+                console.log(res2);
+                SetErr({});
+                navigate("/member/account/product/list");
+                toast.success(res2.data.message);
+              } catch (refreshError) {
+                toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+                console.error(refreshError);
               }
-            } catch (error) {
-              alert("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
-              console.error(error);
+            } else if (status === 403) {
+              toast.error(message);
+            } else {
+              toast.error("Lỗi khi delete: " + message);
             }
           } else {
-            if (
-              err &&
-              err.response &&
-              err.response.data &&
-              err.response.data.errors
-            ) {
-              console.log(err.response.data.errors);
-            } else {
-              alert("Lỗi khi add product" + err.message);
-            }
+            toast.error("Không thể kết nối đến server: " + error.message);
           }
         });
     }
@@ -200,14 +194,14 @@ function ProductAdd() {
         <select name="category" onChange={handleChangInput}>
           <option value="">---Chọn category---</option>
           {category.map((value, index) => {
-            return <option value={value.id}>{value.name}</option>;
+            return <option value={value._id}>{value.name}</option>;
           })}
         </select>
         <p>{err.category}</p>
         <select name="brand" onChange={handleChangInput}>
           <option value="">---Chọn brand---</option>
           {brand.map((value, index) => {
-            return <option value={value.id}>{value.name}</option>;
+            return <option value={value._id}>{value.name}</option>;
           })}
         </select>
         <p>{err.brand}</p>

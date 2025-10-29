@@ -1,4 +1,4 @@
-import apiAdmin from "../API/apiAdmin";
+import auth from "../API/auth";
 
 async function refershToken() {
   try {
@@ -7,7 +7,7 @@ async function refershToken() {
       return alert("No refresh token found");
     }
 
-    const res = await apiAdmin.post(
+    const res = await auth.post(
       "/refershtoken",
       {},
       {

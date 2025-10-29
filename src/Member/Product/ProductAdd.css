@@ -28,11 +28,10 @@
 }
 .product-add form select {
   width: 20%;
-  height: 40px;
   outline: none;
   display: block;
   border: 1px solid rgb(157, 157, 157);
-  font-size: 17px;
+  font-size: 15px;
 }
 .product-add form .sale1 {
   font-size: 15px;

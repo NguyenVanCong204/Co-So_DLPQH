@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import apiAdmin from "../../API/apiAdmin";
 import { confirmDialog } from "../../component/confirmDialog";
 import { toast } from "react-toastify";
+import refershToken from "../../RefershToken/RefershToken";
 function ListCountry() {
   const token = localStorage.getItem("token");
   let config = {
@@ -46,7 +47,47 @@ function ListCountry() {
           SetErr({});
           SetName({ name: "" });
         })
-        .catch((error) => console.log(error));
+        .catch(async (error) => {
+          if (error.response) {
+            const status = error.response.status;
+            const message =
+              error.response.data?.error ||
+              error.response.data?.message ||
+              error.message;
+            if (status == 401) {
+              try {
+                const newtoken = await refershToken();
+                if (!newtoken) {
+                  return toast.error(
+                    "Không thể làm mới token. Vui lòng đăng nhập lại."
+                  );
+                }
+                let config = {
+                  headers: {
+                    Authorization: `Bearer ${newtoken}`,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json",
+                  },
+                };
+                const res2 = await apiAdmin.post("country", data, config);
+                toast.success(res2.data.message + " (sau khi refresh token)");
+                toast.success("Thêm country thành công");
+                getData();
+                SetErr({});
+                SetName({ name: "" });
+              } catch (refreshError) {
+                toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+                console.error(refreshError);
+              }
+            } else if (status === 403) {
+              toast.error(message);
+            } else {
+              toast.error("Lỗi khi delete: " + message);
+            }
+          } else {
+            toast.error("Không thể kết nối đến server: " + error.message);
+          }
+        });
     }
   }
   function updateCountry(id, name) {
@@ -73,7 +114,59 @@ function ListCountry() {
           id: "",
         });
       })
-      .catch((error) => console.log(error));
+      .catch(async (error) => {
+        if (error.response) {
+          const status = error.response.status;
+          const message =
+            error.response.data?.error ||
+            error.response.data?.message ||
+            error.message;
+          if (status == 401) {
+            try {
+              const newtoken = await refershToken();
+              if (!newtoken) {
+                return toast.error(
+                  "Không thể làm mới token. Vui lòng đăng nhập lại."
+                );
+              }
+              let config = {
+                headers: {
+                  Authorization: `Bearer ${newtoken}`,
+                  "Content-Type": "application/x-www-form-urlencoded",
+                  Accept: "application/json",
+                },
+              };
+              const res2 = await apiAdmin.put(
+                "/country/" + name.id,
+                data,
+                config
+              );
+              toast.success(res2.data.message + " (sau khi refresh token)");
+              SetCheckUpdate(true);
+              SetInput((states) =>
+                states.map((item) =>
+                  name.id === item._id
+                    ? { ...item, name: res2.data.data.name }
+                    : item
+                )
+              );
+              SetName({
+                name: "",
+                id: "",
+              });
+            } catch (refreshError) {
+              toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+              console.error(refreshError);
+            }
+          } else if (status === 403) {
+            toast.error(message);
+          } else {
+            toast.error("Lỗi khi delete: " + message);
+          }
+        } else {
+          toast.error("Không thể kết nối đến server: " + error.message);
+        }
+      });
   }
   async function deleteCountry(id) {
     const result = await confirmDialog({
@@ -88,9 +181,43 @@ function ListCountry() {
         toast.success(res.data.message);
         getData();
       })
-      .catch((error) => {
-        console.log(error);
-        toast.error(error.response.data.message);
+      .catch(async (error) => {
+        if (error.response) {
+          const status = error.response.status;
+          const message =
+            error.response.data?.error ||
+            error.response.data?.message ||
+            error.message;
+          if (status == 401) {
+            try {
+              const newtoken = await refershToken();
+              if (!newtoken) {
+                return toast.error(
+                  "Không thể làm mới token. Vui lòng đăng nhập lại."
+                );
+              }
+              let config = {
+                headers: {
+                  Authorization: `Bearer ${newtoken}`,
+                  "Content-Type": "application/x-www-form-urlencoded",
+                  Accept: "application/json",
+                },
+              };
+              const res2 = await apiAdmin.delete("/country/" + id, config);
+              toast.success(res2.data.message + " (sau khi refresh token)");
+              getData();
+            } catch (refreshError) {
+              toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+              console.error(refreshError);
+            }
+          } else if (status === 403) {
+            toast.error(message);
+          } else {
+            toast.error("Lỗi khi delete: " + message);
+          }
+        } else {
+          toast.error("Không thể kết nối đến server: " + error.message);
+        }
       });
   }
   function getData() {
