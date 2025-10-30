@@ -19,10 +19,10 @@ function HomeList() {
       getAllProduct();
     } else {
       apiMember
-        .get("member/user/product/search?name=" + search)
+        .get("/search/product?name=" + search)
         .then((res) => {
           console.log(res);
-          SetInput(res.data);
+          SetInput(res.data.data);
         })
         .catch((err) => {
           console.error(err);
@@ -77,10 +77,10 @@ function HomeList() {
   }, []);
   function getAllProduct() {
     apiMember
-      .get("member/user/product/getnewproduct")
+      .get("/product")
       .then((res) => {
         console.log(res);
-        SetInput(res.data);
+        SetInput(res.data.data);
       })
       .catch((err) => console.log(err));
   }
@@ -118,7 +118,7 @@ function HomeList() {
                 <h2>${value.price}</h2>
                 <p>{value.name}</p>
                 <a
-                  onClick={() => AddCart(value.id)}
+                  onClick={() => AddCart(value._id)}
                   className="btn btn-default add-to-cart"
                 >
                   <i className="fa fa-shopping-cart" />
@@ -130,14 +130,14 @@ function HomeList() {
                   <h2>${value.price}</h2>
                   <p>{value.name}</p>
                   <a
-                    onClick={() => AddCart(value.id)}
+                    onClick={() => AddCart(value._id)}
                     className="btn btn-default add-to-cart"
                   >
                     <i className="fa fa-shopping-cart" />
                     Add to cart
                   </a>
                   <Link
-                    to={`/member/home/product/detail/${value.id}`}
+                    to={`/member/home/product/detail/${value._id}`}
                     className="read_more_product"
                   >
                     ---Read More---

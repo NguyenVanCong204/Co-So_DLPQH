@@ -14,10 +14,10 @@ function ProductDetail() {
   const dispatch = useDispatch();
   let totallocal = useContext(MemberCartContext);
   useEffect(() => {
-    apiMember.get("member/user/product/getproduct/" + id).then((res) => {
-      SetInput(res.data);
-      if (res.data?.image) {
-        const avatar = JSON.parse(res.data.image);
+    apiMember.get("/product/" + id).then((res) => {
+      SetInput(res.data.data);
+      if (res.data?.data?.image) {
+        const avatar = JSON.parse(res.data.data.image);
         SetselectedImg(avatar[0]);
       }
     });
