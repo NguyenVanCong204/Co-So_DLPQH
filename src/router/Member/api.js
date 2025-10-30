@@ -5,8 +5,12 @@ import {
   getProduct,
   createProduct,
   upload as uploadProduct,
-  getProductById,
+  getProductByIdUser,
   deleteProduct,
+  getProductById,
+  updateProduct,
+  getProductCart,
+  searchProduct,
 } from "../../controllers/Member/productController.js";
 import {
   getUser,
@@ -21,6 +25,7 @@ import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
 
 router.get("/user/:id", getUser);
 router.put("/user/:id", upload, updateUser);
+router.get("/user/product/:id", getProductByIdUser);
 
 router.get("/country", getCountry);
 
@@ -28,6 +33,10 @@ router.post("/product", uploadProduct, createProduct);
 router.get("/product", getProduct);
 router.get("/product/:id", getProductById);
 router.delete("/product/:id", deleteProduct);
+router.put("/product/:id", uploadProduct, updateProduct);
+router.get("/search/product", searchProduct);
+
+router.post("/cart", getProductCart);
 
 router.get("/category", getCategory);
 
