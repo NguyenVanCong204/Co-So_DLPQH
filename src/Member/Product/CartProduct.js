@@ -20,16 +20,14 @@ function CartProduct() {
   const [input, SetInput] = useState([]);
   useEffect(() => {
     let tongQualtyCart = 0;
-    apiMember
-      .post("member/user/product/getproductcart", cartredux)
-      .then((res) => {
-        console.log(res.data);
-        SetInput(res.data);
-        res.data.map((value, index) => {
-          tongQualtyCart += value.price * value.qty;
-        });
-        SetAllQualtyCart(tongQualtyCart);
+    apiMember.post("/cart", cartredux).then((res) => {
+      console.log(res.data);
+      SetInput(res.data.data);
+      res.data.data.map((value, index) => {
+        tongQualtyCart += value.price * value.qty;
       });
+      SetAllQualtyCart(tongQualtyCart);
+    });
   }, [cartredux]);
   function removeQualtyCartProduct(id, qty) {
     dispatch(removeQualtyCart(id));
@@ -65,7 +63,7 @@ function CartProduct() {
               <div className="quantity-control">
                 <button
                   className="quantity-btn"
-                  onClick={() => removeQualtyCartProduct(value.id, value.qty)}
+                  onClick={() => removeQualtyCartProduct(value._id, value.qty)}
                 >
                   −
                 </button>
@@ -77,7 +75,7 @@ function CartProduct() {
                 />
                 <button
                   className="quantity-btn"
-                  onClick={() => addQualtyCartProduct(value.id, value.qty)}
+                  onClick={() => addQualtyCartProduct(value._id, value.qty)}
                 >
                   +
                 </button>
@@ -86,7 +84,7 @@ function CartProduct() {
           </div>
           <button className="add">Xác nhận</button>
           <button
-            onClick={() => removeFromCartProduct(value.id, value.qty)}
+            onClick={() => removeFromCartProduct(value._id, value.qty)}
             className="delete-cart"
           >
             Xóa

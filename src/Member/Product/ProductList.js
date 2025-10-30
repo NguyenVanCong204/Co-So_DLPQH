@@ -19,7 +19,7 @@ function ProductList() {
   const [input, SetInput] = useState([]);
   function getListProduct() {
     apiMember
-      .get("/product/" + idUser, config)
+      .get("user/product/" + idUser, config)
       .then((res) => {
         console.log(res.data);
         SetInput(res.data.data);
@@ -126,9 +126,9 @@ function ProductList() {
       return (
         <tr key={index}>
           <td>{index}</td>
+          <td>{value.name}</td>
           <td>{value.company}</td>
           <td>{value.detail}</td>
-          <td>{value.name}</td>
           <td>
             <img src={`http://localhost:3001/${image[0]}`}></img>
           </td>
@@ -158,9 +158,9 @@ function ProductList() {
           <thead>
             <tr>
               <th>Id</th>
+              <th>Name</th>
               <th>Company</th>
               <th>Detail</th>
-              <th>Name</th>
               <th>Image</th>
               <th>Sale</th>
               <th>Price</th>

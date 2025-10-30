@@ -3,8 +3,10 @@ import apiMember from "../../API/apiMember";
 import { useParams } from "react-router-dom";
 import refershToken from "../../RefershToken/RefershToken";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function ProductUpdate() {
+  const navigate = useNavigate();
   const [err, SetErr] = useState({});
   const [category, Setcategory] = useState([]);
   const [brand, Setbrand] = useState([]);
@@ -32,18 +34,19 @@ function ProductUpdate() {
   };
   function getData() {
     apiMember
-      .get("member/user/product/getproduct/" + id)
+      .get("/product/" + id)
       .then((res) => {
+        console.log(res.data.data);
         SetInput({
-          name: res.data.name,
-          price: res.data.price,
-          category: res.data.id_category,
-          brand: res.data.id_brand,
-          status: res.data.status,
-          sale: res.data.sale,
-          company: res.data.company,
-          detail: res.data.detail,
-          avatar: JSON.parse(res?.data?.image),
+          name: res.data.data.name,
+          price: res.data.data.price,
+          category: res.data.data.id_category,
+          brand: res.data.data.id_brand,
+          status: res.data.data.status,
+          sale: res.data.data.sale,
+          company: res.data.data.company,
+          detail: res.data.data.detail,
+          avatar: JSON.parse(res?.data?.data?.image),
         });
       })
       .catch((error) => {
@@ -52,15 +55,15 @@ function ProductUpdate() {
   }
   useEffect(() => {
     apiMember
-      .get("member/user/brand")
+      .get("/brand")
       .then((res) => {
-        Setbrand(res.data);
+        Setbrand(res.data.data);
       })
       .catch((error) => console.log(error));
     apiMember
-      .get("member/user/category")
+      .get("/category")
       .then((res) => {
-        Setcategory(res.data);
+        Setcategory(res.data.data);
       })
       .catch((error) => console.log(error));
 
@@ -153,64 +156,59 @@ function ProductUpdate() {
         data.append("image", value);
       });
       apiMember
-        .put("member/user/product/update/" + id, data, config)
+        .put("/product/" + id, data, config)
         .then((res) => {
-          console.log(res);
+          console.log(res.data.message);
           SetAvatarDelete([]);
           SetErr({});
           getData();
-          toast.success("Update sản phẩm thành công");
+          toast.success(res.data.message);
+          navigate("/member/account/product/list");
         })
         .catch(async (error) => {
-          if (error && error.response && error.response.status == 401) {
-            const tokenNew = await refershToken();
-            try {
-              let config = {
-                headers: {
-                  Authorization: `Bearer ${tokenNew}`,
-                  "Content-Type": "application/x-www-form-urlencoded",
-                  Accept: "application/json",
-                },
-              };
-              apiMember
-                .put("member/user/product/update/" + id, data, config)
-                .then((res) => {
-                  console.log(res);
-                  SetErr({});
-                  getData();
-                  SetAvatarDelete([]);
-                  toast.success(
-                    "Update sản phẩm thành công sau khi lấy token mới"
+          if (error.response) {
+            const status = error.response.status;
+            const message =
+              error.response.data?.error ||
+              error.response.data?.message ||
+              error.message;
+            if (status == 401) {
+              try {
+                const newtoken = await refershToken();
+                if (!newtoken) {
+                  return toast.error(
+                    "Không thể làm mới token. Vui lòng đăng nhập lại."
                   );
-                })
-                .catch((error) => {
-                  if (
-                    error &&
-                    error.response &&
-                    error.response.data &&
-                    error.response.data.error
-                  ) {
-                    console.log(
-                      error.response.data && error.response.data.error
-                    );
-                  } else {
-                    alert("Lỗi khi update product" + err.message);
-                    toast.error("Lỗi khi update product sản phẩm");
-                  }
-                });
-            } catch (error) {
-              toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
-              console.error(error);
+                }
+                let config = {
+                  headers: {
+                    Authorization: `Bearer ${newtoken}`,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    Accept: "application/json",
+                  },
+                };
+                const res2 = await apiMember.put(
+                  "/product/" + id,
+                  data,
+                  config
+                );
+                console.log(res2.data.message);
+                SetAvatarDelete([]);
+                SetErr({});
+                getData();
+                toast.success(res2.data.message);
+                navigate("/member/account/product/list");
+              } catch (refreshError) {
+                toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+                console.error(refreshError);
+              }
+            } else if (status === 403) {
+              toast.error(message);
+            } else {
+              toast.error("Lỗi khi delete: " + message);
             }
           } else {
-            if (
-              error &&
-              error.response &&
-              error.response.data &&
-              error.response.data.errors
-            ) {
-              console.log(error.response.data.errors);
-            }
+            toast.error("Không thể kết nối đến server: " + error.message);
           }
         });
     }
@@ -265,7 +263,7 @@ function ProductUpdate() {
           <option value="">---Chọn category---</option>
           {category.map((value, index) => {
             return (
-              <option key={index} value={value.id}>
+              <option key={index} value={value._id}>
                 {value.name}
               </option>
             );
@@ -276,7 +274,7 @@ function ProductUpdate() {
           <option value="">---Chọn brand---</option>
           {brand.map((value, index) => {
             return (
-              <option key={index} value={value.id}>
+              <option key={index} value={value._id}>
                 {value.name}
               </option>
             );

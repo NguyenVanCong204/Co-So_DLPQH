@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import apiMember from "../../API/apiMember";
-import auth from "../../API/auth";
 import { toast } from "react-toastify";
 import refershToken from "../../RefershToken/RefershToken";
 function UpdateMember() {
@@ -15,7 +14,6 @@ function UpdateMember() {
   });
   let iduser = localStorage.getItem("IdUser");
   let token = localStorage.getItem("token");
-  let tokenReferesh = localStorage.getItem("tokenReferesh");
   let config = {
     headers: {
       Authorization: `Bearer ${token}`,
