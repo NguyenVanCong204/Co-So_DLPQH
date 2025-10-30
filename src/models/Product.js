@@ -30,11 +30,23 @@ productSchema.statics.createProduct = async function (data) {
 productSchema.statics.getProduct = async function () {
   return await this.find();
 };
-productSchema.statics.getProductById = async function (userId) {
+productSchema.statics.getProductByIdUser = async function (userId) {
   return await this.find({ id_user: userId });
+};
+productSchema.statics.getProductById = async function (id) {
+  return await this.findOne({ _id: id });
 };
 productSchema.statics.deleteProduct = async function (id) {
   return await this.findOneAndDelete({ _id: id });
+};
+productSchema.statics.updateProduct = async function (id, data) {
+  return await this.findByIdAndUpdate(id, data, { new: true });
+};
+productSchema.statics.getProductCart = async function (ids) {
+  return await this.find({ _id: { $in: ids } });
+};
+productSchema.statics.searchProduct = async function (name) {
+  return await this.find({ name: { $regex: name, $options: "i" } });
 };
 const Product = mongoose.model("Product", productSchema);
 
