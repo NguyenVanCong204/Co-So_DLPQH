@@ -32,12 +32,10 @@ function UpdateMember() {
         SetCountry(res.data);
       })
       .catch((errors) => console.log(errors));
-  }, []);
-  useEffect(() => {
     getDataUser();
   }, []);
   function getDataUser() {
-    apiMember.get("/user/" + iduser).then((res) => {
+    apiMember.get("/user/" + iduser, config).then((res) => {
       console.log(res.data);
       SetInput({
         email: res.data.email,

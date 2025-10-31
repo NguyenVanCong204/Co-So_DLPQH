@@ -106,7 +106,7 @@ function ListBlog() {
           <td>{value.description}</td>
           <td>{value.title}</td>
           <td className="action_admin_blog">
-            <div className="action">
+            <div className="action1">
               <button>
                 <i
                   className="fa-solid fa-pen-to-square"

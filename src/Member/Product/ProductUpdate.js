@@ -34,7 +34,7 @@ function ProductUpdate() {
   };
   function getData() {
     apiMember
-      .get("/product/" + id)
+      .get("/product/" + id, config)
       .then((res) => {
         console.log(res.data.data);
         SetInput({

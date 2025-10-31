@@ -22,8 +22,9 @@ function CartProduct() {
     let tongQualtyCart = 0;
     apiMember.post("/cart", cartredux).then((res) => {
       console.log(res.data);
-      SetInput(res.data.data);
-      res.data.data.map((value, index) => {
+      const products = Array.isArray(res.data.data) ? res.data.data : [];
+      SetInput(products);
+      products.map((value, index) => {
         tongQualtyCart += value.price * value.qty;
       });
       SetAllQualtyCart(tongQualtyCart);
