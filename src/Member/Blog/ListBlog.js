@@ -7,10 +7,10 @@ function ListBlogMember() {
   const [input, SetInput] = useState([]);
   useEffect(() => {
     apiMember
-      .get("blog/getall")
+      .get("/blog")
       .then((res) => {
         console.log(res.data);
-        SetInput(res.data);
+        SetInput(res.data.data);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -25,7 +25,7 @@ function ListBlogMember() {
             <img src={`http://localhost:3001/${value.image}`}></img>
             <div>{value.description}</div>
             <button>
-              <a onClick={() => handleBlogDetail(value.id)}>Read more</a>
+              <a onClick={() => handleBlogDetail(value._id)}>Read more</a>
             </button>
           </div>
         </div>

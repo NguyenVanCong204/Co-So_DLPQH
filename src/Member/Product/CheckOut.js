@@ -16,6 +16,7 @@ function CheckOut() {
   let config = {
     headers: {
       Authorization: `Bearer ${token}`,
+      "Content-Type": "application/x-www-form-urlencoded",
       Accept: "application/json",
     },
   };
@@ -28,10 +29,11 @@ function CheckOut() {
   const user = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
     let tongQualtyCart = 0;
-    apiMember.post("member/user/product/getproductcart", cart).then((res) => {
+    apiMember.post("/cart", cart).then((res) => {
+      const products = Array.isArray(res.data.data) ? res.data.data : [];
       console.log(res.data);
-      SetInput(res.data);
-      res.data.map((value, index) => {
+      SetInput(products);
+      products.map((value, index) => {
         tongQualtyCart += value.price * value.qty;
       });
       SetAllQualtyCart(tongQualtyCart);
@@ -79,7 +81,7 @@ function CheckOut() {
               <a
                 className="cart_quantity_up"
                 href
-                onClick={() => addQualtyCartProduct(value.id, value.qty)}
+                onClick={() => addQualtyCartProduct(value._id, value.qty)}
               >
                 {" "}
                 +{" "}
@@ -95,7 +97,7 @@ function CheckOut() {
               <a
                 className="cart_quantity_down"
                 href
-                onClick={() => removeQualtyCartProduct(value.id, value.qty)}
+                onClick={() => removeQualtyCartProduct(value._id, value.qty)}
               >
                 {" "}
                 -{" "}
@@ -109,7 +111,7 @@ function CheckOut() {
             <a
               className="cart_quantity_delete"
               href
-              onClick={() => removeFromCartProduct(value.id, value.qty)}
+              onClick={() => removeFromCartProduct(value._id, value.qty)}
             >
               <i className="fa fa-times" />
             </a>
@@ -119,55 +121,71 @@ function CheckOut() {
     });
   }
   function Order() {
-    apiMember
-      .post("member/user/product/order", { user, cart }, config)
-      .then((res) => {
-        toast.success(res.data.message);
-        navigate("/member/home");
-      })
-      .catch(async (error) => {
-        if (error && error.response && error.response.status == 401) {
-          const tokenNew = await refershToken();
-          try {
-            let config = {
-              headers: {
-                Authorization: `Bearer ${tokenNew}`,
-                Accept: "application/json",
-              },
-            };
-            apiMember
-              .post("member/user/product/order", { user, cart }, config)
-              .then((res) => {
-                toast.success(res.data.message + "sau khi refesh token");
-                navigate("/member/home");
-              })
-              .catch((error) => {
-                if (
-                  error &&
-                  error.response &&
-                  error.response.data &&
-                  error.response.data.error
-                ) {
-                  console.log(error.response.data && error.response.data.error);
-                } else {
-                  console.log(error);
+    if (user) {
+      if (Object.keys(cart).length > 0) {
+        apiMember
+          .post("/order", { user, cart }, config)
+          .then((res) => {
+            toast.success(res.data.message);
+            navigate("/member/home");
+          })
+          .catch(async (error) => {
+            if (error.response) {
+              const status = error.response.status;
+              const data = error.response.data;
+              let message =
+                (typeof data?.error === "string" && data.error) ||
+                data?.error?.check ||
+                data?.message;
+              if (!message && data?.errors) {
+                const firstErrorKey = Object.keys(data.errors)[0];
+                message = data.errors[firstErrorKey];
+              }
+              if (!message) {
+                message = error.message || "Có lỗi xảy ra, vui lòng thử lại!";
+              }
+              if (status == 401) {
+                try {
+                  const newtoken = await refershToken();
+                  if (!newtoken) {
+                    return toast.error(
+                      "Không thể làm mới token. Vui lòng đăng nhập lại."
+                    );
+                  }
+                  let config = {
+                    headers: {
+                      Authorization: `Bearer ${newtoken}`,
+                      "Content-Type": "application/x-www-form-urlencoded",
+                      Accept: "application/json",
+                    },
+                  };
+                  const res2 = await apiMember.post(
+                    "/order",
+                    { user, cart },
+                    config
+                  );
+                  console.log(res2);
+                  toast.success(res2.data.data.message);
+                  navigate("/member/home");
+                } catch (refreshError) {
+                  toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+                  console.error(refreshError);
                 }
-              });
-          } catch (error) {
-            toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
-            console.error(error);
-          }
-        } else {
-          if (
-            error &&
-            error.response &&
-            error.response.data &&
-            error.response.data.errors
-          ) {
-            console.log(error.response.data.errors);
-          }
-        }
-      });
+              } else if (status === 403) {
+                toast.error(message);
+              } else {
+                toast.error(message);
+              }
+            } else {
+              toast.error("Không thể kết nối đến server: " + error.message);
+            }
+          });
+      } else {
+        toast.warn("Vui lòng thêm sản phẩm vào giỏ hàng");
+      }
+    } else {
+      toast.warn("Vui lòng đăng nhập");
+    }
   }
   return (
     <section id="cart_items">

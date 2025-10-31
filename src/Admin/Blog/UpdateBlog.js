@@ -128,7 +128,7 @@ function UpdateBlog() {
             } else if (status === 403) {
               toast.error(message);
             } else {
-              toast.error("Lỗi khi delete: " + message);
+              toast.error("Lỗi khi update: " + message);
             }
           } else {
             toast.error("Không thể kết nối đến server: " + error.message);

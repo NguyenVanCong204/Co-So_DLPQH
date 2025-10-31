@@ -23,18 +23,18 @@ function BlogDetail() {
   };
   function getDataBlog() {
     apiMember
-      .get("blog/getblog/" + id)
+      .get("/blog/" + id)
       .then((res) => {
-        SetInput(res.data);
+        SetInput(res.data.data);
         console.log(res.data);
       })
       .catch((error) => console.log(error));
   }
   function getDataComment() {
     apiMember
-      .get("member/user/getcomment/" + id)
+      .get("/comment/" + id)
       .then((res) => {
-        SetInputComment(res.data);
+        SetInputComment(res.data.data);
         console.log(res.data);
       })
       .catch((error) => console.log(error));
@@ -73,92 +73,88 @@ function BlogDetail() {
     SetcheckValueComment("");
   }
   function PostReplayComment(id_comment) {
-    if (commentreplay == "") {
-      toast.error("Vui lòng nhập comment");
-    } else {
-      if (user) {
-        const member = JSON.parse(user);
-        const image = JSON.parse(member.avatar);
+    const user = localStorage.getItem("user");
+    if (user) {
+      if (commentreplay == "") {
+        toast.error("Vui lòng nhập comment");
+      } else {
+        if (user) {
+          const member = JSON.parse(user);
+          const image = JSON.parse(member.avatar);
 
-        const data = {
-          id_blog: id,
-          id_user: member.id,
-          name_user: member.name,
-          level: levelreplay,
-          comment: commentreplay,
-          image_user: image[0],
-          id_comment: id_comment,
-        };
-        apiMember
-          .post("member/user/comment", data, config)
-          .then((res) => {
-            console.log(res);
-            toast.success("Comment thành công");
-            SetcheckValueComment("");
-            SetCommentReplay("");
-            getDataComment();
-          })
-          .catch(async (error) => {
-            if (error && error.response.status == 401) {
-              try {
-                const newtoken = await refershToken();
-                if (newtoken) {
-                  let config = {
-                    headers: {
-                      Authorization: `Bearer ${newtoken}`,
-                      "Content-Type": "application/x-www-form-urlencoded",
-                      Accept: "application/json",
-                    },
-                  };
-                  apiMember
-                    .post("member/user/comment", data, config)
-                    .then((res) => {
-                      toast.success(
-                        "Comment thành công sau khi refresh token!"
-                      );
-                      SetcheckValueComment("");
-                      SetCommentReplay("");
-                      console.log(comment);
-                      getDataComment();
-                    })
-                    .catch((error) => {
-                      if (
-                        error &&
-                        error.response &&
-                        error.response.data &&
-                        error.response.data.errors
-                      ) {
-                        console.log(error.response.data.errors);
-                      } else {
-                        toast.error("Lỗi khi comment: " + error.message);
-                      }
-                    });
-                } else {
-                  toast.error("Không thể làm mới token");
+          const data = {
+            id_blog: id,
+            id_user: member._id,
+            name_user: member.name,
+            level: levelreplay,
+            comment: commentreplay,
+            image_user: image[0],
+            id_comment: id_comment,
+          };
+          apiMember
+            .post("/comment", data, config)
+            .then((res) => {
+              console.log(res);
+              toast.success("Comment thành công");
+              SetcheckValueComment("");
+              SetCommentReplay("");
+              getDataComment();
+            })
+            .catch(async (error) => {
+              if (error.response) {
+                const status = error.response.status;
+                const data = error.response.data;
+                let message =
+                  (typeof data?.error === "string" && data.error) ||
+                  data?.error?.check ||
+                  data?.message;
+                if (!message && data?.errors) {
+                  const firstErrorKey = Object.keys(data.errors)[0];
+                  message = data.errors[firstErrorKey];
                 }
-              } catch (error) {
-                toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
-                console.error(error);
-              }
-            } else {
-              if (
-                error &&
-                error.response &&
-                error.response.data &&
-                error.response.data.errors
-              ) {
-                Object.values(error.response.data.errors).map(
-                  (value, index) => {
-                    toast.error(value);
+                if (!message) {
+                  message = error.message || "Có lỗi xảy ra, vui lòng thử lại!";
+                }
+                if (status == 401) {
+                  try {
+                    const newtoken = await refershToken();
+                    if (!newtoken) {
+                      return toast.error(
+                        "Không thể làm mới token. Vui lòng đăng nhập lại."
+                      );
+                    }
+                    let config = {
+                      headers: {
+                        Authorization: `Bearer ${newtoken}`,
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        Accept: "application/json",
+                      },
+                    };
+                    const res2 = await apiMember.post("/comment", data, config);
+                    console.log(res2);
+                    toast.success("Comment thành công");
+                    SetcheckValueComment("");
+                    SetCommentReplay("");
+                    getDataComment();
+                  } catch (refreshError) {
+                    toast.error(
+                      "Lỗi khi làm mới token. Vui lòng đăng nhập lại."
+                    );
+                    console.error(refreshError);
                   }
-                );
-                console.log(error.response.data.errors);
+                } else if (status === 403) {
+                  toast.error(message);
+                } else {
+                  toast.error(message);
+                }
               } else {
-                toast.error("Lỗi khi comment: " + error.message);
+                toast.error("Không thể kết nối đến server: " + error.message);
               }
-            }
-          });
+            });
+        }
       }
+    } else {
+      toast.warn("Vui lòng đăng nhập");
     }
   }
   function renderDataComment() {
@@ -190,18 +186,18 @@ function BlogDetail() {
                 <p>{value.comment}</p>
                 <a
                   className="btn btn-primary"
-                  onClick={() => SetValueComment(value.id)}
+                  onClick={() => SetValueComment(value._id)}
                 >
                   <i className="fa fa-reply" />
                   Replay
                 </a>
               </div>
-              {checkValueComment == value.id && ReplayComment(value.id)}
+              {checkValueComment == value._id && ReplayComment(value._id)}
             </li>
           )}
           {InputComment.map((value1, index) => {
             return (
-              value1.id_comment == value.id && (
+              value1.id_comment === value._id && (
                 <li className="media second-media">
                   <a className="pull-left" href="#">
                     <img
@@ -214,7 +210,7 @@ function BlogDetail() {
                     <ul className="sinlge-post-meta">
                       <li>
                         <i className="fa fa-user" />
-                        {value.name_user}
+                        {value1.name_user}
                       </li>
                       <li>
                         <i className="fa fa-clock" /> 1:33 pm
@@ -223,16 +219,16 @@ function BlogDetail() {
                         <i className="fa fa-calendar" /> DEC 5, 2013
                       </li>
                     </ul>
-                    <p>{value.comment}</p>
+                    <p>{value1.comment}</p>
                     <a
                       className="btn btn-primary"
-                      onClick={() => SetValueComment(value1.id)}
+                      onClick={() => SetValueComment(value1._id)}
                     >
                       <i className="fa fa-reply" />
                       Replay
                     </a>
                   </div>
-                  {checkValueComment == value1.id && ReplayComment(value.id)}
+                  {checkValueComment == value1._id && ReplayComment(value._id)}
                 </li>
               )
             );
@@ -260,89 +256,86 @@ function BlogDetail() {
     SetComment(value);
   }
   function handleComment() {
-    if (comment == "") {
-      toast.error("Vui lòng nhập comment");
-    } else {
-      if (user) {
-        const member = JSON.parse(user);
-        const image = JSON.parse(member.avatar);
+    const user = localStorage.getItem("user");
+    if (user) {
+      if (comment == "") {
+        toast.error("Vui lòng nhập comment");
+      } else {
+        if (user) {
+          const member = JSON.parse(user);
+          const image = JSON.parse(member.avatar);
 
-        const data = {
-          id_blog: id,
-          id_user: member.id,
-          name_user: member.name,
-          level: level,
-          comment: comment,
-          image_user: image[0],
-        };
-        apiMember
-          .post("member/user/comment", data, config)
-          .then((res) => {
-            console.log(res);
-            toast.success("Comment thành công");
-            SetComment("");
-            getDataComment();
-          })
-          .catch(async (error) => {
-            if (error && error.response.status == 401) {
-              try {
-                const newtoken = await refershToken();
-                if (newtoken) {
-                  let config = {
-                    headers: {
-                      Authorization: `Bearer ${newtoken}`,
-                      "Content-Type": "application/x-www-form-urlencoded",
-                      Accept: "application/json",
-                    },
-                  };
-                  apiMember
-                    .post("member/user/comment", data, config)
-                    .then((res) => {
-                      toast.success(
-                        "Comment thành công sau khi refresh token!"
-                      );
-                      getDataComment();
-                      SetComment("");
-                      console.log(comment);
-                    })
-                    .catch((error) => {
-                      if (
-                        error &&
-                        error.response &&
-                        error.response.data &&
-                        error.response.data.errors
-                      ) {
-                        console.log(error.response.data.errors);
-                      } else {
-                        toast.error("Lỗi khi comment: " + error.message);
-                      }
-                    });
-                } else {
-                  toast.error("Không thể làm mới token");
+          const data = {
+            id_blog: id,
+            id_user: member._id,
+            name_user: member.name,
+            level: level,
+            comment: comment,
+            image_user: image[0],
+          };
+          apiMember
+            .post("/comment", data, config)
+            .then((res) => {
+              console.log(res);
+              toast.success("Comment thành công");
+              SetComment("");
+              getDataComment();
+            })
+            .catch(async (error) => {
+              if (error.response) {
+                const status = error.response.status;
+                const data = error.response.data;
+                let message =
+                  (typeof data?.error === "string" && data.error) ||
+                  data?.error?.check ||
+                  data?.message;
+                if (!message && data?.errors) {
+                  const firstErrorKey = Object.keys(data.errors)[0];
+                  message = data.errors[firstErrorKey];
                 }
-              } catch (error) {
-                toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
-                console.error(error);
-              }
-            } else {
-              if (
-                error &&
-                error.response &&
-                error.response.data &&
-                error.response.data.errors
-              ) {
-                Object.values(error.response.data.errors).map(
-                  (value, index) => {
-                    toast.error(value);
+                if (!message) {
+                  message = error.message || "Có lỗi xảy ra, vui lòng thử lại!";
+                }
+                if (status == 401) {
+                  try {
+                    const newtoken = await refershToken();
+                    if (!newtoken) {
+                      return toast.error(
+                        "Không thể làm mới token. Vui lòng đăng nhập lại."
+                      );
+                    }
+                    let config = {
+                      headers: {
+                        Authorization: `Bearer ${newtoken}`,
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        Accept: "application/json",
+                      },
+                    };
+                    const res2 = await apiMember.post("/comment", data, config);
+                    console.log(res2);
+                    toast.success("Comment thành công");
+                    SetcheckValueComment("");
+                    SetCommentReplay("");
+                    getDataComment();
+                  } catch (refreshError) {
+                    toast.error(
+                      "Lỗi khi làm mới token. Vui lòng đăng nhập lại."
+                    );
+                    console.error(refreshError);
                   }
-                );
-                console.log(error.response.data.errors);
+                } else if (status === 403) {
+                  toast.error(message);
+                } else {
+                  toast.error(message);
+                }
               } else {
-                toast.error("Lỗi khi comment: " + error.message);
+                toast.error("Không thể kết nối đến server: " + error.message);
               }
-            }
-          });
+            });
+        }
       }
+    } else {
+      toast.warn("Vui lòng đăng nhập");
     }
   }
   return (
