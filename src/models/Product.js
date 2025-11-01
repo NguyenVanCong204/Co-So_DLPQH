@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import Category from "./Category.js";
+import Brand from "./Brand.js";
+import User from "./User.js";
 
 const productSchema = new mongoose.Schema({
   id_category: {
@@ -24,6 +27,30 @@ const productSchema = new mongoose.Schema({
   detail: String,
   company: String,
 });
+productSchema.statics.checkCategory = async function (id_category) {
+  const category = await Category.findById(id_category);
+  const error = {};
+  if (!category) {
+    error.category = "Loại sản phẩm không tồn tại trong hệ thống";
+  }
+  return error;
+};
+productSchema.statics.checkBrand = async function (id_brand) {
+  const brand = await Brand.findById(id_brand);
+  const error = {};
+  if (!brand) {
+    error.brand = "Thương hiệu không tồn tại trong hệ thống";
+  }
+  return error;
+};
+productSchema.statics.checkUser = async function (id_user) {
+  const user = await User.findById(id_user);
+  const error = {};
+  if (!user) {
+    error.user = "Người dùng không tồn tại trong hệ thống";
+  }
+  return error;
+};
 productSchema.statics.createProduct = async function (data) {
   return await this.create(data);
 };

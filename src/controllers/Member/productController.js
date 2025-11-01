@@ -68,8 +68,19 @@ export const createProduct = async (req, res) => {
     const files = req.files;
     data.image = files ? files.map((f) => f.path) : [];
     const err = productValidation(data, files);
-    if (Object.keys(err).length > 0) {
-      return res.status(400).json({ errors: err });
+    const [errUser, errBrand, errCategory] = await Promise.all([
+      Product.checkUser(data.id_user),
+      Product.checkBrand(data.id_brand),
+      Product.checkCategory(data.id_category),
+    ]);
+    if (Object.keys(errCategory).length > 0) {
+      return res.status(404).json({
+        error: errCategory,
+      });
+    }
+    const notFoundErrors = { ...errUser, ...errBrand, ...errCategory };
+    if (Object.keys(notFoundErrors).length > 0) {
+      return res.status(404).json({ errors: notFoundErrors });
     }
     data.image = JSON.stringify(data.image);
     const product = await Product.createProduct(data);
@@ -119,6 +130,15 @@ export const updateProduct = async (req, res) => {
   const data = req.body;
   const files = req.files ? req.files : [];
   const err = UpdateProductValidation(data, files);
+  const [errUser, errBrand, errCategory] = await Promise.all([
+    Product.checkUser(data.id_user),
+    Product.checkBrand(data.id_brand),
+    Product.checkCategory(data.id_category),
+  ]);
+  const notFoundErrors = { ...errUser, ...errBrand, ...errCategory };
+  if (Object.keys(notFoundErrors).length > 0) {
+    return res.status(404).json({ errors: notFoundErrors });
+  }
   if (Object.keys(err).length > 0) {
     return res.status(400).json({ errors: err });
   } else {

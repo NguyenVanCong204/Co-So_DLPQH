@@ -19,12 +19,20 @@ export const createComment = async (req, res) => {
   try {
     const data = req.body;
     const err = await Comment.checkMemberComment(data.id_blog, data.id_user);
+    const [errUser, errBlog] = await Promise.all([
+      Comment.checkUser(data.id_user),
+      Comment.checkBlog(data.id_blog),
+    ]);
+    const notFoundErrors = { ...errUser, ...errBlog };
     if (Object.keys(err).length > 0) {
       return res.status(400).json({ error: err });
     }
     const errdata = CreateCommentValidation(data);
     if (Object.keys(errdata).length > 0) {
       return res.status(400).json({ errors: errdata });
+    }
+    if (Object.keys(notFoundErrors).length > 0) {
+      return res.status(404).json({ errors: notFoundErrors });
     }
     const comment = await Comment.createComment(data);
     return res.status(200).json({

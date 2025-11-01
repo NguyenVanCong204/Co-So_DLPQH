@@ -28,7 +28,7 @@ userSchema.statics.checkEmail = async function (email) {
   }
   return error;
 };
-userSchema.static.checkCountry = async function (id_country) {
+userSchema.statics.checkCountry = async function (id_country) {
   const country = await Country.findById(id_country);
   const error = {};
   if (!country) {
