@@ -1,5 +1,5 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import apiMember from "../../API/apiMember";
 import refershToken from "../../RefershToken/RefershToken";
 import { Link } from "react-router-dom";
@@ -9,6 +9,7 @@ import("./ProductList.css");
 function ProductList() {
   const token = localStorage.getItem("token");
   const idUser = localStorage.getItem("IdUser");
+  const calledOnce = useRef(false);
   let config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -55,16 +56,19 @@ function ProductList() {
               console.error(refreshError);
             }
           } else if (status === 403) {
-            toast.error(message);
+            return toast.error(message);
           } else {
-            toast.error("Lỗi khi delete: " + message);
+            console.log(message);
+            return toast.warning(message);
           }
         } else {
-          toast.error("Không thể kết nối đến server: " + error.message);
+          return error("Không thể kết nối đến server: " + error.message);
         }
       });
   }
   useEffect(() => {
+    if (calledOnce.current) return;
+    calledOnce.current = true;
     getListProduct();
   }, []);
   async function deleteProduct(id) {

@@ -128,16 +128,19 @@ function RegisterMember() {
           navigate("/");
         })
         .catch((error) => {
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.errors
-          ) {
+          if (error.response && error.response.data) {
+            const errors = error.response.data.errors;
+            const error = error.response.data.error;
             errAll.api = error.response.data.errors;
             console.log(error.response.data.errors);
-            Object.values(error.response.data.errors).map((value, index) => {
-              toast.error(value);
-            });
+            if (errors) {
+              Object.values(errors).map((value, index) => {
+                toast.error(value);
+              });
+              if (error) {
+                toast.error(error.id_country);
+              }
+            }
             SetErr(errAll);
           } else {
             console.error("Lỗi không xác định:", error);

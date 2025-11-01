@@ -135,6 +135,7 @@ function ProductAdd() {
             const status = error.response.status;
             const message =
               error.response.data?.error ||
+              error.response.data?.errors ||
               error.response.data?.message ||
               error.message;
             if (status == 401) {
@@ -165,7 +166,15 @@ function ProductAdd() {
             } else if (status === 403) {
               toast.error(message);
             } else {
-              toast.error("Lỗi khi delete: " + message);
+              if (typeof message === "object" && message !== null) {
+                const keys = Object.keys(message);
+                if (keys.length > 0) {
+                  const firstKey = keys[0];
+                  toast.error("Lỗi khi thêm: " + message[firstKey]);
+                }
+              } else {
+                toast.error("Lỗi khi thêm: " + message);
+              }
             }
           } else {
             toast.error("Không thể kết nối đến server: " + error.message);
