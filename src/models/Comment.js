@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Blog from "./Blog.js";
+import User from "./User.js";
 
 const commentSchema = new mongoose.Schema({
   id_blog: {
@@ -39,6 +41,22 @@ commentSchema.statics.checkMemberComment = async function (id_blog, id_user) {
     err.system = "Lỗi hệ thống khi kiểm tra comment";
   }
   return err;
+};
+commentSchema.statics.checkBlog = async function (id_blog) {
+  const blog = await Blog.findById(id_blog);
+  const error = {};
+  if (!blog) {
+    error.blog = "Bài viết không tồn tại trong hệ thống";
+  }
+  return error;
+};
+commentSchema.statics.checkUser = async function (id_user) {
+  const user = await User.findById(id_user);
+  const error = {};
+  if (!user) {
+    error.user = "Quốc gia không tồn tại trong hệ thống";
+  }
+  return error;
 };
 commentSchema.statics.getComment = async function (id) {
   return await this.find({ id_blog: id });
