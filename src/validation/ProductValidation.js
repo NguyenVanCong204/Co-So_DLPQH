@@ -21,6 +21,12 @@ const productValidation = (data, file) => {
   if (!data.company) {
     err.company = "Thiếu company";
   }
+  if (!data.qualty) {
+    err.qualty = "Thiếu qualty";
+  }
+  if (data.qualty <= 0) {
+    err.qualty = "Số lượng phải lớn hơn 0";
+  }
   if (file.length == 0) {
     err.avatar = "Vui lòng upload avatar";
   }

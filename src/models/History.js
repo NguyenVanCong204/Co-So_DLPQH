@@ -11,6 +11,11 @@ const historySchema = new mongoose.Schema({
     require: true,
   },
   qualty: { type: Number },
+  status: {
+    type: Number,
+    require: true,
+    default: 0,
+  },
 });
 historySchema.statics.createHistory = async function (data) {
   return await this.create(data);

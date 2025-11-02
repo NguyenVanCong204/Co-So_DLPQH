@@ -73,9 +73,9 @@ export const createProduct = async (req, res) => {
       Product.checkBrand(data.id_brand),
       Product.checkCategory(data.id_category),
     ]);
-    if (Object.keys(errCategory).length > 0) {
-      return res.status(404).json({
-        error: errCategory,
+    if (Object.keys(err).length > 0) {
+      return res.status(400).json({
+        errors: err,
       });
     }
     const notFoundErrors = { ...errUser, ...errBrand, ...errCategory };
