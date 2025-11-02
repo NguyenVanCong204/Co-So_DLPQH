@@ -18,6 +18,7 @@ function ProductAdd() {
     sale: "0",
     company: "",
     detail: "",
+    qualty: "",
     avatar: [],
   });
   const token = localStorage.getItem("token");
@@ -73,6 +74,10 @@ function ProductAdd() {
       errAll.brand = "Vui lòng nhập brand";
       check = false;
     }
+    if (input.qualty === "") {
+      errAll.qualty = "Vui lòng nhập qualty";
+      check = false;
+    }
     if (input.status === "") {
       errAll.status = "Vui lòng chọn status";
       check = false;
@@ -119,6 +124,7 @@ function ProductAdd() {
       data.append("sale", input.sale);
       data.append("detail", input.detail);
       data.append("company", input.company);
+      data.append("qualty", input.qualty);
       input.avatar.map((value, index) => {
         data.append("image", value);
       });
@@ -241,6 +247,13 @@ function ProductAdd() {
           onChange={handleChangInput}
         ></input>
         <p>{err.company}</p>
+        <input
+          placeholder="Qualty"
+          type="text"
+          name="qualty"
+          onChange={handleChangInput}
+        ></input>
+        <p>{err.qualty}</p>
         <input
           type="file"
           multiple
