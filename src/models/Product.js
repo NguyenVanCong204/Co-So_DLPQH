@@ -26,6 +26,10 @@ const productSchema = new mongoose.Schema({
   sale: Number,
   detail: String,
   company: String,
+  qualty: {
+    type: Number,
+    require: true,
+  },
 });
 productSchema.statics.checkCategory = async function (id_category) {
   const category = await Category.findById(id_category);
