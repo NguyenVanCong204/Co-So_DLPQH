@@ -14,6 +14,7 @@ function ProductUpdate() {
   const [avatarNew, SetAvatarNew] = useState([]);
   const token = localStorage.getItem("token");
   const { id } = useParams();
+  const idUser = localStorage.getItem("IdUser");
   const [input, SetInput] = useState({
     name: "",
     price: "",
@@ -23,6 +24,7 @@ function ProductUpdate() {
     sale: "0",
     company: "",
     detail: "",
+    qualty: "",
     avatar: [],
   });
   let config = {
@@ -45,6 +47,7 @@ function ProductUpdate() {
           status: res.data.data.status,
           sale: res.data.data.sale,
           company: res.data.data.company,
+          qualty: res.data.data.qualty,
           detail: res.data.data.detail,
           avatar: JSON.parse(res?.data?.data?.image),
         });
@@ -99,6 +102,10 @@ function ProductUpdate() {
       errAll.brand = "Vui lòng nhập brand";
       check = false;
     }
+    if (input.qualty === "") {
+      errAll.qualty = "Vui lòng nhập qualty";
+      check = false;
+    }
     if (input.status === "") {
       errAll.status = "Vui lòng chọn status";
       check = false;
@@ -136,6 +143,7 @@ function ProductUpdate() {
       SetErr(errAll);
     } else {
       const data = new FormData();
+      data.append("id_user", idUser);
       data.append("id_category", input.category);
       data.append("id_brand", input.brand);
       data.append("name", input.name);
@@ -149,6 +157,7 @@ function ProductUpdate() {
       }
       data.append("detail", input.detail);
       data.append("company", input.company);
+      data.append("qualty", input.qualty);
       avatarDelete.map((value, index) => {
         data.append("imageDelete", value);
       });
@@ -315,6 +324,14 @@ function ProductUpdate() {
           type="text"
           name="company"
           value={input.company}
+          onChange={handleChangInput}
+        ></input>
+        <p>{err.company}</p>
+        <input
+          placeholder="Qualty"
+          type="text"
+          name="qualty"
+          value={input.qualty}
           onChange={handleChangInput}
         ></input>
         <p>{err.company}</p>
