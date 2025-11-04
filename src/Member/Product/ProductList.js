@@ -20,7 +20,7 @@ function ProductList() {
   const [input, SetInput] = useState([]);
   function getListProduct() {
     apiMember
-      .get("user/product/" + idUser, config)
+      .get("/product")
       .then((res) => {
         console.log(res.data);
         SetInput(res.data.data);
@@ -47,7 +47,7 @@ function ProductList() {
                   Accept: "application/json",
                 },
               };
-              const res2 = await apiMember.get("/product/" + idUser, config);
+              const res2 = await apiMember.get("/product", config);
               toast.success(res2.data.message + " (sau khi refresh token)");
               console.log(res2.data);
               SetInput(res2.data.data);

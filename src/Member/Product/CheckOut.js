@@ -123,6 +123,8 @@ function CheckOut() {
   function Order() {
     if (user) {
       if (Object.keys(cart).length > 0) {
+        console.log(user);
+        console.log(cart);
         apiMember
           .post("/order", { user, cart }, config)
           .then((res) => {
@@ -132,18 +134,10 @@ function CheckOut() {
           .catch(async (error) => {
             if (error.response) {
               const status = error.response.status;
-              const data = error.response.data;
-              let message =
-                (typeof data?.error === "string" && data.error) ||
-                data?.error?.check ||
-                data?.message;
-              if (!message && data?.errors) {
-                const firstErrorKey = Object.keys(data.errors)[0];
-                message = data.errors[firstErrorKey];
-              }
-              if (!message) {
-                message = error.message || "Có lỗi xảy ra, vui lòng thử lại!";
-              }
+              const message =
+                error.response.data?.error ||
+                error.response.data?.message ||
+                error.message;
               if (status == 401) {
                 try {
                   const newtoken = await refershToken();
@@ -174,7 +168,15 @@ function CheckOut() {
               } else if (status === 403) {
                 toast.error(message);
               } else {
-                toast.error(message);
+                if (typeof message === "object" && message !== null) {
+                  const keys = Object.keys(message);
+                  if (keys.length > 0) {
+                    const firstKey = keys[0];
+                    toast.error("Lỗi khi đặt hàng: " + message[firstKey]);
+                  }
+                } else {
+                  toast.error("Lỗi khi đặt hàng: " + message);
+                }
               }
             } else {
               toast.error("Không thể kết nối đến server: " + error.message);

@@ -129,17 +129,20 @@ function RegisterMember() {
         })
         .catch((error) => {
           if (error.response && error.response.data) {
-            const errors = error.response.data.errors;
-            const error = error.response.data.error;
-            errAll.api = error.response.data.errors;
-            console.log(error.response.data.errors);
-            if (errors) {
-              Object.values(errors).map((value, index) => {
-                toast.error(value);
-              });
-              if (error) {
-                toast.error(error.id_country);
+            const message =
+              error.response.data?.error ||
+              error.response.data?.errors ||
+              error.response.data?.message ||
+              error.message;
+            console.log(error);
+            if (typeof message === "object" && message !== null) {
+              const keys = Object.keys(message);
+              if (keys.length > 0) {
+                const firstKey = keys[0];
+                toast.error("Lỗi khi đăng kí : " + message[firstKey]);
               }
+            } else {
+              toast.error("Lỗi khi đăng kí : " + message);
             }
             SetErr(errAll);
           } else {

@@ -126,14 +126,22 @@ function RegisterTest() {
           console.log(res);
         })
         .catch((error) => {
-          if (
-            error.response &&
-            error.response.data &&
-            error.response.data.errors
-          ) {
-            errAll.api = error.response.data.errors;
-            console.log(error.response.data.errors);
-            toast.error(error.response.data.errors);
+          if (error.response && error.response.data) {
+            const message =
+              error.response.data?.error ||
+              error.response.data?.errors ||
+              error.response.data?.message ||
+              error.message;
+            console.log(error);
+            if (typeof message === "object" && message !== null) {
+              const keys = Object.keys(message);
+              if (keys.length > 0) {
+                const firstKey = keys[0];
+                toast.error("Lỗi khi đăng kí : " + message[firstKey]);
+              }
+            } else {
+              toast.error("Lỗi khi đăng kí : " + message);
+            }
             SetErr(errAll);
           } else {
             console.error("Lỗi không xác định:", error);
