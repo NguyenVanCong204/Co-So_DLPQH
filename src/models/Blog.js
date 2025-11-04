@@ -1,12 +1,16 @@
 import mongoose from "mongoose";
 import Comment from "./Comment.js";
+import mongooseDelete from "mongoose-delete";
 
-const blogSchema = new mongoose.Schema({
-  title: { type: String, unique: true },
-  image: String,
-  description: String,
-  content: { type: String },
-});
+const blogSchema = new mongoose.Schema(
+  {
+    title: { type: String, unique: true },
+    image: String,
+    description: String,
+    content: { type: String },
+  },
+  { timestamps: true }
+);
 
 blogSchema.statics.createBlog = async function (data) {
   return await this.create(data);
@@ -20,14 +24,15 @@ blogSchema.statics.getBlogbyId = async function (id) {
 blogSchema.statics.updateBlog = async function (id, data) {
   return await this.findByIdAndUpdate(id, data, { new: true });
 };
-blogSchema.pre("findOneAndDelete", async function (next) {
-  const blogId = this.getQuery()["_id"];
-  await Comment.deleteMany({ id_blog: blogId });
-  next();
-});
 blogSchema.statics.deleteBlog = async function (id) {
-  return await this.findOneAndDelete({ _id: id });
+  const deleteBlog = await this.delete({ _id: id });
+  if (!deleteBlog) return;
+  return await Comment.delete({ id_blog: id });
 };
+blogSchema.plugin(mongooseDelete, {
+  deletedAt: true,
+  overrideMethods: "all",
+});
 const Blog = mongoose.model("Blog", blogSchema);
 
 export default Blog;

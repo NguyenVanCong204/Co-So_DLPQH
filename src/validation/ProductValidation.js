@@ -6,9 +6,6 @@ const productValidation = (data, file) => {
   if (!data.id_brand) {
     err.brand = "Thiếu brand";
   }
-  if (!data.id_user) {
-    err.user = "Thiếu user";
-  }
   if (!data.name) {
     err.category = "Thiếu name";
   }

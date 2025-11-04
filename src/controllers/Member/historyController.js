@@ -8,7 +8,10 @@ export const createHistory = async (req, res) => {
     const { user, cart } = req.body;
     const ids = Object.keys(cart);
     const products = await Product.getProductCart(ids);
-
+    const errUser = await History.checkUser(user._id);
+    if (Object.keys(errUser).length > 0) {
+      return res.status(404).json({ error: errUser });
+    }
     const err = CreateHistoryValidation(user, products, cart);
     if (Object.keys(err).length > 0) {
       return res.status(400).json({ errors: err });
@@ -27,11 +30,9 @@ export const createHistory = async (req, res) => {
     await Promise.all(
       products.map((value) =>
         History.createHistory({
-          email: user.email,
-          phone: user.phone,
-          name: value.name,
+          id_product: value._id,
           price: value.price,
-          id_user: user.id,
+          id_user: user._id,
           qualty: cart[value.id],
         })
       )

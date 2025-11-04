@@ -1,28 +1,32 @@
 import mongoose from "mongoose";
 import Blog from "./Blog.js";
 import User from "./User.js";
+import mongooseDelete from "mongoose-delete";
 
-const commentSchema = new mongoose.Schema({
-  id_blog: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Blog",
-    require: true,
+const commentSchema = new mongoose.Schema(
+  {
+    id_blog: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Blog",
+      required: true,
+    },
+    id_user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    name_user: String,
+    level: { type: Number },
+    comment: String,
+    image_user: { type: String },
+    id_comment: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+      default: null,
+    },
   },
-  id_user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    require: true,
-  },
-  name_user: String,
-  level: { type: Number },
-  comment: String,
-  image_user: { type: String },
-  id_comment: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Comment",
-    default: null,
-  },
-});
+  { timestamps: true }
+);
 commentSchema.statics.createComment = async function (data) {
   return await this.create(data);
 };
@@ -61,6 +65,10 @@ commentSchema.statics.checkUser = async function (id_user) {
 commentSchema.statics.getComment = async function (id) {
   return await this.find({ id_blog: id });
 };
+commentSchema.plugin(mongooseDelete, {
+  deletedAt: true,
+  overrideMethods: "all",
+});
 const Comment = mongoose.model("Comment", commentSchema);
 
 export default Comment;

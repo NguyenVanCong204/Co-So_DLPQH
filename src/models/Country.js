@@ -1,26 +1,36 @@
 import mongoose from "mongoose";
 import User from "./User.js";
+import Comment from "./Comment.js";
+import mongooseDelete from "mongoose-delete";
 
-const countrySchema = new mongoose.Schema({
-  name: { type: String, required: true },
-});
+const countrySchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+  },
+  { timestamps: true }
+);
 countrySchema.statics.createCountry = async function (data) {
   return await this.create(data);
 };
 countrySchema.statics.getCountry = async function () {
   return await this.find();
 };
-countrySchema.pre("findOneAndDelete", async function (next) {
-  const countryId = this.getQuery()["_id"];
-  await User.deleteMany({ id_country: countryId });
-  next();
-});
 countrySchema.statics.deleteCountry = async function (id) {
-  return await this.findOneAndDelete({ _id: id });
+  const deletedCountry = await this.delete({ _id: id });
+  if (!deletedCountry) return;
+  const users = await User.find({ id_country: id });
+  const userIds = users.map((u) => u._id);
+
+  await User.delete({ id_country: id });
+
+  return await Comment.delete({ id_user: { $in: userIds } });
 };
 countrySchema.statics.updateCountry = async function (id, data) {
   return await this.findByIdAndUpdate(id, data, { new: true });
 };
-
+countrySchema.plugin(mongooseDelete, {
+  deletedAt: true,
+  overrideMethods: "all",
+});
 const Country = mongoose.model("Country", countrySchema);
 export default Country;
