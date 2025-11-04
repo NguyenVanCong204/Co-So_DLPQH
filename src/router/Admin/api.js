@@ -28,19 +28,15 @@ router.get("/country", getCountry);
 router.post("/brand", createBrand);
 router.post("/category", createCategory);
 
-//middleware
 router.use(requireAuth, authorize(1));
 
-//user
 router.put("/user/:id", upload, updateUser);
 router.get("/user/:id", getUser);
 
-//country
 router.post("/country", createCountry);
 router.delete("/country/:id", deleteCountry);
 router.put("/country/:id", updateCountry);
 
-//blog
 router.post("/blog", uploadBlog, createBlog);
 router.get("/blog", getBlog);
 router.get("/blog/:id", getBlogbyId);

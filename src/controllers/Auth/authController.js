@@ -47,7 +47,7 @@ export const createUser = async (req, res) => {
     return res.status(400).json({ errors: err });
   }
   if (Object.keys(errEmail).length > 0) {
-    return res.status(400).json({ errors: errEmail });
+    return res.status(400).json({ error: errEmail });
   }
   if (Object.keys(errCountry).length > 0) {
     return res.status(400).json({ error: errCountry });

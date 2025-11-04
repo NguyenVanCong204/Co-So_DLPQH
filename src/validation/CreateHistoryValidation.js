@@ -1,15 +1,8 @@
 const CreateHistoryValidation = (user, products, cart) => {
   const err = {};
-  if (!user.email) {
-    err.email = "Thiếu email";
-  }
-  if (!user.phone) {
-    err.phone = "Thiếu phone";
-  }
   if (!user._id) {
     err.id_user = "Thiếu id_user";
   }
-
   if (!cart || Object.keys(cart).length == 0) {
     err.cart = "Giỏ hàng trống";
   }

@@ -5,7 +5,6 @@ import {
   getProduct,
   createProduct,
   upload as uploadProduct,
-  getProductByIdUser,
   deleteProduct,
   getProductById,
   updateProduct,
@@ -32,6 +31,7 @@ import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
 
 router.get("/product", getProduct);
 router.get("/search/product", searchProduct);
+router.get("/product/:id", getProductById);
 
 router.get("/country", getCountry);
 
@@ -49,10 +49,8 @@ router.use(requireAuth, authorize(0));
 
 router.get("/user/:id", getUser);
 router.put("/user/:id", upload, updateUser);
-router.get("/user/product/:id", getProductByIdUser);
 
 router.post("/product", uploadProduct, createProduct);
-router.get("/product/:id", getProductById);
 router.delete("/product/:id", deleteProduct);
 router.put("/product/:id", uploadProduct, updateProduct);
 

@@ -37,10 +37,10 @@ export const upload = multer({
   storage,
   fileFilter,
 }).array("image", 3);
-export const getProductByIdUser = async (req, res) => {
+
+export const getProduct = async (req, res) => {
   try {
-    const id = req.params.id;
-    const product = await Product.getProductByIdUser(id);
+    const product = await Product.getProduct();
     if (!product || product.length === 0) {
       return res.status(404).json({
         message: "Bạn chưa có Product nào !",
@@ -56,20 +56,13 @@ export const getProductByIdUser = async (req, res) => {
     });
   }
 };
-export const getProduct = async (req, res) => {
-  const product = await Product.getProduct();
-  return res.status(200).json({
-    data: product,
-  });
-};
 export const createProduct = async (req, res) => {
   try {
     const data = req.body;
     const files = req.files;
     data.image = files ? files.map((f) => f.path) : [];
     const err = productValidation(data, files);
-    const [errUser, errBrand, errCategory] = await Promise.all([
-      Product.checkUser(data.id_user),
+    const [errBrand, errCategory] = await Promise.all([
       Product.checkBrand(data.id_brand),
       Product.checkCategory(data.id_category),
     ]);
@@ -78,7 +71,7 @@ export const createProduct = async (req, res) => {
         errors: err,
       });
     }
-    const notFoundErrors = { ...errUser, ...errBrand, ...errCategory };
+    const notFoundErrors = { ...errBrand, ...errCategory };
     if (Object.keys(notFoundErrors).length > 0) {
       return res.status(404).json({ errors: notFoundErrors });
     }
@@ -130,12 +123,11 @@ export const updateProduct = async (req, res) => {
   const data = req.body;
   const files = req.files ? req.files : [];
   const err = UpdateProductValidation(data, files);
-  const [errUser, errBrand, errCategory] = await Promise.all([
-    Product.checkUser(data.id_user),
+  const [errBrand, errCategory] = await Promise.all([
     Product.checkBrand(data.id_brand),
     Product.checkCategory(data.id_category),
   ]);
-  const notFoundErrors = { ...errUser, ...errBrand, ...errCategory };
+  const notFoundErrors = { ...errBrand, ...errCategory };
   if (Object.keys(notFoundErrors).length > 0) {
     return res.status(404).json({ errors: notFoundErrors });
   }

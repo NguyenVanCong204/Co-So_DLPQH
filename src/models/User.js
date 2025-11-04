@@ -1,21 +1,25 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import Country from "./Country.js";
+import mongooseDelete from "mongoose-delete";
 
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String,
-  phone: String,
-  address: String,
-  id_country: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Country",
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    name: String,
+    email: { type: String, unique: true },
+    password: String,
+    phone: String,
+    address: String,
+    id_country: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Country",
+      required: true,
+    },
+    avatar: String,
+    level: { type: Number, default: 1 },
   },
-  avatar: String,
-  level: { type: Number, default: 1 },
-});
+  { timestamps: true }
+);
 
 userSchema.statics.createUser = async function (data) {
   return await this.create(data);
@@ -54,6 +58,9 @@ userSchema.statics.checkLoginUser = async function (data) {
 userSchema.statics.updateUser = async function (id, data) {
   return await this.findByIdAndUpdate(id, data, { new: true });
 };
-
+userSchema.plugin(mongooseDelete, {
+  deletedAt: true,
+  overrideMethods: "all",
+});
 const User = mongoose.model("User", userSchema);
 export default User;
