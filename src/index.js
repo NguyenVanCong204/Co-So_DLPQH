@@ -53,6 +53,7 @@ root.render(
             element={<ProductUpdate />}
           />
           <Route path="/member/home" element={<HomeList />} />
+          <Route path="/member/category/:categoryId" element={<HomeList />} />
           <Route
             path="/member/home/product/detail/:id"
             element={<ProductDetail />}
