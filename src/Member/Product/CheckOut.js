@@ -1,22 +1,28 @@
 import { useContext, useEffect, useState } from "react";
 import apiMember from "../../API/apiMember";
+import { resetCartRedux } from "../../features/cart/Cart";
+import { resetCartSlider } from "../../features/cart/CartSlider";
 import { useSelector, useDispatch } from "react-redux";
 import refershToken from "../../RefershToken/RefershToken";
-import {
-  removeFromCart,
-  addQualtyCart,
-  removeQualtyCart,
-} from "../../features/cart/Cart";
 import MemberCartContext from "../../Context/MemberCartContext";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import "./CheckOut.css";
+
+function formatPrice(price) {
+  if (!price) return "";
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(price);
+}
 
 function CheckOut() {
   const token = localStorage.getItem("token");
   let config = {
     headers: {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
       Accept: "application/json",
     },
   };
@@ -26,100 +32,77 @@ function CheckOut() {
   const dispatch = useDispatch();
   const [AllQualtyCart, SetAllQualtyCart] = useState(0);
   const [input, SetInput] = useState([]);
+
   const user = JSON.parse(localStorage.getItem("user"));
+  const [countryName, setCountryName] = useState("");
+
   useEffect(() => {
     let tongQualtyCart = 0;
     apiMember.post("/cart", cart).then((res) => {
       const products = Array.isArray(res.data.data) ? res.data.data : [];
-      console.log(res.data);
       SetInput(products);
       products.map((value, index) => {
         tongQualtyCart += value.price * value.qty;
       });
       SetAllQualtyCart(tongQualtyCart);
     });
-  }, [cart]);
-  function removeQualtyCartProduct(id, qty) {
-    dispatch(removeQualtyCart(id));
-    if (qty > 0 && totallocal.cart > 0) {
-      totallocal.cart -= 1;
-      totallocal.SetCart(totallocal.cart);
+
+    if (user && user.id_country) {
+      apiMember
+        .get(`/country/${user.id_country}`)
+        .then((res) => {
+          setCountryName(res.data.name);
+        })
+        .catch((err) => {
+          console.error("Không thể lấy tên quốc gia:", err);
+          setCountryName("Không rõ");
+        });
     }
-  }
-  function addQualtyCartProduct(id, qty) {
-    dispatch(addQualtyCart(id));
-    totallocal.cart += 1;
-    totallocal.SetCart(totallocal.cart);
-  }
-  function removeFromCartProduct(id, qty) {
-    dispatch(removeFromCart(id));
-    totallocal.cart -= qty;
-    totallocal.SetCart(totallocal.cart);
-    toast.success("Xóa sản phẩm khỏi giỏ hàng thành công");
-  }
+  }, [cart, user]);
+
   function RenderData() {
+    if (input.length === 0) {
+      return (
+        <tr>
+          <td colSpan="5" style={{ textAlign: "center", padding: "30px" }}>
+            Không có sản phẩm nào để thanh toán.
+          </td>
+        </tr>
+      );
+    }
+
     return input.map((value, index) => {
       const avatar = JSON.parse(value.image);
       return (
-        <tr>
+        <tr key={index}>
           <td className="cart_product">
-            <a href>
-              <img src={`http://localhost:3001/${avatar[0]}`} alt="" />
-            </a>
-          </td>
-          <td className="cart_description">
-            <h4>
-              <a href>{value.name}</a>
-            </h4>
-            <p>Web ID: {value.id}</p>
+            <div className="product-info">
+              <img src={`http://localhost:3001/${avatar[0]}`} alt={value.name} />
+              <div>
+                <Link to={`/member/home/product/detail/${value._id}`}>
+                  {value.name}
+                </Link>
+              </div>
+            </div>
           </td>
           <td className="cart_price">
-            <p>{value.price} VND</p>
+            <p>{formatPrice(value.price)}</p>
           </td>
           <td className="cart_quantity">
             <div className="cart_quantity_button">
-              <a
-                className="cart_quantity_up"
-                href
-                onClick={() => addQualtyCartProduct(value._id, value.qty)}
-              >
-                {" "}
-                +{" "}
-              </a>
-              <input
-                className="cart_quantity_input"
-                type="text"
-                name="quantity"
-                value={value.qty}
-                autoComplete="off"
-                size={2}
-              />
-              <a
-                className="cart_quantity_down"
-                href
-                onClick={() => removeQualtyCartProduct(value._id, value.qty)}
-              >
-                {" "}
-                -{" "}
-              </a>
+              <span>{value.qty}</span>
             </div>
           </td>
           <td className="cart_total">
-            <p className="cart_total_price">{value.qty * value.price} VND</p>
-          </td>
-          <td className="cart_delete">
-            <a
-              className="cart_quantity_delete"
-              href
-              onClick={() => removeFromCartProduct(value._id, value.qty)}
-            >
-              <i className="fa fa-times" />
-            </a>
+            <p className="cart_price">
+              {formatPrice(value.qty * value.price)}
+            </p>
           </td>
         </tr>
       );
     });
   }
+
   function Order() {
     if (user) {
       if (Object.keys(cart).length > 0) {
@@ -129,6 +112,14 @@ function CheckOut() {
           .post("/order", { user, cart }, config)
           .then((res) => {
             toast.success(res.data.message);
+            localStorage.removeItem("cart");
+            localStorage.removeItem("total");
+            totallocal.SetCart(0);
+            
+            dispatch(resetCartRedux());
+            dispatch(resetCartSlider());
+            // -----------------------
+            
             navigate("/member/home");
           })
           .catch(async (error) => {
@@ -149,7 +140,7 @@ function CheckOut() {
                   let config = {
                     headers: {
                       Authorization: `Bearer ${newtoken}`,
-                      "Content-Type": "application/x-www-form-urlencoded",
+                      "Content-Type": "application/json",
                       Accept: "application/json",
                     },
                   };
@@ -160,6 +151,13 @@ function CheckOut() {
                   );
                   console.log(res2);
                   toast.success(res2.data.data.message);
+                  localStorage.removeItem("cart");
+                  localStorage.removeItem("total");
+                  totallocal.SetCart(0);
+
+                  dispatch(resetCartRedux());
+                  dispatch(resetCartSlider());
+
                   navigate("/member/home");
                 } catch (refreshError) {
                   toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
@@ -187,203 +185,81 @@ function CheckOut() {
       }
     } else {
       toast.warn("Vui lòng đăng nhập");
+      navigate("/");
     }
   }
+
   return (
-    <section id="cart_items">
-      <div className="container">
-        <div className="breadcrumbs">
-          <ol className="breadcrumb">
-            <li>
-              <a href="#">Home</a>
-            </li>
-            <li className="active">Check out</li>
-          </ol>
-        </div>
-        {/*/breadcrums*/}
-        <div className="step-one">
-          <h2 className="heading">Step1</h2>
-        </div>
-        <div className="checkout-options">
-          <h3>New User</h3>
-          <p>Checkout options</p>
-          <ul className="nav">
-            <li>
-              <label>
-                <input type="checkbox" /> Register Account
-              </label>
-            </li>
-            <li>
-              <label>
-                <input type="checkbox" /> Guest Checkout
-              </label>
-            </li>
-            <li>
-              <a href>
-                <i className="fa fa-times" />
-                Cancel
-              </a>
-            </li>
-          </ul>
-        </div>
-        {/*/checkout-options*/}
-        <div className="register-req">
-          <p>
-            Please use Register And Checkout to easily get access to your order
-            history, or use Checkout as Guest
-          </p>
-        </div>
-        {/*/register-req*/}
-        <div className="shopper-informations">
-          <div className="row">
-            <div className="col-sm-3">
-              <div className="shopper-info">
-                <p>Shopper Information</p>
-                <form>
-                  <input type="text" placeholder="Display Name" />
-                  <input type="text" placeholder="User Name" />
-                  <input type="password" placeholder="Password" />
-                  <input type="password" placeholder="Confirm password" />
-                </form>
-                <a className="btn btn-primary" href>
-                  Get Quotes
-                </a>
-                <a className="btn btn-primary" href>
-                  Continue
-                </a>
-              </div>
-            </div>
-            <div className="col-sm-5 clearfix">
-              <div className="bill-to">
-                <p>Bill To</p>
-                <div className="form-one">
-                  <form>
-                    <input type="text" placeholder="Company Name" />
-                    <input type="text" placeholder="Email*" />
-                    <input type="text" placeholder="Title" />
-                    <input type="text" placeholder="First Name *" />
-                    <input type="text" placeholder="Middle Name" />
-                    <input type="text" placeholder="Last Name *" />
-                    <input type="text" placeholder="Address 1 *" />
-                    <input type="text" placeholder="Address 2" />
-                  </form>
-                </div>
-                <div className="form-two">
-                  <form>
-                    <input type="text" placeholder="Zip / Postal Code *" />
-                    <select>
-                      <option>-- Country --</option>
-                      <option>United States</option>
-                      <option>Bangladesh</option>
-                      <option>UK</option>
-                      <option>India</option>
-                      <option>Pakistan</option>
-                      <option>Ucrane</option>
-                      <option>Canada</option>
-                      <option>Dubai</option>
-                    </select>
-                    <select>
-                      <option>-- State / Province / Region --</option>
-                      <option>United States</option>
-                      <option>Bangladesh</option>
-                      <option>UK</option>
-                      <option>India</option>
-                      <option>Pakistan</option>
-                      <option>Ucrane</option>
-                      <option>Canada</option>
-                      <option>Dubai</option>
-                    </select>
-                    <input type="password" placeholder="Confirm password" />
-                    <input type="text" placeholder="Phone *" />
-                    <input type="text" placeholder="Mobile Phone" />
-                    <input type="text" placeholder="Fax" />
-                  </form>
-                </div>
-              </div>
-            </div>
-            <div className="col-sm-4">
-              <div className="order-message">
-                <p>Shipping Order</p>
-                <textarea
-                  name="message"
-                  placeholder="Notes about your order, Special Notes for Delivery"
-                  rows={16}
-                  defaultValue={""}
-                />
-                <label>
-                  <input type="checkbox" /> Shipping to bill address
-                </label>
-              </div>
+    <section className="checkout-page">
+      <h2 className="checkout-title">Thanh Toán Đơn Hàng</h2>
+
+      <div className="row">
+        <div className="col-md-8">
+          <div className="checkout-box">
+            <h3>1. Kiểm tra lại sản phẩm</h3>
+            <div className="table-responsive cart_info">
+              <table className="table cart-table">
+                <thead>
+                  <tr className="cart_menu">
+                    <td className="image">Sản Phẩm</td>
+                    <td className="price">Giá</td>
+                    <td className="quantity">Số Lượng</td>
+                    <td className="total">Tổng</td>
+                  </tr>
+                </thead>
+                <tbody>{RenderData()}</tbody>
+              </table>
             </div>
           </div>
-        </div>
-        <div className="review-payment">
-          <h2>Review &amp; Payment</h2>
-        </div>
-        <div className="table-responsive cart_info">
-          <table className="table table-condensed">
-            <thead>
-              <tr className="cart_menu">
-                <td className="image">Item</td>
-                <td className="description" />
-                <td className="price">Price</td>
-                <td className="quantity">Quantity</td>
-                <td className="total">Total</td>
-                <td />
-              </tr>
-            </thead>
-            <tbody>
-              {RenderData()}
 
-              <tr>
-                <td colSpan={4}>&nbsp;</td>
-                <td colSpan={2}>
-                  <table className="table table-condensed total-result">
-                    <tbody>
-                      <tr>
-                        <td>Cart Sub Total</td>
-                        <td>{AllQualtyCart} VND</td>
-                      </tr>
-                      <tr>
-                        <td>Exo Tax</td>
-                        <td>2 VND</td>
-                      </tr>
-                      <tr className="shipping-cost">
-                        <td>Shipping Cost</td>
-                        <td>Free</td>
-                      </tr>
-                      <tr>
-                        <td>Total</td>
-                        <td>
-                          <span>{AllQualtyCart + 2} VND</span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <button className="order" onClick={() => Order()}>
-                    Order
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="cart-total-box">
+            <h3>3. Tổng Thanh Toán</h3>
+            <ul>
+              <li>
+                Tạm tính <span>{formatPrice(AllQualtyCart)}</span>
+              </li>
+              <li>
+                Eco Tax <span>{formatPrice(2)}</span>
+              </li>
+              <li>
+                Phí Vận Chuyển <span>Free</span>
+              </li>
+              <li className="total">
+                Tổng <span>{formatPrice(AllQualtyCart + 2)}</span>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div className="payment-options">
-          <span>
-            <label>
-              <input type="checkbox" /> Direct Bank Transfer
-            </label>
-          </span>
-          <span>
-            <label>
-              <input type="checkbox" /> Check Payment
-            </label>
-          </span>
-          <span>
-            <label>
-              <input type="checkbox" /> Paypal
-            </label>
-          </span>
+
+        <div className="col-md-4">
+          <div className="checkout-box user-info-box">
+            <h3>2. Thông tin giao hàng</h3>
+            {user ? (
+              <ul>
+                <li>
+                  <strong>Họ Tên:</strong> {user.name}
+                </li>
+                <li>
+                  <strong>Email:</strong> {user.email}
+                </li>
+                <li>
+                  <strong>Phone:</strong> {user.phone}
+                </li>
+                <li>
+                  <strong>Địa chỉ:</strong> {user.address}
+                </li>
+                <li>
+                  <strong>Quốc gia:</strong> {countryName}
+                </li>
+              </ul>
+            ) : (
+              <p>Vui lòng đăng nhập để thấy thông tin.</p>
+            )}
+          </div>
+
+          <button className="order-btn" onClick={() => Order()}>
+            Xác Nhận Đặt Hàng
+          </button>
         </div>
       </div>
     </section>

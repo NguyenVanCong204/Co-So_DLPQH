@@ -35,20 +35,20 @@ function App(props) {
           <Provider store={store}>
             <div>
               {<Header />}
-              <div className="container">
+              <div className="container"style={{ marginTop: "20px" }}>
                 <div className="row">
                   {isCheckoutPage ? (
                     props.children
                   ) : isMyProduct ? (
-                    <div>
+                    <>
                       <LeftSideMyPD />
                       <div className="col-sm-9">{props.children}</div>
-                    </div>
+                    </>
                   ) : (
-                    <div>
+                    <>
                       <LeftSide />
                       <div className="col-sm-9">{props.children}</div>
-                    </div>
+                    </>
                   )}
                 </div>
               </div>

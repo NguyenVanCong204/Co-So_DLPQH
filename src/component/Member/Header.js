@@ -1,17 +1,34 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { Link } from "react-router-dom";
-import MemberCartContext from "../../Context/MemberCartContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Search } from "../../features/cart/CartSlider";
+import "./Header.css";
+import apiAdmin from "../../API/apiAdmin";
+
 function Header() {
   const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
   const dispath = useDispatch();
-  const total = useContext(MemberCartContext);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    apiAdmin
+      .get("/category")
+      .then((res) => {
+        if (Array.isArray(res.data.data)) {
+          setCategories(res.data.data);
+        }
+      })
+      .catch((err) => {
+        console.error("Lỗi khi tải category cho header:", err);
+      });
+  }, []);
+
+  const totalCart = useSelector((state) => state.cart.value);
   const [keyword, setKeyword] = useState("");
+
   function SearchProduct(e) {
     let value = e.target.value;
     setKeyword(value);
@@ -26,7 +43,7 @@ function Header() {
   function Logout() {
     localStorage.clear();
     navigate("/");
-    total.SetCart(0);
+    dispath(Search(""));
     toast.success("Logout thành công");
   }
   function Login() {
@@ -35,253 +52,113 @@ function Header() {
   function Account() {
     navigate("/member/account/update");
   }
+
   return (
-    <div>
-      <header id="header">
-        {/*header*/}
-        <div className="header_top">
-          {/*header_top*/}
-          <div className="container">
-            <div className="row">
-              <div className="col-sm-6">
-                <div className="contactinfo">
-                  <ul className="nav nav-pills">
-                    <li>
-                      <a href>
-                        <i className="fa fa-phone" /> +2 95 01 88 821
-                      </a>
-                    </li>
-                    <li>
-                      <a href>
-                        <i className="fa fa-envelope" /> info@domain.com
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="col-sm-6">
-                <div className="social-icons pull-right">
-                  <ul className="nav navbar-nav">
-                    <li>
-                      <a href>
-                        <i className="fa fa-facebook" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href>
-                        <i className="fa fa-twitter" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href>
-                        <i className="fa fa-linkedin" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href>
-                        <i className="fa fa-dribbble" />
-                      </a>
-                    </li>
-                    <li>
-                      <a href>
-                        <i className="fa fa-google-plus" />
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+    <header id="header">
+      <div className="header-main">
+        <div className="container">
+          <div className="row" style={{ alignItems: "center" }}>
+            
+            <div className="col-md-3">
+              <div className="logo-container">
+                <a href="#" onClick={HandleHome}>
+                  <img src="/images/home/logo.png" alt="Logo" />
+                </a>
               </div>
             </div>
-          </div>
-        </div>
-        {/*/header_top*/}
-        <div className="header-middle">
-          {/*header-middle*/}
-          <div className="container">
-            <div className="row">
-              <div className="col-md-4 clearfix">
-                <div className="logo pull-left">
-                  <a href="#" onClick={HandleHome}>
-                    <img src="/images/home/logo.png" alt="" />
-                  </a>
-                </div>
-                <div className="btn-group pull-right clearfix">
-                  <div className="btn-group">
-                    <button
-                      type="button"
-                      className="btn btn-default dropdown-toggle usa"
-                      data-toggle="dropdown"
-                    >
-                      USA
-                      <span className="caret" />
-                    </button>
-                    <ul className="dropdown-menu">
-                      <li>
-                        <a>Canada</a>
-                      </li>
-                      <li>
-                        <a>UK</a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="btn-group">
-                    <button
-                      type="button"
-                      className="btn btn-default dropdown-toggle usa"
-                      data-toggle="dropdown"
-                    >
-                      DOLLAR
-                      <span className="caret" />
-                    </button>
-                    <ul className="dropdown-menu">
-                      <li>
-                        <a>Canadian Dollar</a>
-                      </li>
-                      <li>
-                        <a>Pound</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-8 clearfix">
-                <div className="shop-menu clearfix pull-right">
-                  <ul className="nav navbar-nav">
-                    {user && (
-                      <li>
-                        <a href="#" onClick={() => Account()}>
-                          <i className="fa fa-user" /> {user.name}
-                        </a>
-                      </li>
-                    )}
-                    <li>
-                      <a>
-                        <i className="fa fa-star" /> Wishlist
-                      </a>
-                    </li>
-                    <li>
-                      <Link to="/member/product/checkout">
-                        <a href="checkout.html">
-                          <i className="fa fa-crosshairs" /> Checkout
-                        </a>
-                      </Link>
-                    </li>
-                    <li>
-                      <a href="" onClick={() => HandleCart()}>
-                        <i className="fa fa-shopping-cart" /> {total.cart} Cart
-                      </a>
-                    </li>
-                    {user ? (
-                      <li>
-                        <a href="#" onClick={() => Logout()}>
-                          <i className="fa fa-lock" /> Logout
-                        </a>
-                      </li>
-                    ) : (
-                      <li>
-                        <a href="#" onClick={() => Login()}>
-                          <i className="fa fa-lock" /> Login
-                        </a>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/*/header-middle*/}
-        <div className="header-bottom">
-          {/*header-bottom*/}
-          <div className="container">
-            <div className="row">
-              <div className="col-sm-9">
-                <div className="navbar-header">
-                  <button
-                    type="button"
-                    className="navbar-toggle"
-                    data-toggle="collapse"
-                    data-target=".navbar-collapse"
-                  >
-                    <span className="sr-only">Toggle navigation</span>
-                    <span className="icon-bar" />
-                    <span className="icon-bar" />
-                    <span className="icon-bar" />
-                  </button>
-                </div>
-                <div className="mainmenu pull-left">
-                  <ul className="nav navbar-nav collapse navbar-collapse">
-                    <li>
-                      <Link to="/member/home">
-                        <a href="index.html">Home</a>
-                      </Link>
-                    </li>
-                    <li className="dropdown">
-                      <a href="#">
-                        Shop
-                        <i className="fa fa-angle-down" />
-                      </a>
-                      <ul role="menu" className="sub-menu">
-                        <li>
-                          <a href="shop.html">Products</a>
-                        </li>
-                        <li>
-                          <a href="product-details.html">Product Details</a>
-                        </li>
-                        <li>
-                          <a href="checkout.html">Checkout</a>
-                        </li>
-                        <li>
-                          <a href="cart.html">Cart</a>
-                        </li>
-                        <li>
-                          <a href="login.html">Login</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li className="dropdown">
-                      <Link to="/member/blog/list">
-                        <a href="#" className="active">
-                          Blog
-                          <i className="fa fa-angle-down" />
-                        </a>
-                      </Link>
-                      <ul role="menu" className="sub-menu">
-                        <li>
-                          <a href="blog.html" className="active">
-                            Blog List
-                          </a>
-                        </li>
-                        <li>
-                          <a href="blog-single.html">Blog Single</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li>
-                      <a href="404.html">404</a>
-                    </li>
-                    <li>
-                      <a href="contact-us.html">Contact</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div className="col-sm-3">
-                <div className="search_box pull-right">
+
+            <div className="col-md-9">
+              <div className="header-right-wrapper">
+                
+                <div className="search-container">
                   <input
                     type="text"
-                    placeholder="Search"
+                    placeholder="Bạn cần tìm gì hôm nay..."
                     value={keyword}
                     onChange={(e) => SearchProduct(e)}
                   />
+                  <button type="button">
+                    <i className="fa fa-search"></i>
+                  </button>
                 </div>
+
+                <div className="header-info">
+                  <span>Tư vấn bán hàng:</span>
+                  <span className="hotline">0123.456.789</span>
+                </div>
+
+                <div className="header-info-icons">
+                  <a href="#" onClick={() => HandleCart()}>
+                    <i className="fa fa-shopping-cart"></i>
+                    <span>Giỏ hàng ({totalCart})</span>
+                  </a>
+
+                  {user ? (
+                    <>
+                      <a href="#" onClick={() => Account()}>
+                        <i className="fa fa-user"></i>
+                        <span>{user.name}</span>
+                      </a>
+                      <a href="#" onClick={() => Logout()}>
+                        <i className="fa fa-lock"></i>
+                        <span>Đăng xuất</span>
+                      </a>
+                    </>
+                  ) : (
+                    <a href="#" onClick={() => Login()}>
+                      <i className="fa fa-lock"></i>
+                      <span>Đăng nhập</span>
+                    </a>
+                  )}
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div className="header-nav">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12">
+              <div className="navbar-header">
+                <button
+                  type="button"
+                  className="navbar-toggle"
+                  data-toggle="collapse"
+                  data-target=".navbar-collapse"
+                >
+                  <span className="sr-only">Toggle navigation</span>
+                  <span className="icon-bar" />
+                  <span className="icon-bar" />
+                  <span className="icon-bar" />
+                </button>
+              </div>
+              <div className="mainmenu collapse navbar-collapse">
+                <ul className="nav navbar-nav">
+                  <li>
+                    <Link to="/member/home">Trang chủ</Link>
+                  </li>
+                  {categories.slice(0, 5).map((category) => (
+                    <li key={category._id}>
+                      <Link to={`/member/category/${category._id}`}>
+                        {category.name}
+                      </Link>
+                    </li>
+                  ))}
+                  <li>
+                    <Link to="/member/blog/list">Tin tức</Link>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
-        {/*/header-bottom*/}
-      </header>
-      {/*/header*/}
-    </div>
+      </div>
+    </header>
   );
 }
+
 export default Header;
