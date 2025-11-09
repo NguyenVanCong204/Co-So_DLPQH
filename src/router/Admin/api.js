@@ -19,7 +19,7 @@ import {
   deleteBlog,
 } from "../../controllers/Admin/blogController.js";
 import { createBrand } from "../../controllers/Admin/brandController.js";
-import { createCategory } from "../../controllers/Admin/categoryController.js";
+import { createCategory, getCategory } from "../../controllers/Admin/categoryController.js";
 import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
@@ -27,6 +27,7 @@ const router = express.Router();
 router.get("/country", getCountry);
 router.post("/brand", createBrand);
 router.post("/category", createCategory);
+router.get("/category", getCategory);
 
 router.use(requireAuth, authorize(1));
 

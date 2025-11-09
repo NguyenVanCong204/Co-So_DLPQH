@@ -10,6 +10,7 @@ import {
   updateProduct,
   getProductCart,
   searchProduct,
+  getProductByCategory,
 } from "../../controllers/Member/productController.js";
 import {
   getUser,
@@ -30,6 +31,7 @@ import { createHistory } from "../../controllers/Member/historyController.js";
 import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
 
 router.get("/product", getProduct);
+router.get("/product/category/:id_category", getProductByCategory);
 router.get("/search/product", searchProduct);
 router.get("/product/:id", getProductById);
 
