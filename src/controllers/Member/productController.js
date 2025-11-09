@@ -223,3 +223,26 @@ export const searchProduct = async (req, res) => {
     });
   }
 };
+
+export const getProductByCategory = async (req, res) => {
+  try {
+    const id_category = req.params.id_category;
+    const product = await Product.getProductByCategory(id_category);
+    
+    if (!product || product.length === 0) {
+      return res.status(200).json({
+        message: "Không tìm thấy sản phẩm nào thuộc danh mục này",
+        data: [], 
+      });
+    }
+    
+    return res.status(200).json({
+      data: product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Lỗi server !",
+      error: error.message,
+    });
+  }
+};

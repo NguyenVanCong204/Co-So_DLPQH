@@ -67,6 +67,11 @@ productSchema.statics.getProductCart = async function (ids) {
 productSchema.statics.searchProduct = async function (name) {
   return await this.find({ name: { $regex: name, $options: "i" } });
 };
+
+productSchema.statics.getProductByCategory = async function (id_category) {
+  return await this.find({ id_category: id_category });
+};
+
 productSchema.plugin(mongooseDelete, {
   deletedAt: true,
   overrideMethods: "all",
