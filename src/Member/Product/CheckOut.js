@@ -7,7 +7,13 @@ import refershToken from "../../RefershToken/RefershToken";
 import MemberCartContext from "../../Context/MemberCartContext";
 import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
+import {
+  PayPalScriptProvider,
+  PayPalButtons,
+} from "@paypal/react-paypal-js";
 import "./CheckOut.css";
+
+const VND_TO_USD_RATE = 25000;
 
 function formatPrice(price) {
   if (!price) return "";
@@ -19,250 +25,379 @@ function formatPrice(price) {
 
 function CheckOut() {
   const token = localStorage.getItem("token");
-  let config = {
+  const config = {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
       Accept: "application/json",
     },
   };
+
   const navigate = useNavigate();
-  let totallocal = useContext(MemberCartContext);
+  const totallocal = useContext(MemberCartContext);
   const cart = useSelector((state) => state.cartredux);
   const dispatch = useDispatch();
-  const [AllQualtyCart, SetAllQualtyCart] = useState(0);
-  const [input, SetInput] = useState([]);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const [countryName, setCountryName] = useState("");
+  const [AllQualtyCart, SetAllQualtyCart] = useState(0);
+  const [inputProducts, SetInputProducts] = useState([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [note, setNote] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [user] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch {
+      console.error("Lỗi đọc user từ localStorage");
+      return null;
+    }
+  });
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+  });
 
   useEffect(() => {
-    let tongQualtyCart = 0;
-    apiMember.post("/cart", cart).then((res) => {
-      const products = Array.isArray(res.data.data) ? res.data.data : [];
-      SetInput(products);
-      products.map((value, index) => {
-        tongQualtyCart += value.price * value.qty;
-      });
-      SetAllQualtyCart(tongQualtyCart);
-    });
+    const fetchCart = async () => {
+      try {
+        const res = await apiMember.post("/cart", cart);
+        const products = Array.isArray(res.data.data) ? res.data.data : [];
+        SetInputProducts(products);
 
-    if (user && user.id_country) {
-      apiMember
-        .get(`/country/${user.id_country}`)
-        .then((res) => {
-          setCountryName(res.data.name);
-        })
-        .catch((err) => {
-          console.error("Không thể lấy tên quốc gia:", err);
-          setCountryName("Không rõ");
+        let total = 0;
+        products.forEach((value) => {
+          const is_on_sale = value.status === 0 && value.sale > 0;
+          const price = is_on_sale
+            ? value.price * (1 - value.sale / 100)
+            : value.price;
+          total += price * value.qty;
         });
+        SetAllQualtyCart(total);
+      } catch (err) {
+        toast.error("Không thể tải giỏ hàng. Vui lòng thử lại sau.");
+        console.error(err);
+      } finally {
+        setIsDataLoaded(true);
+      }
+    };
+
+    fetchCart();
+
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        address: user.address || "",
+      });
     }
   }, [cart, user]);
 
-  function RenderData() {
-    if (input.length === 0) {
-      return (
-        <tr>
-          <td colSpan="5" style={{ textAlign: "center", padding: "30px" }}>
-            Không có sản phẩm nào để thanh toán.
-          </td>
-        </tr>
-      );
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    return input.map((value, index) => {
-      const avatar = JSON.parse(value.image);
+  const RenderOrderData = () => {
+    if (inputProducts.length === 0)
+      return <div style={{ padding: "20px", textAlign: "center" }}>Giỏ hàng trống</div>;
+
+    return inputProducts.map((value, index) => {
+      let avatar = [];
+      try {
+        avatar = JSON.parse(value.image) || [];
+      } catch {
+        avatar = [];
+      }
+      const is_on_sale = value.status === 0 && value.sale > 0;
+      const new_price = is_on_sale
+        ? value.price * (1 - value.sale / 100)
+        : value.price;
+
       return (
-        <tr key={index}>
-          <td className="cart_product">
-            <div className="product-info">
-              <img src={`http://localhost:3001/${avatar[0]}`} alt={value.name} />
-              <div>
-                <Link to={`/member/home/product/detail/${value._id}`}>
-                  {value.name}
-                </Link>
-              </div>
-            </div>
-          </td>
-          <td className="cart_price">
-            <p>{formatPrice(value.price)}</p>
-          </td>
-          <td className="cart_quantity">
-            <div className="cart_quantity_button">
-              <span>{value.qty}</span>
-            </div>
-          </td>
-          <td className="cart_total">
-            <p className="cart_price">
-              {formatPrice(value.qty * value.price)}
-            </p>
-          </td>
-        </tr>
+        <div className="order-product-item" key={index}>
+          <img
+            src={`http://localhost:3001/${avatar[0] || "no-image.png"}`}
+            alt={value.name}
+          />
+          <div className="order-product-info">
+            <span className="name">
+              {value.name} (x{value.qty})
+            </span>
+            <span className="price">{formatPrice(new_price * value.qty)}</span>
+          </div>
+        </div>
       );
     });
-  }
+  };
 
-  function Order() {
-    if (user) {
-      if (Object.keys(cart).length > 0) {
-        console.log(user);
-        console.log(cart);
-        apiMember
-          .post("/order", { user, cart }, config)
-          .then((res) => {
-            toast.success(res.data.message);
-            localStorage.removeItem("cart");
-            localStorage.removeItem("total");
-            totallocal.SetCart(0);
-            
-            dispatch(resetCartRedux());
-            dispatch(resetCartSlider());
-            // -----------------------
-            
-            navigate("/member/home");
-          })
-          .catch(async (error) => {
-            if (error.response) {
-              const status = error.response.status;
-              const message =
-                error.response.data?.error ||
-                error.response.data?.message ||
-                error.message;
-              if (status == 401) {
-                try {
-                  const newtoken = await refershToken();
-                  if (!newtoken) {
-                    return toast.error(
-                      "Không thể làm mới token. Vui lòng đăng nhập lại."
-                    );
-                  }
-                  let config = {
-                    headers: {
-                      Authorization: `Bearer ${newtoken}`,
-                      "Content-Type": "application/json",
-                      Accept: "application/json",
-                    },
-                  };
-                  const res2 = await apiMember.post(
-                    "/order",
-                    { user, cart },
-                    config
-                  );
-                  console.log(res2);
-                  toast.success(res2.data.data.message);
-                  localStorage.removeItem("cart");
-                  localStorage.removeItem("total");
-                  totallocal.SetCart(0);
-
-                  dispatch(resetCartRedux());
-                  dispatch(resetCartSlider());
-
-                  navigate("/member/home");
-                } catch (refreshError) {
-                  toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
-                  console.error(refreshError);
-                }
-              } else if (status === 403) {
-                toast.error(message);
-              } else {
-                if (typeof message === "object" && message !== null) {
-                  const keys = Object.keys(message);
-                  if (keys.length > 0) {
-                    const firstKey = keys[0];
-                    toast.error("Lỗi khi đặt hàng: " + message[firstKey]);
-                  }
-                } else {
-                  toast.error("Lỗi khi đặt hàng: " + message);
-                }
-              }
-            } else {
-              toast.error("Không thể kết nối đến server: " + error.message);
-            }
-          });
-      } else {
-        toast.warn("Vui lòng thêm sản phẩm vào giỏ hàng");
-      }
-    } else {
+  const processOrder = async (paymentSource = "COD") => {
+    if (!user) {
       toast.warn("Vui lòng đăng nhập");
       navigate("/");
+      return Promise.reject("Chưa đăng nhập");
     }
-  }
+    if (Object.keys(cart).length === 0) {
+      toast.warn("Vui lòng thêm sản phẩm vào giỏ hàng");
+      return Promise.reject("Giỏ hàng rỗng");
+    }
+    if (!formData.name || !formData.address || !formData.phone || !formData.email) {
+      toast.error("Vui lòng điền đầy đủ thông tin mua hàng.");
+      return Promise.reject("Thiếu thông tin");
+    }
+
+    const orderData = {
+      user: { ...user, ...formData, note },
+      cart,
+    };
+    
+    setIsLoading(true);
+
+    try {
+      const res = await apiMember.post("/order", orderData, config);
+      toast.success(`Đặt hàng (${paymentSource}) thành công!`);
+      localStorage.removeItem("cart");
+      localStorage.removeItem("total");
+      totallocal.SetCart(0);
+      dispatch(resetCartRedux());
+      dispatch(resetCartSlider());
+      navigate("/member/home");
+      return res;
+    } catch (error) {
+      if (error.response?.status === 401) {
+        try {
+          const newtoken = await refershToken();
+          if (!newtoken) {
+            toast.error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+            return Promise.reject(error);
+          }
+          const newConfig = {
+            headers: {
+              Authorization: `Bearer ${newtoken}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          };
+          // Gọi lại API
+          const res2 = await apiMember.post("/order", orderData, newConfig);
+          toast.success(`Đặt hàng (${paymentSource}) thành công! (sau khi refresh)`);
+          localStorage.removeItem("cart");
+          localStorage.removeItem("total");
+          totallocal.SetCart(0);
+          dispatch(resetCartRedux());
+          dispatch(resetCartSlider());
+          navigate("/member/home");
+          return res2;
+        } catch (refreshError) {
+          toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
+          return Promise.reject(refreshError);
+        }
+      } else {
+        const msg = error.response?.data?.error?.stock || error.response?.data?.message || error.message;
+        toast.error("Lỗi khi đặt hàng: " + msg);
+        return Promise.reject(error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOrderCOD = () => {
+    processOrder("COD");
+  };
+
+  const createOrder = (data, actions) => {
+    if (!formData.name || !formData.address || !formData.phone || !formData.email) {
+      toast.error("Vui lòng điền đầy đủ thông tin mua hàng trước.");
+      return Promise.reject("Thiếu thông tin");
+    }
+    const totalUSD = (AllQualtyCart / VND_TO_USD_RATE).toFixed(2);
+
+    if (parseFloat(totalUSD) <= 0) {
+      toast.error("Không thể thanh toán PayPal cho đơn hàng 0đ.");
+      return Promise.reject("Đơn hàng 0đ");
+    }
+
+    return actions.order.create({
+      purchase_units: [
+        {
+          description: "Thanh toán đơn hàng tại HKDN-3AE",
+          amount: {
+            value: totalUSD,
+            currency_code: "USD",
+          },
+        },
+      ],
+    });
+  };
+
+  const onApprove = (data, actions) => {
+    return actions.order.capture().then(async (details) => {
+      toast.success(`Thanh toán thành công bởi ${details.payer.name.given_name}`);
+      await processOrder("PayPal");
+    });
+  };
+
+  const onError = (err) => {
+    toast.error("Thanh toán PayPal xảy ra lỗi. Vui lòng thử lại.");
+    console.error("PayPal Error:", err);
+  };
 
   return (
-    <section className="checkout-page">
-      <h2 className="checkout-title">Thanh Toán Đơn Hàng</h2>
+    <PayPalScriptProvider
+      options={{
+        "client-id": "AYQS_sP-Z621V45RGGTyYaIcwGnOhpnV0-WrPG7yNsnUGMPiRG_mkaYm_wW_sNmjhM5eDA-q1_88u_pq",
+        currency: "USD",
+        components: "buttons",
+      }}
+    >
+      <section className="checkout-page">
+        {isLoading && (
+          <div className="loading-overlay">
+            <div className="spinner"></div>
+          </div>
+        )}
 
-      <div className="row">
-        <div className="col-md-8">
-          <div className="checkout-box">
-            <h3>1. Kiểm tra lại sản phẩm</h3>
-            <div className="table-responsive cart_info">
-              <table className="table cart-table">
-                <thead>
-                  <tr className="cart_menu">
-                    <td className="image">Sản Phẩm</td>
-                    <td className="price">Giá</td>
-                    <td className="quantity">Số Lượng</td>
-                    <td className="total">Tổng</td>
-                  </tr>
-                </thead>
-                <tbody>{RenderData()}</tbody>
-              </table>
+        <div className="breadcrumb-new">
+          <Link to="/member/home">Trang chủ</Link>
+          <span> » </span>
+          <span>Thanh toán</span>
+        </div>
+
+        <div className="checkout-title-bar">THANH TOÁN</div>
+
+        <div className="row" style={{ background: "#fff", padding: "15px", margin: "0" }}>
+          <div className="col-md-5">
+            <div className="checkout-form">
+              <h3>THÔNG TIN MUA HÀNG</h3>
+              {["name", "address", "phone", "email"].map((field, idx) => (
+                <div className="form-group" key={idx}>
+                  <label htmlFor={field}>
+                    {field === "name"
+                      ? "Họ và Tên"
+                      : field === "address"
+                      ? "Địa chỉ"
+                      : field === "phone"
+                      ? "Số điện thoại"
+                      : "Email"}{" "}
+                    <span>*</span>
+                  </label>
+                  <input
+                    type={field === "email" ? "email" : "text"}
+                    className="form-control"
+                    id={field}
+                    name={field}
+                    value={formData[field]}
+                    onChange={handleInputChange}
+                    placeholder={`Nhập ${field}`}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="cart-total-box">
-            <h3>3. Tổng Thanh Toán</h3>
-            <ul>
-              <li>
-                Tạm tính <span>{formatPrice(AllQualtyCart)}</span>
-              </li>
-              <li>
-                Eco Tax <span>{formatPrice(2)}</span>
-              </li>
-              <li>
-                Phí Vận Chuyển <span>Free</span>
-              </li>
-              <li className="total">
-                Tổng <span>{formatPrice(AllQualtyCart + 2)}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+          <div className="col-md-3">
+            <div className="checkout-form">
+              <h3>THÔNG TIN THÊM</h3>
+              <div className="form-group">
+                <label htmlFor="note">Ghi chú đơn hàng (tùy chọn)</label>
+                <textarea
+                  className="form-control"
+                  id="note"
+                  name="note"
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  placeholder="Ghi chú về đơn hàng..."
+                ></textarea>
+              </div>
+            </div>
 
-        <div className="col-md-4">
-          <div className="checkout-box user-info-box">
-            <h3>2. Thông tin giao hàng</h3>
-            {user ? (
-              <ul>
-                <li>
-                  <strong>Họ Tên:</strong> {user.name}
-                </li>
-                <li>
-                  <strong>Email:</strong> {user.email}
-                </li>
-                <li>
-                  <strong>Phone:</strong> {user.phone}
-                </li>
-                <li>
-                  <strong>Địa chỉ:</strong> {user.address}
-                </li>
-                <li>
-                  <strong>Quốc gia:</strong> {countryName}
-                </li>
-              </ul>
+            <div className="payment-box">
+              <h3>HÌNH THỨC THANH TOÁN</h3>
+              <div className="radio-option">
+                <input
+                  type="radio"
+                  id="cod"
+                  name="payment_method"
+                  value="cod"
+                  checked={paymentMethod === "cod"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <label htmlFor="cod">Trả tiền mặt khi nhận hàng</label>
+              </div>
+              <div className="radio-option" style={{ marginTop: "10px" }}>
+                <input
+                  type="radio"
+                  id="paypal"
+                  name="payment_method"
+                  value="paypal"
+                  checked={paymentMethod === "paypal"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <label htmlFor="paypal">Thanh toán bằng PayPal</label>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-md-4">
+            {isDataLoaded ? (
+              <div className="order-summary-box">
+                <h3>ĐƠN HÀNG ({inputProducts.length} sản phẩm)</h3>
+                <div className="order-product-list">{RenderOrderData()}</div>
+                <div className="order-total-summary">
+                  <ul>
+                    <li>
+                      Tạm tính <span>{formatPrice(AllQualtyCart)}</span>
+                    </li>
+                    <li className="total">
+                      Tổng cộng <span>{formatPrice(AllQualtyCart)}</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {paymentMethod === "cod" ? (
+                  <button
+                    className="order-submit-btn"
+                    onClick={handleOrderCOD}
+                    disabled={AllQualtyCart <= 0}
+                  >
+                    Đặt Hàng (COD)
+                  </button>
+                ) : (
+                  AllQualtyCart > 0 ? (
+                    <div style={{ padding: "10px" }}>
+                      <PayPalButtons
+                        key={AllQualtyCart}
+                        style={{ layout: "vertical" }}
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                        onError={onError}
+                      />
+                    </div>
+                  ) : (
+                    <div style={{ padding: "10px", textAlign: "center", color: "#999" }}>
+                      Không thể thanh toán PayPal cho đơn hàng 0đ.
+                    </div>
+                  )
+                )}
+              </div>
             ) : (
-              <p>Vui lòng đăng nhập để thấy thông tin.</p>
+              <div className="order-summary-box">
+                <h3>ĐƠN HÀNG</h3>
+                <div style={{ padding: "20px", textAlign: "center" }}>
+                  Đang tải giỏ hàng...
+                </div>
+              </div>
             )}
           </div>
-
-          <button className="order-btn" onClick={() => Order()}>
-            Xác Nhận Đặt Hàng
-          </button>
         </div>
-      </div>
-    </section>
+      </section>
+    </PayPalScriptProvider>
   );
 }
+
 export default CheckOut;

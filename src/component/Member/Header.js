@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Search } from "../../features/cart/CartSlider";
 import "./Header.css";
 import apiAdmin from "../../API/apiAdmin";
+import apiMember from "../../API/apiMember";
 
 function Header() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -28,12 +29,48 @@ function Header() {
 
   const totalCart = useSelector((state) => state.cart.value);
   const [keyword, setKeyword] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
 
-  function SearchProduct(e) {
+  useEffect(() => {
+    if (!keyword.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    const delayDebounceFn = setTimeout(() => {
+      apiMember
+        .get("/search/product?name=" + keyword)
+        .then((res) => {
+          if (Array.isArray(res.data.data)) {
+            setSuggestions(res.data.data);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [keyword]);
+
+  function handleSearchChange(e) {
     let value = e.target.value;
     setKeyword(value);
-    dispath(Search(value));
   }
+
+  function handleSearchSubmit(e) {
+    e.preventDefault();
+    dispath(Search(keyword));
+    setSuggestions([]);
+  }
+
+  function handleSuggestionClick(product) {
+    setKeyword("");
+    setSuggestions([]);
+    dispath(Search(""));
+    navigate(`/member/home/product/detail/${product._id}`);
+  }
+
   function HandleCart() {
     navigate("/member/home/cart");
   }
@@ -58,7 +95,6 @@ function Header() {
       <div className="header-main">
         <div className="container">
           <div className="row" style={{ alignItems: "center" }}>
-            
             <div className="col-md-3">
               <div className="logo-container">
                 <a href="#" onClick={HandleHome}>
@@ -70,16 +106,50 @@ function Header() {
             <div className="col-md-9">
               <div className="header-right-wrapper">
                 
-                <div className="search-container">
-                  <input
-                    type="text"
-                    placeholder="Bạn cần tìm gì hôm nay..."
-                    value={keyword}
-                    onChange={(e) => SearchProduct(e)}
-                  />
-                  <button type="button">
-                    <i className="fa fa-search"></i>
-                  </button>
+                <div className="search-wrapper">
+                  <form
+                    className="search-container"
+                    onSubmit={handleSearchSubmit}
+                  >
+                    <input
+                      type="text"
+                      placeholder="Bạn cần tìm gì hôm nay..."
+                      value={keyword}
+                      onChange={handleSearchChange}
+                      onBlur={() => setTimeout(() => setSuggestions([]), 200)}
+                    />
+                    <button type="submit">
+                      <i className="fa fa-search"></i>
+                    </button>
+                  </form>
+
+                  {suggestions.length > 0 && (
+                    <div className="search-suggestions">
+                      <ul>
+                        {suggestions.map((product) => {
+                          let avatar = "";
+                          try {
+                            avatar = JSON.parse(product.image)[0];
+                          } catch (e) {}
+
+                          return (
+                            <li
+                              key={product._id}
+                              onMouseDown={() => handleSuggestionClick(product)}
+                            >
+                              <img
+                                src={`http://localhost:3001/${avatar}`}
+                                alt={product.name}
+                              />
+                              <span className="suggestion-name">
+                                {product.name}
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  )}
                 </div>
 
                 <div className="header-info">
@@ -111,10 +181,8 @@ function Header() {
                     </a>
                   )}
                 </div>
-
               </div>
             </div>
-
           </div>
         </div>
       </div>

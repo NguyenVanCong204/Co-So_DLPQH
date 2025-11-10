@@ -1,14 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import apiMember from "../../API/apiMember";
-import "./CartProduct.css"; 
+import "./CartProduct.css";
 import { useSelector, useDispatch } from "react-redux";
 import {
   removeFromCart,
   addQualtyCart,
   removeQualtyCart,
 } from "../../features/cart/Cart";
+import { addToCart } from "../../features/cart/CartSlider";
 import MemberCartContext from "../../Context/MemberCartContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function formatPrice(price) {
@@ -24,44 +25,67 @@ function CartProduct() {
   const cartredux = useSelector((state) => state.cartredux);
   const dispatch = useDispatch();
   const [AllQualtyCart, SetAllQualtyCart] = useState(0);
-
   const [input, SetInput] = useState([]);
+  
+  const navigate = useNavigate();
+
   useEffect(() => {
     let tongQualtyCart = 0;
     apiMember.post("/cart", cartredux).then((res) => {
-      console.log(res.data);
       const products = Array.isArray(res.data.data) ? res.data.data : [];
       SetInput(products);
       products.map((value, index) => {
-        tongQualtyCart += value.price * value.qty;
+        const is_on_sale = value.status == 0 && value.sale > 0;
+        const original_price = value.price;
+        const new_price = is_on_sale
+          ? original_price * (1 - value.sale / 100)
+          : original_price;
+
+        tongQualtyCart += new_price * value.qty;
       });
       SetAllQualtyCart(tongQualtyCart);
     });
   }, [cartredux]);
 
   function removeQualtyCartProduct(id, qty) {
-    if (qty > 1) { 
+    if (qty > 1) {
       dispatch(removeQualtyCart(id));
       if (totallocal.cart > 0) {
         totallocal.cart -= 1;
         totallocal.SetCart(totallocal.cart);
+        dispatch(addToCart(-1)); 
       }
     } else {
       toast.info("Số lượng sản phẩm tối thiểu là 1");
     }
   }
-  
+
   function addQualtyCartProduct(id, qty) {
     dispatch(addQualtyCart(id));
     totallocal.cart += 1;
     totallocal.SetCart(totallocal.cart);
+    dispatch(addToCart(1)); 
   }
+
   function removeFromCartProduct(id, qty) {
     dispatch(removeFromCart(id));
     totallocal.cart -= qty;
     totallocal.SetCart(totallocal.cart);
+    
+    dispatch(addToCart(-qty)); 
+
     toast.success("Xóa sản phẩm khỏi giỏ hàng thành công");
   }
+
+  function handleCheckout(e) {
+    e.preventDefault();
+    if (input.length === 0) {
+      toast.warn("Giỏ hàng của bạn đang trống!");
+    } else {
+      navigate("/member/product/checkout");
+    }
+  }
+  // -----------------------------
 
   function renderData() {
     if (input.length === 0) {
@@ -76,6 +100,11 @@ function CartProduct() {
 
     return input.map((value, index) => {
       const avatar = JSON.parse(value.image);
+      const is_on_sale = value.status == 0 && value.sale > 0;
+      const original_price = value.price;
+      const new_price = is_on_sale
+        ? original_price * (1 - value.sale / 100)
+        : original_price;
       return (
         <tr key={index}>
           <td className="cart_product">
@@ -89,7 +118,16 @@ function CartProduct() {
             </div>
           </td>
           <td className="cart_price">
-            <p>{formatPrice(value.price)}</p>
+            {is_on_sale ? (
+              <>
+                <p style={{ color: "#d9534f" }}>{formatPrice(new_price)}</p>
+                <p style={{ textDecoration: "line-through", fontSize: "12px", color: "#999" }}>
+                  {formatPrice(original_price)}
+                </p>
+              </>
+            ) : (
+              <p>{formatPrice(original_price)}</p>
+            )}
           </td>
           <td className="cart_quantity">
             <div className="quantity-control">
@@ -115,7 +153,7 @@ function CartProduct() {
           </td>
           <td className="cart_total">
             <p className="cart_price">
-              {formatPrice(value.qty * value.price)}
+              {formatPrice(new_price * value.qty)}
             </p>
           </td>
           <td className="cart_delete">
@@ -128,52 +166,55 @@ function CartProduct() {
     });
   }
 
+  const isCartEmpty = input.length === 0;
+  const ecoTax = isCartEmpty ? 0 : 2;
+  const finalTotal = isCartEmpty ? 0 : AllQualtyCart + ecoTax;
+
   return (
     <section id="cart_items_new">
+      <h2 className="cart_title">Giỏ Hàng Của Bạn</h2>
 
-        <h2 className="cart_title">Giỏ Hàng Của Bạn</h2>
+      <div className="row">
+        <div className="col-md-12">
+          <table className="cart-table">
+            <thead>
+              <tr>
+                <th>Sản Phẩm</th>
+                <th>Giá</th>
+                <th>Số Lượng</th>
+                <th>Tổng</th>
+                <th>Xóa</th>
+              </tr>
+            </thead>
+            <tbody>{renderData()}</tbody>
+          </table>
+        </div>
+      </div>
 
-        <div className="row">
-          <div className="col-md-12">
-            <table className="cart-table">
-              <thead>
-                <tr>
-                  <th>Sản Phẩm</th>
-                  <th>Giá</th>
-                  <th>Số Lượng</th>
-                  <th>Tổng</th>
-                  <th>Xóa</th>
-                </tr>
-              </thead>
-              <tbody>{renderData()}</tbody>
-            </table>
+      <div className="row">
+        <div className="col-md-5 pull-right">
+          <div className="cart-total-box">
+            <h3>TỔNG CỘNG</h3>
+            <ul>
+              <li>
+                Tạm tính <span>{formatPrice(AllQualtyCart)}</span>
+              </li>
+              <li>
+                Eco Tax <span>{formatPrice(ecoTax)}</span>
+              </li>
+              <li>
+                Phí Vận Chuyển <span>Free</span>
+              </li>
+              <li className="total">
+                Tổng <span>{formatPrice(finalTotal)}</span>
+              </li>
+            </ul>
+            <a href="#" className="checkout-btn" onClick={handleCheckout}>
+              Tiến hành thanh toán
+            </a>
           </div>
         </div>
-
-        <div className="row">
-          <div className="col-md-5 pull-right">
-            <div className="cart-total-box">
-              <h3>TỔNG CỘNG</h3>
-              <ul>
-                <li>
-                  Tạm tính <span>{formatPrice(AllQualtyCart)}</span>
-                </li>
-                <li>
-                  Eco Tax <span>{formatPrice(2)}</span>
-                </li>
-                <li>
-                  Phí Vận Chuyển <span>Free</span>
-                </li>
-                <li className="total">
-                  Tổng <span>{formatPrice(AllQualtyCart + 2)}</span>
-                </li>
-              </ul>
-              <Link to="/member/product/checkout" className="checkout-btn">
-                Tiến hành thanh toán
-              </Link>
-            </div>
-          </div>
-        </div>
+      </div>
     </section>
   );
 }

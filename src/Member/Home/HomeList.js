@@ -195,7 +195,7 @@ function HomeList() {
                 className="buy-button"
               >
                 <i className="fa fa-shopping-cart" />
-                Mua hàng
+                Thêm vào giỏ
               </button>
             </div>
           </div>
