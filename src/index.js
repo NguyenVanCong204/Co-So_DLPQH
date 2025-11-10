@@ -14,7 +14,11 @@ const PORT = process.env.PORT;
 
 app.use("/public", express.static("public"));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/admin", apiRouter);
