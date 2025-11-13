@@ -43,6 +43,8 @@ function CreateProduct() {
 
     const handleSubmit = async () => {
         try {
+            console.log(image);
+
             const formData = new FormData();
             formData.append('name', name);
             formData.append('id_category', category);
@@ -50,8 +52,11 @@ function CreateProduct() {
             formData.append('price', price);
             formData.append('sale', sale);
             formData.append('qualty', quality);
-            formData.append('image', image);
             formData.append('detail', detail);
+            for (let i = 0; i < image.length; i++) {
+                formData.append('image', image[i]);
+            }
+
             await apiAdmin.post('/product', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
