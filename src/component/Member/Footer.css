@@ -1,0 +1,129 @@
+#footer {
+  margin-top: 30px;
+}
+
+.footer-policy {
+  background-color: #f8f8f8;
+  padding: 20px 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.policy-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.policy-item i {
+  font-size: 40px;
+  color: #007bff;
+}
+
+.policy-item .policy-text h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.policy-item .policy-text p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.footer-top {
+  background: #007bff;
+  color: #fff;
+  padding: 40px 0;
+}
+
+.footer-top .single-widget h2 {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.footer-top .single-widget p,
+.footer-top .single-widget li {
+  font-size: 14px;
+  color: #f0f0f0;
+  line-height: 1.8;
+}
+
+.footer-top .single-widget .nav-stacked li a {
+  color: #f0f0f0;
+  padding: 5px 0;
+  text-decoration: none;
+}
+.footer-top .single-widget .nav-stacked li a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.footer-top .single-widget i {
+  margin-right: 10px;
+}
+
+.footer-top .searchform {
+  position: relative;
+  margin-top: 10px;
+}
+
+.footer-top .searchform input[type="email"] {
+  background: #fff;
+  border: 0;
+  padding: 10px 15px;
+  width: 100%;
+  border-radius: 5px;
+  outline: none;
+}
+
+.footer-top .searchform button {
+  background: #fe980f;
+  border: 0;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.footer-top .social-icons ul {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  padding-left: 0;
+}
+
+.footer-top .social-icons li {
+  list-style: none;
+}
+
+.footer-top .social-icons li a {
+  background: #fff;
+  color: #007bff;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+.footer-top .social-icons li a:hover {
+  background: #fe980f;
+  color: #fff;
+}
+
+.footer-bottom {
+  background: #f0f0f0;
+  padding: 15px 0;
+  font-size: 13px;
+}

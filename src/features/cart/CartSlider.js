@@ -12,10 +12,16 @@ const CartSlider = createSlice({
       state.value += action.payload;
       localStorage.setItem("total", JSON.stringify(state.value));
     },
+
     Search: (state, action) => {
       state.search = action.payload;
     },
+
+    resetCartSlider: (state) => {
+      state.value = 0;
+      localStorage.removeItem("total");
+    },
   },
 });
-export const { addToCart, Search } = CartSlider.actions;
+export const { addToCart, Search, resetCartSlider } = CartSlider.actions;
 export default CartSlider.reducer;

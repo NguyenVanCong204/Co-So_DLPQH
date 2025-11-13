@@ -7,194 +7,215 @@ import {
   addQualtyCart,
   removeQualtyCart,
 } from "../../features/cart/Cart";
+import { addToCart } from "../../features/cart/CartSlider";
 import MemberCartContext from "../../Context/MemberCartContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
+function formatPrice(price) {
+  if (!price) return "";
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(price);
+}
 
 function CartProduct() {
   let totallocal = useContext(MemberCartContext);
   const cartredux = useSelector((state) => state.cartredux);
   const dispatch = useDispatch();
   const [AllQualtyCart, SetAllQualtyCart] = useState(0);
-
   const [input, SetInput] = useState([]);
+  
+  const navigate = useNavigate();
+
   useEffect(() => {
     let tongQualtyCart = 0;
     apiMember.post("/cart", cartredux).then((res) => {
-      console.log(res.data);
       const products = Array.isArray(res.data.data) ? res.data.data : [];
       SetInput(products);
       products.map((value, index) => {
-        tongQualtyCart += value.price * value.qty;
+        const is_on_sale = value.status == 0 && value.sale > 0;
+        const original_price = value.price;
+        const new_price = is_on_sale
+          ? original_price * (1 - value.sale / 100)
+          : original_price;
+
+        tongQualtyCart += new_price * value.qty;
       });
       SetAllQualtyCart(tongQualtyCart);
     });
   }, [cartredux]);
+
   function removeQualtyCartProduct(id, qty) {
-    dispatch(removeQualtyCart(id));
-    if (qty > 0 && totallocal.cart > 0) {
-      totallocal.cart -= 1;
-      totallocal.SetCart(totallocal.cart);
+    if (qty > 1) {
+      dispatch(removeQualtyCart(id));
+      if (totallocal.cart > 0) {
+        totallocal.cart -= 1;
+        totallocal.SetCart(totallocal.cart);
+        dispatch(addToCart(-1)); 
+      }
+    } else {
+      toast.info("Số lượng sản phẩm tối thiểu là 1");
     }
   }
+
   function addQualtyCartProduct(id, qty) {
     dispatch(addQualtyCart(id));
     totallocal.cart += 1;
     totallocal.SetCart(totallocal.cart);
+    dispatch(addToCart(1)); 
   }
+
   function removeFromCartProduct(id, qty) {
     dispatch(removeFromCart(id));
     totallocal.cart -= qty;
     totallocal.SetCart(totallocal.cart);
+    
+    dispatch(addToCart(-qty)); 
+
     toast.success("Xóa sản phẩm khỏi giỏ hàng thành công");
   }
+
+  function handleCheckout(e) {
+    e.preventDefault();
+    if (input.length === 0) {
+      toast.warn("Giỏ hàng của bạn đang trống!");
+    } else {
+      navigate("/member/product/checkout");
+    }
+  }
+  // -----------------------------
+
   function renderData() {
+    if (input.length === 0) {
+      return (
+        <tr>
+          <td colSpan="6" style={{ textAlign: "center", padding: "30px" }}>
+            Giỏ hàng của bạn đang trống.
+          </td>
+        </tr>
+      );
+    }
+
     return input.map((value, index) => {
       const avatar = JSON.parse(value.image);
+      const is_on_sale = value.status == 0 && value.sale > 0;
+      const original_price = value.price;
+      const new_price = is_on_sale
+        ? original_price * (1 - value.sale / 100)
+        : original_price;
       return (
-        <div className="cart" key={index}>
-          <img src={`http://localhost:3001/${avatar[0]}`}></img>
-          <div className="cart-left">
-            <p>{value.name}</p>
-            <p>{value.price} VND</p>
-          </div>
-          <div className="cart-right">
-            <div className="quantity-container">
-              <div className="quantity-label">Số Lượng</div>
-              <div className="quantity-control">
-                <button
-                  className="quantity-btn"
-                  onClick={() => removeQualtyCartProduct(value._id, value.qty)}
-                >
-                  −
-                </button>
-                <input
-                  type="text"
-                  className="quantity-input"
-                  value={value.qty}
-                  readonly
-                />
-                <button
-                  className="quantity-btn"
-                  onClick={() => addQualtyCartProduct(value._id, value.qty)}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
-          <button className="add">Xác nhận</button>
-          <button
-            onClick={() => removeFromCartProduct(value._id, value.qty)}
-            className="delete-cart"
-          >
-            Xóa
-          </button>
-        </div>
-      );
-    });
-  }
-  return (
-    <div className="cart_product">
-      <h2 className="cart_title">Cart</h2>
-      {renderData()}
-      <section id="do_action">
-        <div class="container">
-          <div class="heading">
-            <h3>What would you like to do next?</h3>
-            <p>
-              Choose if you have a discount code or reward points you want to
-              use or would like to estimate your delivery cost.
-            </p>
-          </div>
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="chose_area">
-                <ul class="user_option">
-                  <li>
-                    <input type="checkbox" />
-                    <label>Use Coupon Code</label>
-                  </li>
-                  <li>
-                    <input type="checkbox" />
-                    <label>Use Gift Voucher</label>
-                  </li>
-                  <li>
-                    <input type="checkbox" />
-                    <label>Estimate Shipping & Taxes</label>
-                  </li>
-                </ul>
-                <ul class="user_info">
-                  <li class="single_field">
-                    <label>Country:</label>
-                    <select>
-                      <option>United States</option>
-                      <option>Bangladesh</option>
-                      <option>UK</option>
-                      <option>India</option>
-                      <option>Pakistan</option>
-                      <option>Ucrane</option>
-                      <option>Canada</option>
-                      <option>Dubai</option>
-                    </select>
-                  </li>
-                  <li class="single_field">
-                    <label>Region / State:</label>
-                    <select>
-                      <option>Select</option>
-                      <option>Dhaka</option>
-                      <option>London</option>
-                      <option>Dillih</option>
-                      <option>Lahore</option>
-                      <option>Alaska</option>
-                      <option>Canada</option>
-                      <option>Dubai</option>
-                    </select>
-                  </li>
-                  <li class="single_field zip-field">
-                    <label>Zip Code:</label>
-                    <input type="text" />
-                  </li>
-                </ul>
-                <a class="btn btn-default update" href="">
-                  Get Quotes
-                </a>
-                <a class="btn btn-default check_out" href="">
-                  Continue
-                </a>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="total_area">
-                <ul>
-                  <li>
-                    Cart Sub Total{" "}
-                    <span class="totalll">{AllQualtyCart} VND</span>
-                  </li>
-                  <li>
-                    Eco Tax <span>2 VND</span>
-                  </li>
-                  <li>
-                    Shipping Cost <span>Free</span>
-                  </li>
-                  <li>
-                    Total <span class="totall">{AllQualtyCart + 2} VND</span>
-                  </li>
-                </ul>
-                <a class="btn btn-default update" href="">
-                  Update
-                </a>
-                <Link to="/member/product/checkout">
-                  <a class="btn btn-default check_out" href="">
-                    Check Out
-                  </a>
+        <tr key={index}>
+          <td className="cart_product">
+            <div className="product-info">
+              <img src={`http://localhost:3001/${avatar[0]}`} alt={value.name} />
+              <div>
+                <Link to={`/member/home/product/detail/${value._id}`}>
+                  {value.name}
                 </Link>
               </div>
             </div>
+          </td>
+          <td className="cart_price">
+            {is_on_sale ? (
+              <>
+                <p style={{ color: "#d9534f" }}>{formatPrice(new_price)}</p>
+                <p style={{ textDecoration: "line-through", fontSize: "12px", color: "#999" }}>
+                  {formatPrice(original_price)}
+                </p>
+              </>
+            ) : (
+              <p>{formatPrice(original_price)}</p>
+            )}
+          </td>
+          <td className="cart_quantity">
+            <div className="quantity-control">
+              <button
+                className="quantity-btn"
+                onClick={() => removeQualtyCartProduct(value._id, value.qty)}
+              >
+                −
+              </button>
+              <input
+                type="text"
+                className="quantity-input"
+                value={value.qty}
+                readOnly
+              />
+              <button
+                className="quantity-btn"
+                onClick={() => addQualtyCartProduct(value._id, value.qty)}
+              >
+                +
+              </button>
+            </div>
+          </td>
+          <td className="cart_total">
+            <p className="cart_price">
+              {formatPrice(new_price * value.qty)}
+            </p>
+          </td>
+          <td className="cart_delete">
+            <a onClick={() => removeFromCartProduct(value._id, value.qty)}>
+              <i className="fa fa-times" />
+            </a>
+          </td>
+        </tr>
+      );
+    });
+  }
+
+  const isCartEmpty = input.length === 0;
+  const ecoTax = isCartEmpty ? 0 : 2;
+  const finalTotal = isCartEmpty ? 0 : AllQualtyCart + ecoTax;
+
+  return (
+    <section id="cart_items_new">
+      <h2 className="cart_title">Giỏ Hàng Của Bạn</h2>
+
+      <div className="row">
+        <div className="col-md-12">
+          <table className="cart-table">
+            <thead>
+              <tr>
+                <th>Sản Phẩm</th>
+                <th>Giá</th>
+                <th>Số Lượng</th>
+                <th>Tổng</th>
+                <th>Xóa</th>
+              </tr>
+            </thead>
+            <tbody>{renderData()}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col-md-5 pull-right">
+          <div className="cart-total-box">
+            <h3>TỔNG CỘNG</h3>
+            <ul>
+              <li>
+                Tạm tính <span>{formatPrice(AllQualtyCart)}</span>
+              </li>
+              <li>
+                Eco Tax <span>{formatPrice(ecoTax)}</span>
+              </li>
+              <li>
+                Phí Vận Chuyển <span>Free</span>
+              </li>
+              <li className="total">
+                Tổng <span>{formatPrice(finalTotal)}</span>
+              </li>
+            </ul>
+            <a href="#" className="checkout-btn" onClick={handleCheckout}>
+              Tiến hành thanh toán
+            </a>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
 export default CartProduct;
