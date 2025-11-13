@@ -11,7 +11,6 @@ const cx = classNames.bind(styles);
 
 function ProductList() {
     const [data, setData] = useState([]);
-    const [count, setCount] = useState(1);
     useEffect(() => {
         apiAdmin.get('/product').then((res) => {
             setData(res.data.data);
@@ -69,10 +68,8 @@ function ProductList() {
                                     <td>
                                         <img
                                             className={cx('image')}
-                                            src={`http://localhost:3001/${item.image[0]}`}
+                                            src={`http://localhost:3001/${JSON.parse(item.image)[0]}`}
                                             alt=""
-                                            onLoad={(e) => console.log('Image loaded:', e.target.src)}
-                                            onError={(e) => console.log('Image failed to load:', e.target.src)}
                                         />
                                     </td>
                                     <td>
