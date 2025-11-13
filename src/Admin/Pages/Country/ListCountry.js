@@ -1,9 +1,9 @@
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useEffect, useState } from "react";
-import apiAdmin from "../../API/apiAdmin";
-import { confirmDialog } from "../../component/confirmDialog";
+import apiAdmin from "../../../API/apiAdmin";
+import { confirmDialog } from "../../../component/confirmDialog";
 import { toast } from "react-toastify";
-import refershToken from "../../RefershToken/RefershToken";
+import refershToken from "../../../RefershToken/RefershToken";
 function ListCountry() {
   const token = localStorage.getItem("token");
   let config = {
