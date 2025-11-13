@@ -21,10 +21,6 @@ export const UpdateProductValidation = (data, file) => {
   if (!data.detail) {
     err.detail = "Thiếu detail";
   }
-  if (!data.company) {
-    err.company = "Thiếu company";
-  }
-
   if (file && file.length > 3) {
     err.avatar = "Chỉ được chọn tối đa 3 file";
   }
