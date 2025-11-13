@@ -18,16 +18,32 @@ import {
   updateBlog,
   deleteBlog,
 } from "../../controllers/Admin/blogController.js";
-import { createBrand } from "../../controllers/Admin/brandController.js";
+import {
+  getProduct,
+  createProduct,
+  upload as uploadProduct,
+  deleteProduct,
+  getProductById,
+  updateProduct,
+  getProductCart,
+  searchProduct,
+  getProductByCategory,
+} from "../../controllers/Admin/productController.js";
+import { createBrand, getBrand } from "../../controllers/Admin/brandController.js";
 import { createCategory, getCategory } from "../../controllers/Admin/categoryController.js";
 import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 router.get("/country", getCountry);
+router.get("/brand", getBrand);
 router.post("/brand", createBrand);
 router.post("/category", createCategory);
 router.get("/category", getCategory);
+router.get("/product", getProduct);
+router.post("/product", uploadProduct, createProduct);
+router.delete("/product/:id", deleteProduct);
+router.put("/product/:id", uploadProduct, updateProduct);
 
 router.use(requireAuth, authorize(1));
 

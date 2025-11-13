@@ -22,7 +22,6 @@ const productSchema = new mongoose.Schema(
     status: Number,
     sale: Number,
     detail: String,
-    company: String,
     qualty: {
       type: Number,
       required: true,
@@ -50,7 +49,9 @@ productSchema.statics.createProduct = async function (data) {
   return await this.create(data);
 };
 productSchema.statics.getProduct = async function () {
-  return await this.find();
+  return await this.find()
+    .populate('id_brand', 'name')      
+    .populate('id_category', 'name');
 };
 productSchema.statics.getProductById = async function (id) {
   return await this.findOne({ _id: id });
