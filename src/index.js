@@ -1,9 +1,9 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import {
   PayPalScriptProvider,
@@ -28,6 +28,9 @@ import CartProduct from "./Member/Product/CartProduct";
 import CheckOut from "./Member/Product/CheckOut";
 import LoginTest from "./Admin/LoginTest";
 import RegisterTest from "./Admin/RegisterTest";
+import ProductListAdmin from './Admin/Pages/Product/ProductList';
+import CreateProduct from './Admin/Pages/Product/CreateProduct/CreateProduct';
+import UpdateProduct from './Admin/Pages/Product/UpdateProduct/UpdateProduct';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -45,11 +48,11 @@ root.render(
           <Routes>
             <Route path="/admin/register" element={<RegisterTest />} />
             <Route path="/admin/login" element={<LoginTest />} />
-            <Route path="/dashboard/update/admin" element={<UpdateAdmin />} />
-            <Route path="/dashboard/blog/add" element={<AddBlog />} />
-            <Route path="/dashboard/blog/list" element={<ListBlog />} />
-            <Route path="/dashboard/blog/update/:id" element={<UpdateBlog />} />
-            <Route path="/dashboard/country/list" element={<ListCountry />} />
+            <Route path="/admin/product-list" element={<ProductListAdmin />} />
+            <Route path="/admin/product/create-product" element={<CreateProduct />} />
+            <Route path="/admin/product/update-product" element={<UpdateProduct />} />
+            <Route path="/admin/update-profile" element={<UpdateAdmin />} />
+            <Route path="/admin/country-list" element={<ListCountry />} />
             <Route path="/member/register" element={<RegisterMember />} />
             <Route index path="/" element={<LoginMember />} />
             <Route path="/member/account/update" element={<UpdateMember />} />

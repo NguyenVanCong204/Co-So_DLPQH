@@ -1,13 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
-import "./Sidebar.css"; // Import file CSS
+import styles from './Sidebar.module.scss'
+import classNames from "classnames/bind";
 import {
   FaHome,
   FaUser,
-  FaNewspaper,
   FaGlobeAsia,
   FaSignOutAlt,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
+
+const cx = classNames.bind(styles)
 const Sidebar = () => {
   const navigate = useNavigate();
   function Logout() {
@@ -16,38 +18,32 @@ const Sidebar = () => {
     toast.success("Logout thành công");
   }
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
+    <div className={cx("sidebar")}>
+      <div className={cx("sidebar-header")}>
         <h2>Dashboard</h2>
       </div>
-      <ul className="sidebar-menu">
+      <ul className={cx("sidebar-menu")}>
         <li>
-          <a href="#">
-            <FaHome className="icon" />
-            <span>Home</span>
+          <a href="/admin/product-list">
+            <FaHome className={cx("icon")} />
+            <span>Product</span>
           </a>
         </li>
         <li>
           <Link to="/dashboard/update/admin">
-            <FaUser className="icon" />
-            <span>Profile</span>
-          </Link>
-        </li>
-        <li>
-          <Link to="/dashboard/blog/list">
-            <FaNewspaper className="icon" />
-            <span>Blogs</span>
+            <FaUser className={cx("icon")} />
+            <span>User</span>
           </Link>
         </li>
         <li>
           <Link to="/dashboard/country/list">
-            <FaGlobeAsia className="icon" />
+            <FaGlobeAsia className={cx("icon")} />
             <span>Country</span>
           </Link>
         </li>
         <li>
           <a onClick={() => Logout()}>
-            <FaSignOutAlt className="icon" />
+            <FaSignOutAlt className={cx("icon")} />
             <span>Logout</span>
           </a>
         </li>

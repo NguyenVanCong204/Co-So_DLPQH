@@ -49,7 +49,7 @@ function LoginTest() {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("tokenReferesh", res.data.tokenReferesh);
 
-          navigate("/dashboard/update/admin");
+          navigate("/admin/product-list");
           toast.success("Đăng nhập thành công");
         })
         .catch((error) => {
