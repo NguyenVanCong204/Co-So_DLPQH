@@ -11,7 +11,7 @@ const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "public/uploads/user");
+    cb(null, "public/uploads/product");
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
