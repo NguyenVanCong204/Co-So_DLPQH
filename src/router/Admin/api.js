@@ -42,8 +42,8 @@ router.post("/category", createCategory);
 router.get("/category", getCategory);
 router.get("/product", getProduct);
 router.post("/product", uploadProduct, createProduct);
-router.delete("/product/:id", deleteProduct);
-router.put("/product/:id", uploadProduct, updateProduct);
+router.delete("/product/delete/:id", deleteProduct);
+router.put("/product/update/:id", uploadProduct, updateProduct);
 
 router.use(requireAuth, authorize(1));
 
