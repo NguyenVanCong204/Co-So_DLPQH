@@ -3,9 +3,11 @@ import classNames from 'classnames/bind';
 import { IoMdAdd } from 'react-icons/io';
 import { CiTrash } from 'react-icons/ci';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 
 import apiAdmin from '../../../API/apiAdmin';
-import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -16,6 +18,26 @@ function ProductList() {
             setData(res.data.data);
         });
     }, []);
+
+    const handleDelete = async (id) => {
+        try {
+            const result = await Swal.fire({
+                title: 'Xóa sản phẩm?',
+                text: 'Bạn có chắc chắn muốn xóa?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy',
+            });
+            if (result.isConfirmed) {
+                await apiAdmin.delete(`/product/delete/${id}`);
+                setData((prev) => prev.filter((item) => item._id !== id));
+                toast.success('Sản phẩm đã được đưa vào thùng rác!');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <>
             <div className={cx('wrapper')}>
@@ -80,7 +102,9 @@ function ProductList() {
                                         >
                                             Chỉnh sửa
                                         </Link>
-                                        <button className={cx('btn-delete')}>Xóa</button>
+                                        <button className={cx('btn-delete')} onClick={() => handleDelete(item._id)}>
+                                            Xóa
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
