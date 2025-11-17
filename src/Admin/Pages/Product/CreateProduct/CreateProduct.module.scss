@@ -99,3 +99,12 @@
         opacity: 0.8;
     }
 }
+.input-error {
+    border: 1px solid red !important;
+}
+
+.error-text {
+    color: red;
+    font-size: 13px;
+    margin-top: 4px;
+}
