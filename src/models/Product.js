@@ -22,7 +22,7 @@ const productSchema = new mongoose.Schema(
     status: Number,
     sale: Number,
     detail: String,
-    qualty: {
+    quantity: {
       type: Number,
       required: true,
     },
@@ -48,10 +48,15 @@ productSchema.statics.checkBrand = async function (id_brand) {
 productSchema.statics.createProduct = async function (data) {
   return await this.create(data);
 };
-productSchema.statics.getProduct = async function () {
-  return await this.find()
+productSchema.statics.getProduct = async function (page=1, limit=8) {
+  const skip = (page - 1) * limit
+  const data =  await this.find()
+    .skip(skip)
+    .limit(limit)
     .populate('id_brand', 'name')      
     .populate('id_category', 'name');
+  const total = await this.countDocuments();
+  return {data, total}
 };
 productSchema.statics.getProductById = async function (id) {
   return await this.findOne({ _id: id });
