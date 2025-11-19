@@ -64,6 +64,9 @@ productSchema.statics.getProductById = async function (id) {
 productSchema.statics.deleteProduct = async function (id) {
   return await this.delete({ _id: id });
 };
+productSchema.statics.deleteMany = async function (ids) {
+  return await this.delete({ _id: {$in: ids}});
+};
 productSchema.statics.updateProduct = async function (id, data) {
   return await this.findByIdAndUpdate(id, data, { new: true });
 };

@@ -28,6 +28,7 @@ import {
   getProductCart,
   searchProduct,
   getProductByCategory,
+  deleteMany,
 } from "../../controllers/Admin/productController.js";
 import { createBrand, getBrand } from "../../controllers/Admin/brandController.js";
 import { createCategory, getCategory } from "../../controllers/Admin/categoryController.js";
@@ -43,6 +44,7 @@ router.get("/category", getCategory);
 router.get("/product", getProduct);
 router.post("/product", uploadProduct, createProduct);
 router.delete("/product/delete/:id", deleteProduct);
+router.delete("/product/delete-many", deleteMany);
 router.put("/product/update/:id", uploadProduct, updateProduct);
 
 router.use(requireAuth, authorize(1));
