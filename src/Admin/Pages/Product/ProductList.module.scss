@@ -185,12 +185,15 @@
     width: 40px;
     height: 40px;
 }
-:global(.modal-backdrop) {
-    z-index: 1050 !important;
+.pagination {
+    padding-left: 0;
 }
-
-:global(.modal) {
-    z-index: 1055 !important;
-    display: block !important;
-    opacity: 1 !important;
+button[disabled],
+html input[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+button[disabled]:hover,
+html input[disabled] {
+    opacity: 0.5;
 }

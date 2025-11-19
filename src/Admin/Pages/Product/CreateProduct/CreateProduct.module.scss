@@ -68,6 +68,10 @@
 .box-preview {
     display: flex;
 }
+.preview-wrapper {
+    position: relative;
+}
+
 .preview {
     width: 120px;
     height: 120px;
@@ -76,6 +80,15 @@
     object-fit: cover;
     border-radius: 8px;
     border: 1px solid #ddd;
+}
+.box-icon {
+    position: absolute;
+    top: 6px;
+    left: 100px;
+    cursor: pointer;
+}
+.icon-remove {
+    font-size: 30px;
 }
 
 .actions {

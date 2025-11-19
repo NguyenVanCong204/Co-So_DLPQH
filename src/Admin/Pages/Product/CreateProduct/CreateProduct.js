@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { TiDelete } from 'react-icons/ti';
+
 import apiAdmin from '../../../../API/apiAdmin';
 const cx = classNames.bind(styles);
 function CreateProduct() {
@@ -22,6 +24,15 @@ function CreateProduct() {
         quality: Yup.number().required('Số lượng là bắt buộc').min(1),
         detail: Yup.string().required('Chi tiết sản phẩm là bắt buộc'),
     });
+
+    const handleImage = (e) => {
+        const newFiles = Array.from(e.target.files);
+        if (image.length >= 3) {
+            toast.error('Chỉ được chọn tối đa 3 ảnh');
+            return;
+        }
+        setImage((prev) => [...prev, ...newFiles]);
+    };
 
     const getCategory = () => {
         apiAdmin
@@ -179,24 +190,27 @@ function CreateProduct() {
 
                             <div className={cx('form-right')}>
                                 <div className={cx('form-group')}>
-                                    <label>Ảnh sản phẩm</label>
-                                    <input
-                                        type="file"
-                                        multiple
-                                        accept="image/*"
-                                        onChange={(e) => {
-                                            const newFiles = Array.from(e.target.files);
-                                            setImage((prev) => [...prev, ...newFiles]);
-                                        }}
-                                    />
+                                    <label>
+                                        Ảnh sản phẩm <span>({image.length}/3)</span>
+                                    </label>
+                                    <input type="file" multiple accept="image/*" onChange={handleImage} />
                                     <div className={cx('box-preview')}>
                                         {image.map((file, index) => (
-                                            <img
-                                                key={index}
-                                                src={URL.createObjectURL(file)}
-                                                alt="preview"
-                                                className={cx('preview')}
-                                            />
+                                            <div key={index} className={cx('preview-wrapper')}>
+                                                <img
+                                                    src={URL.createObjectURL(file)}
+                                                    alt="preview"
+                                                    className={cx('preview')}
+                                                />
+                                                <span
+                                                    className={cx('box-icon')}
+                                                    onClick={() =>
+                                                        setImage((prev) => prev.filter((_, i) => i !== index))
+                                                    }
+                                                >
+                                                    <TiDelete className={cx('icon-remove')} />
+                                                </span>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
