@@ -25,6 +25,7 @@ import RegisterTest from './Admin/RegisterTest';
 import ProductListAdmin from './Admin/Pages/Product/ProductList';
 import CreateProduct from './Admin/Pages/Product/CreateProduct/CreateProduct';
 import UpdateProduct from './Admin/Pages/Product/UpdateProduct/UpdateProduct';
+import MemberProtectedRoute from './component/Member/MemberProtectedRoute';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -57,8 +58,22 @@ root.render(
                         <Route path="/member/home" element={<HomeList />} />
                         <Route path="/member/category/:categoryId" element={<HomeList />} />
                         <Route path="/member/home/product/detail/:id" element={<ProductDetail />} />
-                        <Route path="/member/home/cart" element={<CartProduct />} />
-                        <Route path="/member/product/checkout" element={<CheckOut />} />
+                        <Route
+                            path="/member/home/cart"
+                            element={
+                                <MemberProtectedRoute>
+                                    <CartProduct />
+                                </MemberProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/member/product/checkout"
+                            element={
+                                <MemberProtectedRoute>
+                                    <CheckOut />
+                                </MemberProtectedRoute>
+                            }
+                        />
                     </Routes>
                 </App>
             </BrowserRouter>
