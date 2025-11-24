@@ -63,6 +63,69 @@ export const getProduct = async (req, res) => {
     });
   }
 };
+export const trash = async (req, res) => {
+  try {
+    const product = await Product.trash();
+    if (!product || product.length === 0) {
+      return res.status(404).json({
+        message: "Danh sách trống!",
+      });
+    }
+    return res.status(200).json({
+      data: product
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Lỗi server !",
+      error: error.message,
+    });
+  }
+};
+export const countTrashProduct = async (req, res) => {
+  try {
+    const count = await Product.countTrashProduct();
+    if(!count) {
+      return res.status(404).json({
+        message: "Danh sách trống!",
+      });
+    }
+    return res.status(200).send(count);
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "Lỗi server !",
+      error: error.message,
+    });
+  }
+}
+export const restore = async  (req, res) => {
+  try {
+    const id = req.params.id;
+    await Product.restoreById (id)
+    return res.status(200).json({
+      message: "Khôi phục sản phẩm thành công !",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Lỗi server !",
+      error: error.message,
+    });
+  }
+}
+export const forceDelete = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Product.forceDelete(id);
+    return res.status(200).json({
+      message: "Xóa vĩnh viễn sản phẩm thành công !",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Lỗi server !",
+      error: error.message,
+    });
+  }
+}
 export const createProduct = async (req, res) => {
   try {
     const data = req.body;
