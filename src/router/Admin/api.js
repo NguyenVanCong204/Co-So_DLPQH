@@ -23,12 +23,12 @@ import {
   createProduct,
   upload as uploadProduct,
   deleteProduct,
-  getProductById,
   updateProduct,
-  getProductCart,
-  searchProduct,
-  getProductByCategory,
   deleteMany,
+  trash,
+  countTrashProduct,
+  restore,
+  forceDelete,
 } from "../../controllers/Admin/productController.js";
 import { createBrand, getBrand } from "../../controllers/Admin/brandController.js";
 import { createCategory, getCategory } from "../../controllers/Admin/categoryController.js";
@@ -46,6 +46,10 @@ router.post("/product", uploadProduct, createProduct);
 router.delete("/product/delete/:id", deleteProduct);
 router.delete("/product/delete-many", deleteMany);
 router.put("/product/update/:id", uploadProduct, updateProduct);
+router.get("/trash-product", trash);
+router.get("/trash-product/count", countTrashProduct);
+router.patch("/trash-product/restore/:id", restore);
+router.delete("/trash-product/force-delete/:id", forceDelete);
 
 router.use(requireAuth, authorize(1));
 

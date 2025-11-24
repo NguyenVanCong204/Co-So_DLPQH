@@ -58,6 +58,16 @@ productSchema.statics.getProduct = async function (page=1, limit=8) {
   const total = await this.countDocuments();
   return {data, total}
 };
+productSchema.statics.trash = async function () {
+  const data =  await this.findDeleted({deletedAt: {$ne : null}})
+    .populate('id_brand', 'name')      
+    .populate('id_category', 'name');
+  return data;
+};
+productSchema.statics.countTrashProduct = async function () {
+  const count = await this.countDocumentsDeleted({deletedAt: {$ne : null}})
+  return count;
+}
 productSchema.statics.getProductById = async function (id) {
   return await this.findOne({ _id: id });
 };
@@ -67,6 +77,12 @@ productSchema.statics.deleteProduct = async function (id) {
 productSchema.statics.deleteMany = async function (ids) {
   return await this.delete({ _id: {$in: ids}});
 };
+productSchema.statics.restoreById  = async function (id) {
+  return await this.restore({ _id: id});
+}
+productSchema.statics.forceDelete = async function (id) {
+  return await this.deleteOne({_id: id})
+}
 productSchema.statics.updateProduct = async function (id, data) {
   return await this.findByIdAndUpdate(id, data, { new: true });
 };
