@@ -17,6 +17,7 @@ function ProductList() {
     const [totalPages, setTotalPages] = useState(1);
     const [checkedItems, setCheckedItems] = useState([]);
     const [action, setAction] = useState('');
+    const [count, setCount] = useState(0);
 
     const isCheckedAll = checkedItems.length === data.length && data.length > 0;
     const handleCheckedAll = (e) => {
@@ -39,8 +40,17 @@ function ProductList() {
             })
             .catch((err) => console.log(err));
     };
+    const fetchCount = () => {
+        apiAdmin
+            .get('/trash-product/count')
+            .then((res) => {
+                setCount(res.data);
+            })
+            .catch((err) => console.log(err));
+    };
     useEffect(() => {
         fetchData(page);
+        fetchCount();
     }, [page]);
 
     const handleDelete = async (id) => {
@@ -57,6 +67,7 @@ function ProductList() {
                 await apiAdmin.delete(`/product/delete/${id}`);
                 setData((prev) => prev.filter((item) => item._id !== id));
                 toast.success('Sản phẩm đã được đưa vào thùng rác!');
+                fetchCount();
             }
         } catch (error) {
             console.log(error);
@@ -157,7 +168,7 @@ function ProductList() {
                                     <td>{item.name}</td>
                                     <td>{item.id_brand.name}</td>
                                     <td>{item.id_category.name}</td>
-                                    <td>{item.price}</td>
+                                    <td>{item.price.toLocaleString('vi-VN')}</td>
                                     <td>{item.quantity}</td>
                                     <td>
                                         <img
@@ -201,10 +212,10 @@ function ProductList() {
                     </button>
                 </div>
                 <div className={cx('trash')}>
-                    <div className={cx('trash-box')}>
-                        <span className={cx('trash-quality')}>3</span>
+                    <Link to={'/admin/product/trash-product'} className={cx('trash-box')}>
+                        <span className={cx('trash-quality')}>{count}</span>
                         <CiTrash className={cx('trash-icon')} />
-                    </div>
+                    </Link>
                 </div>
             </div>
         </>
