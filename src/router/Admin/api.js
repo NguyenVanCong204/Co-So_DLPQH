@@ -36,22 +36,24 @@ import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
+router.use(requireAuth, authorize(1));
+
 router.get("/country", getCountry);
 router.get("/brand", getBrand);
 router.post("/brand", createBrand);
 router.post("/category", createCategory);
 router.get("/category", getCategory);
+
 router.get("/product", getProduct);
 router.post("/product", uploadProduct, createProduct);
 router.delete("/product/delete/:id", deleteProduct);
 router.delete("/product/delete-many", deleteMany);
 router.put("/product/update/:id", uploadProduct, updateProduct);
 router.get("/trash-product", trash);
+
 router.get("/trash-product/count", countTrashProduct);
 router.patch("/trash-product/restore/:id", restore);
 router.delete("/trash-product/force-delete/:id", forceDelete);
-
-router.use(requireAuth, authorize(1));
 
 router.put("/user/:id", upload, updateUser);
 router.get("/user/:id", getUser);

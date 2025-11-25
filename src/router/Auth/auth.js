@@ -10,7 +10,7 @@ const router = express.Router();
 
 //Login - register
 router.post("/register", upload, createUser);
-router.post("/refershtoken", handleRefreshToken);
+router.post("/refresh-token", handleRefreshToken);
 router.post("/login", checkLoginUser);
 
 export default router;
