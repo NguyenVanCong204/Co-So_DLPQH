@@ -20,6 +20,7 @@ function ProductList() {
     const [count, setCount] = useState(0);
 
     const isCheckedAll = checkedItems.length === data.length && data.length > 0;
+
     const handleCheckedAll = (e) => {
         if (e.target.checked) {
             setCheckedItems(data.map((item) => item._id));
@@ -27,6 +28,7 @@ function ProductList() {
             setCheckedItems([]);
         }
     };
+
     const handleCheckedItem = (id) => {
         setCheckedItems((prev) => (prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]));
     };
@@ -40,6 +42,7 @@ function ProductList() {
             })
             .catch((err) => console.log(err));
     };
+
     const fetchCount = () => {
         apiAdmin
             .get('/trash-product/count')
@@ -48,6 +51,7 @@ function ProductList() {
             })
             .catch((err) => console.log(err));
     };
+
     useEffect(() => {
         fetchData(page);
         fetchCount();
@@ -95,6 +99,7 @@ function ProductList() {
                         });
                         setData((prev) => prev.filter((item) => !checkedItems.includes(item._id)));
                         toast.success('Sản phẩm đã được đưa vào thùng rác!');
+                        fetchCount();
                     }
                     break;
 

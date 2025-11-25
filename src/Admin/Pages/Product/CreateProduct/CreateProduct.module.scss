@@ -1,15 +1,18 @@
 .wrapper {
+    margin: 80px 20px 0 20px;
+}
+.back {
     background-color: #fff;
-    padding: 20px 30px;
-    margin: 10px 10px;
+    padding: 10px 20px;
+    border-radius: 5px;
 }
 .create-product {
     background: #fff;
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    max-width: 1100px;
-    margin: 30px auto;
+    max-width: 1226px;
+    margin: 20px auto;
     font-family: 'Inter', sans-serif;
 }
 
