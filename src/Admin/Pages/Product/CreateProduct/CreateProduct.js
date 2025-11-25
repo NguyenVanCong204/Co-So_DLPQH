@@ -21,7 +21,7 @@ function CreateProduct() {
         id_brand: Yup.string().required('Thương hiệu là bắt buộc'),
         price: Yup.number().required('Giá là bắt buộc').min(1),
         sale: Yup.number().min(0),
-        quality: Yup.number().required('Số lượng là bắt buộc').min(1),
+        quantity: Yup.number().required('Số lượng là bắt buộc').min(1),
         detail: Yup.string().required('Chi tiết sản phẩm là bắt buộc'),
     });
 
@@ -84,22 +84,22 @@ function CreateProduct() {
                 id_brand: '',
                 price: '',
                 sale: '',
-                quality: '',
+                quantity: '',
                 detail: '',
             }}
             validationSchema={productSchema}
             onSubmit={handleCreate}
         >
             {({ values, errors, touched, handleChange, handleSubmit }) => (
-                <div className={cx('wrapper')}>
+                <form className={cx('wrapper')} onSubmit={handleSubmit}>
                     <div className={cx('back')}>
                         <Link className={cx('back-list')} to={'/admin/product-list'}>
                             Danh sách sản phẩm
                         </Link>
-                        <span>/thêm sản phẩm mới</span>
+                        <span> / thêm sản phẩm mới</span>
                     </div>
                     <div className={cx('create-product')}>
-                        <h2 className={cx('title')}>Tạo sản phẩm mới</h2>
+                        <h2 className={cx('title')}>Thêm sản phẩm mới</h2>
                         <div className={cx('form')}>
                             <div className={cx('form-left')}>
                                 <div className={cx('form-group')}>
@@ -172,23 +172,22 @@ function CreateProduct() {
                                     />
                                     {errors.sale && touched.sale && <p className={cx('error-text')}>{errors.sale}</p>}
                                 </div>
+                            </div>
 
+                            <div className={cx('form-right')}>
                                 <div className={cx('form-group')}>
                                     <label>Số lượng</label>
                                     <input
                                         type="number"
-                                        name="quality"
-                                        value={values.quality}
+                                        name="quantity"
+                                        value={values.quantity}
                                         onChange={handleChange}
-                                        className={cx({ 'input-error': errors.quality && touched.quality })}
+                                        className={cx({ 'input-error': errors.quantity && touched.quantity })}
                                     />
-                                    {errors.quality && touched.quality && (
-                                        <p className={cx('error-text')}>{errors.quality}</p>
+                                    {errors.quantity && touched.quantity && (
+                                        <p className={cx('error-text')}>{errors.quantity}</p>
                                     )}
                                 </div>
-                            </div>
-
-                            <div className={cx('form-right')}>
                                 <div className={cx('form-group')}>
                                     <label>
                                         Ảnh sản phẩm <span>({image.length}/3)</span>
@@ -228,14 +227,14 @@ function CreateProduct() {
                                 </div>
 
                                 <div className={cx('actions')}>
-                                    <button className={cx('btn-submit')} onClick={handleSubmit}>
+                                    <button type="submit" className={cx('btn-submit')}>
                                         Thêm sản phẩm
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             )}
         </Formik>
     );
