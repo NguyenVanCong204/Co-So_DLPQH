@@ -8,13 +8,21 @@ const cx = classNames.bind(styles);
 const Sidebar = () => {
     const navigate = useNavigate();
     function Logout() {
-        localStorage.clear();
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminTokenRefresh');
+        localStorage.removeItem('adminId');
         navigate('/admin/login');
         toast.success('Đăng xuất thành công');
     }
     return (
         <div className={cx('sidebar')}>
             <ul className={cx('sidebar-menu')}>
+                <li>
+                    <Link to="/admin/order-list">
+                        <FaRegListAlt className={cx('icon')} />
+                        <span>Đơn hàng</span>
+                    </Link>
+                </li>
                 <li>
                     <a href="/admin/product-list">
                         <FaRegListAlt className={cx('icon')} />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import apiAdmin from '../../API/apiAdmin';
+import apiMember from '../../API/apiMember';
 import { Link } from 'react-router-dom';
 import './LeftSide.css';
 
@@ -7,17 +7,19 @@ function LeftSide() {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        apiAdmin
+        apiMember
             .get('/category')
             .then((res) => {
                 if (Array.isArray(res.data.data)) {
                     setCategories(res.data.data);
                 } else {
                     console.error('API /category did not return an array:', res.data);
+                    setCategories([]);
                 }
             })
             .catch((err) => {
                 console.error('Lỗi khi tải danh mục:', err);
+                setCategories([]);
             });
     }, []);
 

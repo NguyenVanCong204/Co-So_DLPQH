@@ -141,6 +141,17 @@ function CheckOut() {
       navigate("/");
       return Promise.reject("Chưa đăng nhập");
     }
+    
+    // Check for user ID specifically
+    if (!user._id && !user.id) {
+      console.error("User object missing ID:", user);
+      toast.error("Lỗi thông tin người dùng. Vui lòng đăng nhập lại.");
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      navigate("/member/login");
+      return Promise.reject("Missing user ID");
+    }
+
     if (Object.keys(cart).length === 0) {
       toast.warn("Vui lòng thêm sản phẩm vào giỏ hàng");
       return Promise.reject("Giỏ hàng rỗng");
@@ -153,6 +164,7 @@ function CheckOut() {
     const orderData = {
       user: { ...user, ...formData, note },
       cart,
+      paymentMethod: paymentMethod,
     };
     
     setIsLoading(true);
@@ -168,6 +180,8 @@ function CheckOut() {
       navigate("/member/home");
       return res;
     } catch (error) {
+      console.error("Full error object:", error);
+      
       if (error.response?.status === 401) {
         try {
           const newtoken = await refershToken();
@@ -197,7 +211,40 @@ function CheckOut() {
           return Promise.reject(refreshError);
         }
       } else {
-        const msg = error.response?.data?.error?.stock || error.response?.data?.message || error.message;
+        const errorData = error.response?.data;
+        let msg = "Lỗi không xác định";
+        
+        if (errorData) {
+          console.log("Server error data:", errorData);
+          
+          if (errorData.errors) {
+            if (typeof errorData.errors === 'object') {
+              const errorValues = Object.values(errorData.errors);
+              if (errorValues.length > 0) {
+                const firstVal = errorValues[0];
+                msg = Array.isArray(firstVal) ? firstVal[0] : firstVal;
+              }
+            } else {
+              msg = errorData.errors;
+            }
+          } else if (errorData.error) {
+            if (typeof errorData.error === 'object') {
+               const keys = Object.keys(errorData.error);
+               if (keys.length > 0) {
+                 msg = errorData.error[keys[0]];
+               } else {
+                 msg = JSON.stringify(errorData.error);
+               }
+            } else {
+              msg = errorData.error;
+            }
+          } else if (errorData.message) {
+            msg = errorData.message;
+          }
+        } else {
+          msg = error.message || "Không thể kết nối đến server";
+        }
+        
         toast.error("Lỗi khi đặt hàng: " + msg);
         return Promise.reject(error);
       }

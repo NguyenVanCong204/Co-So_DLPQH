@@ -174,7 +174,7 @@ function UpdateMember() {
                 console.error(refreshError);
               }
             } else if (status === 403) {
-              toast.error(message);
+              toast.error("Bạn đang đăng nhập với quyền Admin. Vui lòng đăng nhập lại với tài khoản Member để cập nhật thông tin.");
             } else {
               if (typeof message === "object" && message !== null) {
                 const keys = Object.keys(message);
