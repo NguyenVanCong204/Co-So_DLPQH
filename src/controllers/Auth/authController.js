@@ -92,11 +92,12 @@ export const handleRefreshToken = (req, res) => {
 export const checkLoginUser = async (req, res) => {
   const data = req.body;
   const user = await User.checkLoginUser(data);
-  const token = createJWT(data.id, data.level);
-  const tokenReferesh = createJWTReferesh(data.id, data.level);
   if (!user) {
-    res.status(400).json({ message: "email hoặc pass sai" });
+    return res.status(400).json({ message: "email hoặc pass sai" });
   }
+  // Use the user's actual level from database, not from request
+  const token = createJWT(user._id.toString(), user.level);
+  const tokenReferesh = createJWTReferesh(user._id.toString(), user.level);
   const { level, password, ...userWithoutPassword } = user.toObject();
   res.json({
     message: "Đăng nhập thành công",

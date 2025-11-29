@@ -9,14 +9,15 @@ const CreateHistoryValidation = (user, products, cart) => {
   const productErrors = [];
   products.map((value, index) => {
     if (!value.name) {
-      productErrors.push(`Sản phẩm ID ${value.id} thiếu name`);
+      productErrors.push(`Sản phẩm ID ${value._id || value.id} thiếu name`);
     }
     if (!value.price) {
-      productErrors.push(`Sản phẩm ID ${value.id} thiếu price`);
+      productErrors.push(`Sản phẩm ID ${value._id || value.id} thiếu price`);
     }
 
-    if (!cart[value.id]) {
-      productErrors.push(`Sản phẩm ID ${p.id} thiếu số lượng (qty)`);
+    const qty = cart[value._id?.toString()] || cart[value.id];
+    if (!qty) {
+      productErrors.push(`Sản phẩm ID ${value._id || value.id} thiếu số lượng (qty)`);
     }
   });
   if (productErrors.length > 0) {

@@ -19,7 +19,21 @@ const historySchema = new mongoose.Schema(
     status: {
       type: Number,
       required: true,
-      default: 0,
+      default: 0, // 0: Waiting for confirmation, 1: Waiting for delivery, 2: Delivered
+    },
+    orderCode: {
+      type: String,
+      index: true, // Index for faster queries, but not unique constraint to allow same orderCode for multiple items
+    },
+    paymentMethod: {
+      type: String,
+      default: "cod", // cod or paypal
+    },
+    address: {
+      type: String,
+    },
+    note: {
+      type: String,
     },
   },
   {
@@ -36,6 +50,25 @@ historySchema.statics.checkUser = async function (id_user) {
     error.user = "Người dùng không tồn tại trong hệ thống";
   }
   return error;
+};
+historySchema.statics.getOrdersByUser = async function (id_user) {
+  return await this.find({ id_user })
+    .populate('id_product')
+    .sort({ createdAt: -1 });
+};
+historySchema.statics.getOrderById = async function (id) {
+  return await this.findById(id).populate('id_product').populate('id_user');
+};
+historySchema.statics.updateOrderStatus = async function (id, status) {
+  return await this.findByIdAndUpdate(id, { status }, { new: true })
+    .populate('id_product');
+};
+historySchema.statics.generateOrderCode = function () {
+  // Generate a more unique order code with timestamp and random string
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const random2 = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `ORD${timestamp}${random}${random2}`;
 };
 historySchema.plugin(mongooseDelete, {
   deletedAt: true,

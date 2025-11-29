@@ -40,14 +40,15 @@ export const upload = multer({
 
 export const getProduct = async (req, res) => {
   try {
-    const product = await Product.getProduct();
-    if (!product || product.length === 0) {
-      return res.status(404).json({
-        message: "Bạn chưa có Product nào !",
+    const result = await Product.getProduct();
+    const product = result.data || result; // Handle both {data, total} and array formats
+    if (!product || (Array.isArray(product) && product.length === 0)) {
+      return res.status(200).json({
+        data: [],
       });
     }
     return res.status(200).json({
-      data: product,
+      data: Array.isArray(product) ? product : (result.data || []),
     });
   } catch (error) {
     return res.status(500).json({
