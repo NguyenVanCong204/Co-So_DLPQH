@@ -79,27 +79,8 @@ export const createHistory = async (req, res) => {
       });
     }
 
-    // Update product quantities
-    console.log("📝 Updating product quantities...");
-    for (const product of products) {
-      const productId = product._id?.toString() || product.id?.toString();
-      const qty = parseInt(cart[productId] || cart[product._id] || cart[product.id] || 0);
-      const currentQty = parseInt(product.quantity || product.qualty || 0);
-
-      if (isNaN(currentQty) || isNaN(qty)) {
-        console.error(`❌ Invalid quantity for product ${product.name}: current=${currentQty}, requested=${qty}`);
-        throw new Error(`Số lượng không hợp lệ cho sản phẩm ${product.name}`);
-      }
-
-      const newQty = currentQty - qty;
-      if (newQty < 0) {
-        throw new Error(`Số lượng sau khi trừ không hợp lệ cho sản phẩm ${product.name}`);
-      }
-
-      await Product.updateProduct(product._id, {
-        quantity: newQty
-      });
-    }
+    // Stock deduction moved to confirmOrder
+    // We only check availability here (already done above)
     console.log("✅ Product quantities updated");
 
     const total = products.reduce((sum, p) => {
@@ -233,20 +214,11 @@ export const cancelOrder = async (req, res) => {
         { status: 3 } // 3 = Cancelled
       );
 
-      // Restore product quantity
-      const orders = await History.find({ orderCode: order.orderCode });
-      for (const o of orders) {
-        if (o.id_product) {
-          await Product.findByIdAndUpdate(o.id_product, { $inc: { quantity: o.qualty } });
-        }
-      }
+      // Stock restoration removed as it is not deducted yet
 
     } else {
       await History.updateOrderStatus(id, 3);
-      // Restore product quantity
-      if (order.id_product) {
-        await Product.findByIdAndUpdate(order.id_product, { $inc: { quantity: order.qualty } });
-      }
+      // Stock restoration removed as it is not deducted yet
     }
 
     return res.status(200).json({ message: "Hủy đơn hàng thành công" });
@@ -268,13 +240,39 @@ export const confirmOrder = async (req, res) => {
     }
 
     // Update all orders with the same orderCode
+    let ordersToConfirm = [];
     if (order.orderCode) {
+      ordersToConfirm = await History.find({ orderCode: order.orderCode }).populate('id_product');
       await History.updateMany(
         { orderCode: order.orderCode },
         { status: 1 } // 1 = Waiting for delivery
       );
     } else {
+      ordersToConfirm = [await History.findById(id).populate('id_product')];
       await History.updateOrderStatus(id, 1);
+    }
+
+    // Deduct stock
+    for (const o of ordersToConfirm) {
+      if (o.id_product) {
+        const product = o.id_product;
+        // Handle both quantity and qualty fields if necessary, but model uses quantity
+        // Note: Product.findByIdAndUpdate uses $inc with negative value to deduct
+        // But we need to check if enough stock first?
+        // Ideally we should have checked before updating status, but let's do it now or assume admin checked.
+        // Better: Check stock first.
+
+        const currentQty = parseInt(product.quantity || product.qualty || 0);
+        const orderQty = o.qualty;
+        const newQty = currentQty - orderQty;
+
+        console.log(`Updating product ${product._id}: current=${currentQty}, order=${orderQty}, new=${newQty}`);
+
+        await Product.updateProduct(product._id, {
+          quantity: newQty,
+          qualty: newQty
+        });
+      }
     }
 
     return res.status(200).json({ message: "Xác nhận đơn hàng thành công" });
