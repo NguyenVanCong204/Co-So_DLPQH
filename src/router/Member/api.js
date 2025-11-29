@@ -27,7 +27,13 @@ import {
   getComment,
   createComment,
 } from "../../controllers/Member/commentController.js";
-import { createHistory } from "../../controllers/Member/historyController.js";
+import {
+  createHistory,
+  getOrdersByUser,
+  updateOrderStatus,
+  markAsDelivered,
+  cancelOrder
+} from "../../controllers/Member/historyController.js";
 import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
 
 router.get("/product", getProduct);
@@ -59,5 +65,9 @@ router.put("/product/:id", uploadProduct, updateProduct);
 router.post("/comment", createComment);
 
 router.post("/order", createHistory);
+router.get("/order/user/:id_user", getOrdersByUser);
+router.put("/order/:id/status", updateOrderStatus);
+router.put("/order/:id/delivered", markAsDelivered);
+router.put("/order/:id/cancel", cancelOrder);
 
 export default router;

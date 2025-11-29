@@ -30,6 +30,7 @@ import {
   restore,
   forceDelete,
 } from "../../controllers/Admin/productController.js";
+import { confirmOrder, getAllOrders } from "../../controllers/Member/historyController.js";
 import { createBrand, getBrand } from "../../controllers/Admin/brandController.js";
 import { createCategory, getCategory } from "../../controllers/Admin/categoryController.js";
 import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
@@ -54,6 +55,9 @@ router.get("/trash-product", trash);
 router.get("/trash-product/count", countTrashProduct);
 router.patch("/trash-product/restore/:id", restore);
 router.delete("/trash-product/force-delete/:id", forceDelete);
+
+router.put("/order/:id/confirm", confirmOrder);
+router.get("/orders", getAllOrders);
 
 router.put("/user/:id", upload, updateUser);
 router.get("/user/:id", getUser);

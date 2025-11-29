@@ -22,7 +22,10 @@ export const authorize = (requiredLevel) => {
     if (!req.user) {
       return res.status(401).json({ error: "Chưa xác thực" });
     }
-    if (req.user.level !== requiredLevel) {
+    // Convert both to numbers for comparison to handle string/number mismatch
+    const userLevel = parseInt(req.user.level);
+    const required = parseInt(requiredLevel);
+    if (userLevel !== required) {
       return res
         .status(403)
         .json({ error: "Bạn không có quyền thực hiện tác vụ này" });
