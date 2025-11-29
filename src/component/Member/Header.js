@@ -18,7 +18,7 @@ function Header() {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        apiAdmin
+        apiMember
             .get('/category')
             .then((res) => {
                 if (Array.isArray(res.data.data)) {
@@ -81,7 +81,10 @@ function Header() {
         navigate('/member/home');
     }
     function Logout() {
-        localStorage.clear();
+        localStorage.removeItem('token');
+        localStorage.removeItem('tokenReferesh');
+        localStorage.removeItem('user');
+        localStorage.removeItem('IdUser');
         SetCart && SetCart(0);
         dispath(resetCartRedux());
         dispath(resetCartSlider());

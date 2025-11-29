@@ -82,6 +82,7 @@ function OrderList() {
     const result = await confirmDialog({
       title: "Xác nhận đã nhận hàng?",
       text: "Bạn có chắc chắn đã nhận được sản phẩm này không?",
+      confirmText: "Xác nhận",
     });
     if (!result.isConfirmed) return;
 
@@ -119,6 +120,7 @@ function OrderList() {
     const result = await confirmDialog({
       title: "Xác nhận hủy đơn hàng?",
       text: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+      confirmText: "Hủy đơn hàng",
     });
     if (!result.isConfirmed) return;
 

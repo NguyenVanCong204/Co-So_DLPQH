@@ -53,6 +53,7 @@ function OrderListAdmin() {
     const result = await confirmDialog({
       title: "Xác nhận đơn hàng?",
       text: "Bạn có chắc chắn muốn xác nhận đơn hàng này không?",
+      confirmText: "Xác nhận",
     });
     if (!result.isConfirmed) return;
 

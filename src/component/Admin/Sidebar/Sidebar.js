@@ -10,7 +10,7 @@ const Sidebar = () => {
     function Logout() {
         localStorage.removeItem('adminToken');
         localStorage.removeItem('adminTokenRefresh');
-        localStorage.removeItem('IdUser'); // Optional: might want to keep if shared, but safer to clear or separate
+        localStorage.removeItem('adminId');
         navigate('/admin/login');
         toast.success('Đăng xuất thành công');
     }

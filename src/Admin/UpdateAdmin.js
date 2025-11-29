@@ -24,7 +24,7 @@ function UpdateAdmin() {
     avatar: [],
   });
   let [country, SetCountry] = useState([]);
-  let iduser = localStorage.getItem("IdUser");
+  let iduser = localStorage.getItem("adminId");
   let [FileNew, SetFileNew] = useState([]);
   let [err, SetErr] = useState({});
   useEffect(() => {
