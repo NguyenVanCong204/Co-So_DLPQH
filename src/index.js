@@ -14,7 +14,7 @@ import UpdateMember from './Member/User/Update';
 import ListBlogMember from './Member/Blog/ListBlog';
 import BlogDetail from './Member/Blog/BlogDetail';
 import ProductAdd from './Member/Product/ProductAdd';
-import ProductList from './Member/Product/ProductList';
+import OrderList from './Member/Product/OrderList';
 import ProductUpdate from './Member/Product/ProductUpdate';
 import HomeList from './Member/Home/HomeList';
 import ProductDetail from './Member/Home/ProductDetail';
@@ -22,6 +22,7 @@ import CartProduct from './Member/Product/CartProduct';
 import CheckOut from './Member/Product/CheckOut';
 import LoginTest from './Admin/LoginTest';
 import RegisterTest from './Admin/RegisterTest';
+import OrderListAdmin from './Admin/Pages/Order/OrderListAdmin';
 import ProductListAdmin from './Admin/Pages/Product/ProductList';
 import CreateProduct from './Admin/Pages/Product/CreateProduct/CreateProduct';
 import UpdateProduct from './Admin/Pages/Product/UpdateProduct/UpdateProduct';
@@ -44,6 +45,7 @@ root.render(
                     <Routes>
                         <Route path="/admin/register" element={<RegisterTest />} />
                         <Route path="/admin/login" element={<LoginTest />} />
+                        <Route path="/admin/order-list" element={<OrderListAdmin />} />
                         <Route path="/admin/product-list" element={<ProductListAdmin />} />
                         <Route path="/admin/product/create-product" element={<CreateProduct />} />
                         <Route path="/admin/product/update-product" element={<UpdateProduct />} />
@@ -55,7 +57,7 @@ root.render(
                         <Route path="/member/blog/list" element={<ListBlogMember />} />
                         <Route path="/member/blog/detail/:id" element={<BlogDetail />} />
                         <Route path="/member/account/product/add" element={<ProductAdd />} />
-                        <Route path="/member/account/product/list" element={<ProductList />} />
+                        <Route path="/member/account/product/list" element={<OrderList />} />
                         <Route path="/member/account/product/update/:id" element={<ProductUpdate />} />
                         <Route path="/member/home" element={<HomeList />} />
                         <Route path="/member/category/:categoryId" element={<HomeList />} />

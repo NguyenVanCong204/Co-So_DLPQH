@@ -45,8 +45,8 @@ function LoginTest() {
                 .then((res) => {
                     SetErr({});
                     localStorage.setItem('IdUser', res.data.user._id);
-                    localStorage.setItem('token', res.data.token);
-                    localStorage.setItem('tokenRefresh', res.data.tokenRefresh);
+                    localStorage.setItem('adminToken', res.data.token);
+                    localStorage.setItem('adminTokenRefresh', res.data.tokenRefresh);
                     navigate('/admin/product-list');
                     toast.success('Đăng nhập thành công');
                 })

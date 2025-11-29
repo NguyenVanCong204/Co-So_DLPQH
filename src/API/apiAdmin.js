@@ -5,7 +5,7 @@ const apiAdmin = axios.create({
 });
 
 apiAdmin.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('adminToken');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -17,8 +17,8 @@ apiAdmin.interceptors.response.use(
     (res) => res,
     (err) => {
         if (err.response?.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('tokenRefresh');
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminTokenRefresh');
             toast.error('Bạn chưa đăng nhập');
             window.location.href = '/admin/login';
         }

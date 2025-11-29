@@ -30,9 +30,12 @@ function HomeList() {
     apiMember
       .get("/product")
       .then((res) => {
-        SetInput(res.data.data);
+        SetInput(Array.isArray(res.data.data) ? res.data.data : []);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+        SetInput([]);
+      });
   }
 
   useEffect(() => {
@@ -42,16 +45,17 @@ function HomeList() {
       apiMember
         .get("/search/product?name=" + search)
         .then((res) => {
-          SetInput(res.data.data);
+          SetInput(Array.isArray(res.data.data) ? res.data.data : []);
         })
         .catch((err) => {
           console.error(err);
+          SetInput([]);
         });
     } else if (categoryId) {
       apiMember
         .get(`/product/category/${categoryId}`)
         .then((res) => {
-          SetInput(res.data.data);
+          SetInput(Array.isArray(res.data.data) ? res.data.data : []);
         })
         .catch((err) => {
           console.error(err);
@@ -67,6 +71,7 @@ function HomeList() {
   };
   
   const renderPagination = () => {
+    if (!Array.isArray(input)) return null;
     const totalPages = Math.ceil(input.length / itemsPerPage);
     if (totalPages <= 1) return null;
     const pageButtons = [];
@@ -138,6 +143,7 @@ function HomeList() {
   }
 
   function renderData() {
+    if (!Array.isArray(input)) return null;
     const lastIndex = currentPage * itemsPerPage;
     const firstIndex = lastIndex - itemsPerPage;
     const currentItems = input.slice(firstIndex, lastIndex);
