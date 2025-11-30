@@ -1,33 +1,63 @@
 .register input {
-  border: 1px solid rgb(222, 222, 222);
+    border: 1px solid rgb(222, 222, 222);
 }
 .register select {
-  cursor: pointer;
+    cursor: pointer;
 }
 .register input:focus {
-  border: 1px solid #0866ff;
+    border: 1px solid #0866ff;
 }
 .register .login_member {
-  color: white;
-  border: none;
-  background-color: #0866ff;
-  border-radius: 5px;
-  font-weight: 600;
-  font-size: 17px;
-  width: 200px;
-  justify-content: center;
+    color: white;
+    border: none;
+    background-color: #0866ff;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 17px;
+    width: 200px;
+    justify-content: center;
 }
 .register .register_member {
-  color: white;
-  border: none;
-  background-color: #42b72a;
-  border-radius: 5px;
-  font-weight: 600;
-  font-size: 17px;
-  width: 200px;
-  justify-content: center;
+    color: white;
+    border: none;
+    background-color: rgb(0, 0, 222);
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 17px;
+    width: 200px;
+    justify-content: center;
 }
 .register .login_member:hover,
 .register .register_member:hover {
-  color: rgb(194, 194, 194);
+    background-color: rgb(49, 49, 255);
+}
+
+.auth-links {
+    list-style: none;
+    margin: 14px 0 0 0;
+    padding: 0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.auth-links li {
+    color: var(--muted-color);
+    font-size: 14px;
+}
+.auth-links a {
+    color: var(--price-color);
+    text-decoration: none;
+    font-weight: 700;
+}
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+.register label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--text-color);
+    text-align: left;
+    width: 100%;
 }

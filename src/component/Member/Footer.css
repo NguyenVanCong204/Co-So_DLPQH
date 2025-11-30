@@ -140,9 +140,7 @@
     border-top: 1px solid var(--border-color);
 }
 
-/* Scroll Up Button (uses global override in src/index.css) */
 #scrollUp {
-    /* prefer the centralized style in src/index.css; keep minimal fallback */
     bottom: 20px;
     right: 20px;
     background: var(--primary-color);

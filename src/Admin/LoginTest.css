@@ -1,130 +1,114 @@
 .login-background {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(
-    135deg,
-    rgba(34, 193, 195, 1) 0%,
-    rgba(253, 187, 45, 1) 100%
-  );
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
 }
 
 .login-container {
-  width: 400px;
-  height: auto; /* ✅ để nó tự cao theo nội dung */
-  background: white;
-  border-radius: 10px;
-  padding: 25px;
+    width: 400px;
+    height: auto;
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
 }
 
 .login-background .login-container .login-content.row {
-  padding: 25px;
+    padding: 25px;
 }
 
 .login-background .login-container .login-content.row .text-login {
-  text-align: center;
-  font-weight: 600px;
-  font-size: 24px;
-  padding-top: 10px;
-  font-weight: bold;
+    text-align: center;
+    font-weight: 600px;
+    font-size: 24px;
+    padding-top: 10px;
+    font-weight: bold;
 }
 
 .login-background .login-container .login-content.row .login-input {
-  margin: 7px 0;
+    margin: 7px 0;
 }
 
-.login-background
-  .login-container
-  .login-content.row
-  .login-input
-  .custom-input-password {
-  position: relative;
+.login-background .login-container .login-content.row .login-input .custom-input-password {
+    position: relative;
 }
 
 .login-background .login-container .login-content.row .login-input i {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
 }
 
 .login-background .login-container .login-content.row .btn-login {
-  width: 100%;
-  margin: 10px 0;
-  height: 35px;
-  color: white;
-  font-size: 16px;
-  border-radius: 15px;
-  outline: none;
-  border: none;
-  background: rgb(34, 193, 195);
-  background: linear-gradient(
-    135deg,
-    rgba(34, 193, 195, 1) 0%,
-    rgba(253, 187, 45, 1) 100%
-  );
+    width: 100%;
+    margin: 10px 0;
+    height: 35px;
+    color: white;
+    font-size: 16px;
+    border-radius: 15px;
+    outline: none;
+    border: none;
+    background: rgb(34, 193, 195);
+    background: linear-gradient(135deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
 }
 
 .login-background .login-container .login-content.row .btn-register {
-  width: 100%;
-  margin: 3px 0;
-  height: 35px;
-  color: white;
-  font-size: 16px;
-  border-radius: 15px;
-  outline: none;
-  border: none;
-  background: rgb(34, 193, 195);
-  background: linear-gradient(
-    135deg,
-    rgba(34, 193, 195, 1) 0%,
-    rgba(253, 187, 45, 1) 100%
-  );
+    width: 100%;
+    margin: 3px 0;
+    height: 35px;
+    color: white;
+    font-size: 16px;
+    border-radius: 15px;
+    outline: none;
+    border: none;
+    background: rgb(34, 193, 195);
+    background: linear-gradient(135deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
 }
 
 .login-background .login-container .login-content.row .forgot-password {
-  font-size: 12px;
+    font-size: 12px;
 }
 
 .login-background .login-container .login-content.row .social-login {
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  margin-top: 10px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    margin-top: 10px;
 }
 
 .login-background .login-container .login-content.row .social-login .gogle {
-  font-size: 30px;
-  background: rgb(219, 76, 76);
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  margin-right: 10px;
+    font-size: 30px;
+    background: rgb(219, 76, 76);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 10px;
 }
 
 .login-background .login-container .login-content.row .social-login .facebook {
-  font-size: 30px;
-  background: #307aff;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
+    font-size: 30px;
+    background: #307aff;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
 }
 .login-background .login-container .level {
-  border-radius: 5px;
-  width: 30%;
-  background: white;
-  border: 1px solid rgb(180, 180, 180);
-  outline: none;
+    border-radius: 5px;
+    width: 30%;
+    background: white;
+    border: 1px solid rgb(180, 180, 180);
+    outline: none;
 }
 .login-background .login-container p {
-  color: red;
+    color: red;
 }

@@ -1,276 +1,267 @@
-import { useEffect, useState } from "react";
-import apiAdmin from "../API/apiAdmin";
-import auth from "../API/auth";
-import "./UpdateAdmin.css";
-import { toast } from "react-toastify";
-import refershToken from "../RefershToken/RefershToken";
+import { useEffect, useState } from 'react';
+import apiAdmin from '../API/apiAdmin';
+import auth from '../API/auth';
+import './UpdateAdmin.css';
+import { toast } from 'react-toastify';
+import refershToken from '../RefershToken/RefershToken';
 
 function UpdateAdmin() {
-  const token = localStorage.getItem("token");
-  let config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json",
-    },
-  };
-  let [input, SetInput] = useState({
-    email: "",
-    name: "",
-    pass: "",
-    phone: "",
-    address: "",
-    country: "",
-    avatar: [],
-  });
-  let [country, SetCountry] = useState([]);
-  let iduser = localStorage.getItem("adminId");
-  let [FileNew, SetFileNew] = useState([]);
-  let [err, SetErr] = useState({});
-  useEffect(() => {
-    apiAdmin
-      .get("/country", config)
-      .then((res) => {
-        console.log(res.data);
-        SetCountry(res.data);
-      })
-      .catch((errors) => console.log(errors));
-  }, []);
-  useEffect(() => {
-    getDataUser();
-  }, []);
-  function getDataUser() {
-    apiAdmin.get("/user/" + iduser, config).then((res) => {
-      console.log(res.data);
-      SetInput({
-        email: res.data.email,
-        name: res.data.name,
-        pass: "",
-        phone: res.data.phone,
-        address: res.data.address,
-        country: res.data.id_country,
-        avatar: JSON.parse(res.data.avatar),
-      });
+    const token = localStorage.getItem('token');
+    let config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Accept: 'application/json',
+        },
+    };
+    let [input, SetInput] = useState({
+        email: '',
+        name: '',
+        pass: '',
+        phone: '',
+        address: '',
+        country: '',
+        avatar: [],
     });
-  }
-  function changInput(e) {
-    const name = e.target.name;
-    const value = e.target.value;
-    SetInput((states) => ({ ...states, [name]: value }));
-  }
-  function changInputFile(e) {
-    const value = Array.from(e.target.files);
-    SetFileNew(value);
-  }
-
-  function renderImage() {
-    return input.avatar.map((value, index) => {
-      return (
-        <div key={index} className="avatar_list">
-          <img src={`http://localhost:3001/${value}`}></img>
-        </div>
-      );
-    });
-  }
-  function checkInput(e) {
-    e.preventDefault();
-    const phoneRegex = /^(0|\+84)[0-9]{9}$/;
-    let allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    let errAll = {};
-    let check = true;
-    if (input.name == "") {
-      errAll.name = "Vui lòng nhập name";
-      check = false;
-    }
-    if (input.pass == "") {
-      errAll.pass = "Vui lòng nhập password";
-      check = false;
-    }
-    if (input.phone == "") {
-      errAll.phone = "Vui lòng nhập phone";
-      check = false;
-    } else {
-      if (!phoneRegex.test(input.phone)) {
-        errAll.phone = "Vui lòng nhập phone đúng định dạng";
-        check = false;
-      }
-    }
-    if (input.address == "") {
-      errAll.address = "Vui lòng nhập address";
-      check = false;
-    }
-    if (input.country == "") {
-      errAll.country = "Vui lòng chọn country";
-      check = false;
-    }
-    if (FileNew.length <= 0) {
-      errAll.file = "Vui lòng chọn file";
-      check = false;
-    }
-    if (FileNew.length > 3) {
-      errAll.file = "Upload tối đa 3 file";
-      check = false;
-    } else {
-      FileNew.map((value, index) => {
-        if (value.size > 1024 * 1024) {
-          errAll.file = "Chọn file có size < 1mb";
-          check = false;
-        }
-        if (!allowedTypes.includes(value.type)) {
-          errAll.file = "Chọn đúng định dạng file";
-          check = false;
-        }
-      });
-    }
-    if (!check) {
-      SetErr(errAll);
-    } else {
-      let data = new FormData();
-      data.append("name", input.name);
-      data.append("password", input.pass);
-      data.append("phone", input.phone);
-      data.append("address", input.address);
-      data.append("id_country", input.country);
-      FileNew.map((value, index) => {
-        data.append("avatar", value);
-      });
-      apiAdmin
-        .put("/user/" + iduser, data, config)
-        .then((res) => {
-          toast.success("Update thành công");
-          SetErr({});
-          console.log(res);
-          SetInput({
-            email: res.data.data.email,
-            name: res.data.data.name,
-            pass: "",
-            phone: res.data.data.phone,
-            address: res.data.data.address,
-            country: res.data.data.id_country,
-            avatar: JSON.parse(res.data.data.avatar),
-          });
-        })
-        .catch(async (error) => {
-          if (error.response) {
-            const status = error.response.status;
-            const message =
-              error.response.data?.error ||
-              error.response.data?.message ||
-              error.message;
-            if (status == 401) {
-              try {
-                const newtoken = await refershToken();
-                if (!newtoken) {
-                  return toast.error(
-                    "Không thể làm mới token. Vui lòng đăng nhập lại."
-                  );
-                }
-                let config = {
-                  headers: {
-                    Authorization: `Bearer ${newtoken}`,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    Accept: "application/json",
-                  },
-                };
-                const res2 = await apiAdmin.put(
-                  "/user/" + iduser,
-                  data,
-                  config
-                );
-                toast.success(res2.data.message + " (sau khi refresh token)");
-                toast.success("Update thành công");
-                SetErr({});
-                console.log(res2);
-                SetInput({
-                  email: res2.data.data.email,
-                  name: res2.data.data.name,
-                  pass: "",
-                  phone: res2.data.data.phone,
-                  address: res2.data.data.address,
-                  country: res2.data.data.id_country,
-                  avatar: JSON.parse(res2.data.data.avatar),
-                });
-              } catch (refreshError) {
-                toast.error("Lỗi khi làm mới token. Vui lòng đăng nhập lại.");
-                console.error(refreshError);
-              }
-            } else if (status === 403) {
-              toast.error(message);
-            } else {
-              toast.error("Lỗi khi delete: " + message);
-            }
-          } else {
-            toast.error("Không thể kết nối đến server: " + error.message);
-          }
+    let [country, SetCountry] = useState([]);
+    let iduser = localStorage.getItem('adminId');
+    let [FileNew, SetFileNew] = useState([]);
+    let [err, SetErr] = useState({});
+    useEffect(() => {
+        apiAdmin
+            .get('/country', config)
+            .then((res) => {
+                console.log(res.data);
+                SetCountry(res.data);
+            })
+            .catch((errors) => console.log(errors));
+    }, []);
+    useEffect(() => {
+        getDataUser();
+    }, []);
+    function getDataUser() {
+        apiAdmin.get('/user/' + iduser, config).then((res) => {
+            console.log(res.data);
+            SetInput({
+                email: res.data.email,
+                name: res.data.name,
+                pass: '',
+                phone: res.data.phone,
+                address: res.data.address,
+                country: res.data.id_country,
+                avatar: JSON.parse(res.data.avatar),
+            });
         });
     }
-  }
-  return (
-    <div>
-      <div className="register">
-        <h3>Update Admin</h3>
-        <form encType="multipart/form-data">
-          <input name="email" type="text" readOnly value={input.email} />
-          <p></p>
-          <input
-            name="name"
-            type="text"
-            placeholder="Nhập name"
-            value={input.name}
-            onChange={changInput}
-          ></input>
-          <p>{err.name}</p>
-          <input
-            name="pass"
-            type="password"
-            placeholder="Nhập password"
-            value={input.pass}
-            onChange={changInput}
-          ></input>
-          <p>{err.pass}</p>
-          <input
-            name="phone"
-            type="text"
-            placeholder="Nhập phone"
-            onChange={changInput}
-            value={input.phone}
-          ></input>
-          <p>{err.phone}</p>
-          <input
-            name="address"
-            type="text"
-            placeholder="Nhập address"
-            onChange={changInput}
-            value={input.address}
-          ></input>
-          <p>{err.address}</p>
-          <select name="country" value={input.country} onChange={changInput}>
-            <option value="">---Chọn country---</option>
-            {country &&
-              country.map((value, index) => {
-                return (
-                  <option key={index} value={value._id}>
-                    {value.name}
-                  </option>
-                );
-              })}
-          </select>
-          <p>{err.country}</p>
-          <input
-            name="avatar"
-            type="file"
-            placeholder="Nhập avatar"
-            multiple
-            onChange={changInputFile}
-          ></input>
-          <p>{err.file}</p>
-          <div className="avatar">{renderImage()}</div>
-          <button className="update" onClick={(e) => checkInput(e)}>
-            Update
-          </button>
-        </form>
-      </div>
-    </div>
-  );
+    function changInput(e) {
+        const name = e.target.name;
+        const value = e.target.value;
+        SetInput((states) => ({ ...states, [name]: value }));
+    }
+    function changInputFile(e) {
+        const value = Array.from(e.target.files);
+        SetFileNew(value);
+    }
+
+    function renderImage() {
+        return input.avatar.map((value, index) => {
+            return (
+                <div key={index} className="avatar_list">
+                    <img src={`http://localhost:3001/${value}`}></img>
+                </div>
+            );
+        });
+    }
+    function checkInput(e) {
+        e.preventDefault();
+        const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+        let allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        let errAll = {};
+        let check = true;
+        if (input.name == '') {
+            errAll.name = 'Vui lòng nhập name';
+            check = false;
+        }
+        if (input.pass == '') {
+            errAll.pass = 'Vui lòng nhập password';
+            check = false;
+        }
+        if (input.phone == '') {
+            errAll.phone = 'Vui lòng nhập phone';
+            check = false;
+        } else {
+            if (!phoneRegex.test(input.phone)) {
+                errAll.phone = 'Vui lòng nhập phone đúng định dạng';
+                check = false;
+            }
+        }
+        if (input.address == '') {
+            errAll.address = 'Vui lòng nhập address';
+            check = false;
+        }
+        if (input.country == '') {
+            errAll.country = 'Vui lòng chọn country';
+            check = false;
+        }
+        if (FileNew.length <= 0) {
+            errAll.file = 'Vui lòng chọn file';
+            check = false;
+        }
+        if (FileNew.length > 3) {
+            errAll.file = 'Upload tối đa 3 file';
+            check = false;
+        } else {
+            FileNew.map((value, index) => {
+                if (value.size > 1024 * 1024) {
+                    errAll.file = 'Chọn file có size < 1mb';
+                    check = false;
+                }
+                if (!allowedTypes.includes(value.type)) {
+                    errAll.file = 'Chọn đúng định dạng file';
+                    check = false;
+                }
+            });
+        }
+        if (!check) {
+            SetErr(errAll);
+        } else {
+            let data = new FormData();
+            data.append('name', input.name);
+            data.append('password', input.pass);
+            data.append('phone', input.phone);
+            data.append('address', input.address);
+            data.append('id_country', input.country);
+            FileNew.map((value, index) => {
+                data.append('avatar', value);
+            });
+            apiAdmin
+                .put('/user/' + iduser, data, config)
+                .then((res) => {
+                    toast.success('Update thành công');
+                    SetErr({});
+                    console.log(res);
+                    SetInput({
+                        email: res.data.data.email,
+                        name: res.data.data.name,
+                        pass: '',
+                        phone: res.data.data.phone,
+                        address: res.data.data.address,
+                        country: res.data.data.id_country,
+                        avatar: JSON.parse(res.data.data.avatar),
+                    });
+                })
+                .catch(async (error) => {
+                    if (error.response) {
+                        const status = error.response.status;
+                        const message = error.response.data?.error || error.response.data?.message || error.message;
+                        if (status == 401) {
+                            try {
+                                const newtoken = await refershToken();
+                                if (!newtoken) {
+                                    return toast.error('Không thể làm mới token. Vui lòng đăng nhập lại.');
+                                }
+                                let config = {
+                                    headers: {
+                                        Authorization: `Bearer ${newtoken}`,
+                                        'Content-Type': 'application/x-www-form-urlencoded',
+                                        Accept: 'application/json',
+                                    },
+                                };
+                                const res2 = await apiAdmin.put('/user/' + iduser, data, config);
+                                toast.success(res2.data.message + ' (sau khi refresh token)');
+                                toast.success('Update thành công');
+                                SetErr({});
+                                console.log(res2);
+                                SetInput({
+                                    email: res2.data.data.email,
+                                    name: res2.data.data.name,
+                                    pass: '',
+                                    phone: res2.data.data.phone,
+                                    address: res2.data.data.address,
+                                    country: res2.data.data.id_country,
+                                    avatar: JSON.parse(res2.data.data.avatar),
+                                });
+                            } catch (refreshError) {
+                                toast.error('Lỗi khi làm mới token. Vui lòng đăng nhập lại.');
+                                console.error(refreshError);
+                            }
+                        } else if (status === 403) {
+                            toast.error(message);
+                        } else {
+                            toast.error('Lỗi khi delete: ' + message);
+                        }
+                    } else {
+                        toast.error('Không thể kết nối đến server: ' + error.message);
+                    }
+                });
+        }
+    }
+    return (
+        <div>
+            <div className="register">
+                <h3>Update Admin</h3>
+                <form encType="multipart/form-data">
+                    <input name="email" type="text" readOnly value={input.email} />
+                    <p></p>
+                    <input
+                        name="name"
+                        type="text"
+                        placeholder="Nhập name"
+                        value={input.name}
+                        onChange={changInput}
+                    ></input>
+                    <p>{err.name}</p>
+                    <input
+                        name="pass"
+                        type="password"
+                        placeholder="Nhập password"
+                        value={input.pass}
+                        onChange={changInput}
+                    ></input>
+                    <p>{err.pass}</p>
+                    <input
+                        name="phone"
+                        type="text"
+                        placeholder="Nhập phone"
+                        onChange={changInput}
+                        value={input.phone}
+                    ></input>
+                    <p>{err.phone}</p>
+                    <input
+                        name="address"
+                        type="text"
+                        placeholder="Nhập address"
+                        onChange={changInput}
+                        value={input.address}
+                    ></input>
+                    <p>{err.address}</p>
+                    <select name="country" value={input.country} onChange={changInput}>
+                        <option value="">---Chọn country---</option>
+                        {country &&
+                            country.map((value, index) => {
+                                return (
+                                    <option key={index} value={value._id}>
+                                        {value.name}
+                                    </option>
+                                );
+                            })}
+                    </select>
+                    <p>{err.country}</p>
+                    <input
+                        name="avatar"
+                        type="file"
+                        placeholder="Nhập avatar"
+                        multiple
+                        onChange={changInputFile}
+                    ></input>
+                    <p>{err.file}</p>
+                    <div className="avatar">{renderImage()}</div>
+                    <button className="update" onClick={(e) => checkInput(e)}>
+                        Update
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
 }
 export default UpdateAdmin;

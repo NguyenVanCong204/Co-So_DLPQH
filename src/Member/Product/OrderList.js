@@ -220,7 +220,6 @@ function OrderList() {
                                     </Link>
                                     <p>Số lượng: {item.qualty}</p>
                                     <p>Giá: {formatPrice(item.price)}</p>
-                                    {/* <p>Tổng: {formatPrice(item.price * item.qualty)}</p> */}
                                 </div>
                             </div>
                         );

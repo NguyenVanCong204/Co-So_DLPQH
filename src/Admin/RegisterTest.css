@@ -1,69 +1,61 @@
 .register-background {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(
-    135deg,
-    rgba(34, 193, 195, 1) 0%,
-    rgba(253, 187, 45, 1) 100%
-  );
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
 }
 
 .register-container {
-  width: 400px;
-  height: auto; /* ✅ để nó tự cao theo nội dung */
-  background: white;
-  border-radius: 10px;
-  padding: 25px;
+    width: 400px;
+    height: auto;
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
 }
 
 .register-background .register-container .register-content {
-  padding: 0 25px;
+    padding: 0 25px;
 }
 
 .register-background .register-container .register-content .Email,
 .register-background .register-container .register-content .Password,
 .register-background .register-container .register-content .Phonenumber,
 .register-background .register-container .register-content .address {
-  padding-bottom: 0px;
+    padding-bottom: 0px;
 }
 
 .form-group {
-  margin: 6px;
+    margin: 6px;
 }
 
 .register-background .register-container .register-content .Register {
-  text-align: center;
-  font-weight: bold; /* Đã sửa từ 600px sang bold */
-  font-size: 24px;
-  padding-top: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+    padding-top: 10px;
 }
 
 .register-background .register-container .register-content .btn-register {
-  width: 100%;
-  margin: 30px 0;
-  height: 35px;
-  color: white;
-  font-size: 16px;
-  border-radius: 15px;
-  outline: none;
-  border: none;
-  background: rgb(34, 193, 195);
-  background: linear-gradient(
-    135deg,
-    rgba(34, 193, 195, 1) 0%,
-    rgba(253, 187, 45, 1) 100%
-  );
+    width: 100%;
+    margin: 30px 0;
+    height: 35px;
+    color: white;
+    font-size: 16px;
+    border-radius: 15px;
+    outline: none;
+    border: none;
+    background: rgb(34, 193, 195);
+    background: linear-gradient(135deg, rgba(34, 193, 195, 1) 0%, rgba(253, 187, 45, 1) 100%);
 }
 .register-background .register-container p {
-  color: red;
-  padding-left: 10px;
+    color: red;
+    padding-left: 10px;
 }
 .register-background .register-container .country {
-  width: 45%;
-  outline: none;
-  background: white;
-  border: 1px solid rgb(196, 196, 196);
-  border-radius: 5px;
+    width: 45%;
+    outline: none;
+    background: white;
+    border: 1px solid rgb(196, 196, 196);
+    border-radius: 5px;
 }

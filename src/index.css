@@ -1,11 +1,10 @@
 :root {
-    /* Minimalist palette for the sales site */
-    --primary-color: #2c3e50; /* Deep slate (main UI color) */
-    --secondary-color: #f7f8fa; /* Very light background */
-    --muted-color: #9aa3a8; /* Muted text and icons */
-    --accent-color: #6c9ea0; /* Subtle accent */
-    --price-color: #e53935; /* Bright red for prices and sales */
-    --text-color: #2f3438; /* Primary text */
+    --primary-color: #2c3e50;
+    --secondary-color: #f7f8fa;
+    --muted-color: #9aa3a8;
+    --accent-color: #6c9ea0;
+    --price-color: #e53935;
+    --text-color: #2f3438;
     --border-color: #e6e9eb;
     --white: #ffffff;
     --shadow: 0 6px 18px rgba(30, 40, 50, 0.06);
@@ -40,8 +39,6 @@ button {
     font-family: inherit;
 }
 
-/* Project-specific overrides to create a consistent minimalist layout */
-/* Header / content spacing */
 .header-main,
 .header-nav {
     background: var(--white);
@@ -52,7 +49,6 @@ button {
     box-shadow: var(--shadow);
 }
 
-/* Give main content a comfortable top spacing so HomeList doesn't stick to header */
 .container > .row {
     gap: 18px;
 }
@@ -64,7 +60,6 @@ button {
     margin-top: 18px;
 }
 
-/* Minimalist controls and form inputs */
 input,
 select,
 textarea {
@@ -75,7 +70,6 @@ textarea {
     border-radius: 8px !important;
 }
 
-/* Buttons */
 .btn,
 .add-to-cart,
 .get,
@@ -88,7 +82,6 @@ textarea {
     box-shadow: none !important;
 }
 
-/* Prices, sales and badges should be bright red to draw attention */
 .product-information span span,
 .cart_info .cart_total_price,
 .new,
@@ -100,7 +93,6 @@ textarea {
     background: transparent !important;
 }
 
-/* Make product image frames cleaner */
 .product-image-wrapper,
 .view-product img,
 .video-gallery .iframe-img {
@@ -108,7 +100,6 @@ textarea {
     border: 1px solid var(--border-color);
 }
 
-/* Scroll-up button customization */
 a#scrollUp {
     bottom: 18px !important;
     right: 18px !important;
@@ -130,7 +121,6 @@ a#scrollUp i {
     color: #fff !important;
 }
 
-/* Make header search and icons align and spaced */
 .header-right-wrapper {
     display: flex;
     align-items: center;
@@ -141,7 +131,6 @@ a#scrollUp i {
     width: 260px !important;
 }
 
-/* Lightweight typography adjustments */
 h1,
 h2,
 h3,
@@ -158,7 +147,6 @@ a {
     color: var(--text-color);
 }
 
-/* Smooth element spacing for lists and product cards */
 .productinfo {
     padding: 14px !important;
 }
@@ -166,12 +154,10 @@ a {
     padding: 12px !important;
 }
 
-/* Keep footer muted */
 #footer {
     background: transparent !important;
 }
 
-/* Override old orange accents from legacy css to new palette */
 .product-overlay {
     background: rgba(44, 62, 80, 0.85) !important;
 }
@@ -191,7 +177,6 @@ h2.title {
     color: var(--primary-color) !important;
 }
 
-/* Sale/new badges: bright red */
 .new,
 .sale {
     background: var(--price-color) !important;

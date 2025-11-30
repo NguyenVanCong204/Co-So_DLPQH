@@ -1,7 +1,7 @@
 #cart_items_new {
     padding: 30px 0;
     background-color: var(--background-color);
-    min-height: 80vh; /* Đảm bảo chiều cao tối thiểu */
+    min-height: 80vh;
 }
 
 #cart_items_new .cart_title {
@@ -10,27 +10,23 @@
     font-weight: 700;
     margin-bottom: 25px;
     padding-bottom: 12px;
-    border-bottom: 3px solid var(--primary-color); /* Nổi bật tiêu đề */
+    border-bottom: 3px solid var(--primary-color);
     text-transform: uppercase;
 }
 
-/* ======================================================= */
-/* 2. BẢNG SẢN PHẨM (CART TABLE) */
-/* ======================================================= */
-
 .cart-table {
     width: 100%;
-    border-collapse: separate; /* Tách biệt các ô */
+    border-collapse: separate;
     border-spacing: 0;
     margin-bottom: 30px;
     background: var(--secondary-color);
     border-radius: 10px;
-    overflow: hidden; /* Cần thiết để áp dụng border-radius cho table */
+    overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 .cart-table thead {
-    background-color: #f5f7fa; /* Màu nền nhẹ nhàng cho header */
+    background-color: #f5f7fa;
 }
 
 .cart-table th {
@@ -49,12 +45,10 @@
     vertical-align: middle;
 }
 
-/* Loại bỏ border-bottom cho hàng cuối cùng */
 .cart-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-/* Cột Sản Phẩm */
 .cart-table .product-info {
     display: flex;
     align-items: center;
@@ -62,7 +56,7 @@
 .cart-table .product-info img {
     width: 80px;
     height: 80px;
-    object-fit: contain; /* Giữ tỷ lệ ảnh */
+    object-fit: contain;
     border: 1px solid #eee;
     margin-right: 15px;
     border-radius: 8px;
@@ -81,7 +75,6 @@
     text-decoration: underline;
 }
 
-/* Cột Giá */
 .cart-table .cart_price p {
     font-size: 16px;
     color: var(--price-color);
@@ -92,19 +85,13 @@
     font-size: 17px;
 }
 
-/* Cột Giá cũ và Giá mới */
 .cart-table td:nth-child(2) p:nth-child(2) {
-    /* Giá gốc gạch ngang */
     text-decoration: line-through;
     font-size: 13px;
     color: #999;
     font-weight: 400;
     margin-top: 2px;
 }
-
-/* ======================================================= */
-/* 3. BỘ ĐIỀU KHIỂN SỐ LƯỢNG (QUANTITY CONTROL) */
-/* ======================================================= */
 
 .quantity-control {
     display: flex;
@@ -143,14 +130,13 @@
     font-weight: 500;
 }
 
-/* Cột Xóa */
 .cart-table .cart_delete a {
     width: 32px;
     height: 32px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%; /* Làm nút tròn */
+    border-radius: 50%;
     font-size: 16px;
     color: #999;
     cursor: pointer;
@@ -161,16 +147,11 @@
     background-color: var(--price-color);
 }
 
-/* Cột Tổng (Total for item) */
 .cart-table .cart_total p {
     font-size: 17px;
     font-weight: 800;
     color: var(--price-color);
 }
-
-/* ======================================================= */
-/* 4. TỔNG CỘNG ĐƠN HÀNG (TOTAL BOX) */
-/* ======================================================= */
 
 .pull-right {
     float: right;
@@ -182,7 +163,7 @@
     padding: 25px;
     border-radius: 10px;
     box-shadow: var(--shadow);
-    max-width: 380px; /* Giới hạn chiều rộng */
+    max-width: 380px;
     width: 100%;
 }
 .cart-total-box h3 {
@@ -248,17 +229,13 @@
     transform: translateY(-2px);
 }
 
-/* ======================================================= */
-/* 5. RESPONSIVE (Dành cho Mobile) */
-/* ======================================================= */
-
 @media (max-width: 768px) {
     #cart_items_new .cart_title {
         font-size: 24px;
         text-align: center;
     }
     .cart-table thead {
-        display: none; /* Ẩn header trên mobile */
+        display: none;
     }
     .cart-table table,
     .cart-table tbody,
@@ -288,7 +265,6 @@
         color: #777;
     }
 
-    /* Đánh nhãn cho các cột (Cần thêm data-label vào HTML) */
     .cart-table td.cart_product:before {
         content: 'Sản Phẩm';
     }
@@ -305,7 +281,6 @@
         content: 'Xóa';
     }
 
-    /* Điều chỉnh các phần tử trong Mobile View */
     .cart-table .product-info {
         flex-direction: column;
         align-items: flex-start;
