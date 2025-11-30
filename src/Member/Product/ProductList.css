@@ -1,75 +1,71 @@
-.product-list {
-  /* width: 1000px;
-  margin: 50px auto; */
-}
 .product-list h2 {
-  text-align: center;
-  margin-bottom: 50px;
-  color: #556B2F; /* Olive Green */
-  font-weight: bold;
-  text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 50px;
+    color: #556b2f;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 .product-list table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 .product-list table thead tr {
-  height: 50px;
+    height: 50px;
 }
 .product-list table thead tr th {
-  background-color: #556B2F; /* Olive Green */
-  color: white;
-  border-right: 1px solid white;
-  text-align: center;
-  text-transform: uppercase;
-  font-size: 14px;
+    background-color: #556b2f;
+    color: white;
+    border-right: 1px solid white;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 14px;
 }
 .product-list img {
-  height: 50px;
-  width: 50px;
-  object-fit: cover;
-  border-radius: 3px;
-  border: 1px solid #ddd;
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid #ddd;
 }
 .product-list table tbody tr {
-  border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
 }
 .product-list table tbody tr:hover {
-  background-color: #FCFCFA;
+    background-color: #fcfcfa;
 }
 .product-list table tbody td {
-  padding: 10px;
-  text-align: center;
-  color: #333;
+    padding: 10px;
+    text-align: center;
+    color: #333;
 }
 .product-list table tbody .active i {
-  font-size: 18px;
-  cursor: pointer;
-  color: #556B2F;
-  text-align: center;
-  margin-right: 5px;
-  margin-left: 5px;
-  transition: color 0.2s;
+    font-size: 18px;
+    cursor: pointer;
+    color: #556b2f;
+    text-align: center;
+    margin-right: 5px;
+    margin-left: 5px;
+    transition: color 0.2s;
 }
 .product-list table tbody .active i:hover {
-  color: #4A5D29;
+    color: #4a5d29;
 }
 .product-list .add-product {
-  margin-bottom: 10px;
-  float: right;
-  font-size: 16px;
-  background-color: #556B2F; /* Olive Green */
-  color: white;
-  border: none;
-  border-radius: 3px;
-  padding: 8px 15px;
-  cursor: pointer;
-  transition: background 0.3s;
-  font-weight: bold;
+    margin-bottom: 10px;
+    float: right;
+    font-size: 16px;
+    background-color: #556b2f; /* Olive Green */
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-weight: bold;
 }
 .product-list .add-product:hover {
-  background-color: #4A5D29;
-  color: white;
+    background-color: #4a5d29;
+    color: white;
 }

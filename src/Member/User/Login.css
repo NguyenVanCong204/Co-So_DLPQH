@@ -1,96 +1,98 @@
 .login {
-  max-width: 500px;
-  margin: 50px auto;
-  padding: 30px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 28px;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
 }
 
 .login h2 {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #556B2F; /* Olive Green */
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+    text-align: center;
+    margin-bottom: 24px;
+    color: var(--primary-color);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .login form {
-  text-align: center;
+    text-align: center;
 }
 
 .login input {
-  width: 100%;
-  box-sizing: border-box;
-  outline: none;
-  font-size: 14px;
-  padding: 12px 15px;
-  margin-bottom: 5px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  transition: border-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    font-size: 14px;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: border-color 0.15s;
+    background: var(--white);
+    color: var(--text-color);
 }
 
 .login input:focus {
-  border-color: #556B2F; /* Olive Green */
+    border-color: var(--primary-color);
 }
 
 .login select {
-  width: 100%;
-  font-size: 14px;
-  padding: 12px 15px;
-  outline: none;
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  cursor: pointer;
-  margin-bottom: 5px;
-  box-sizing: border-box;
+    width: 100%;
+    font-size: 14px;
+    padding: 12px 15px;
+    outline: none;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    margin-bottom: 5px;
+    box-sizing: border-box;
 }
 
 .login select:focus {
-  border-color: #556B2F;
+    border-color: #556b2f;
 }
 
 .login p {
-  margin-top: 2px;
-  margin-bottom: 15px;
-  color: #8B4513; /* Saddle Brown */
-  font-size: 13px;
-  text-align: left;
-  min-height: 20px;
+    margin-top: 2px;
+    margin-bottom: 15px;
+    color: var(--price-color);
+    font-size: 13px;
+    text-align: left;
+    min-height: 20px;
 }
 
 .login button {
-  font-size: 16px;
-  box-sizing: border-box;
-  padding: 12px;
-  display: block;
-  width: 100%;
-  margin: 10px 0;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  text-transform: uppercase;
-  transition: background 0.3s;
+    font-size: 16px;
+    box-sizing: border-box;
+    padding: 12px;
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background 0.3s;
 }
 
 .login .login_member {
-  color: white;
-  background-color: #556B2F; /* Olive Green */
+    color: var(--white);
+    background-color: var(--primary-color);
 }
 
 .login .login_member:hover {
-  background-color: #4A5D29;
+    filter: brightness(0.95);
 }
 
 .login .register_member {
-  color: white;
-  background-color: #8B4513; /* Saddle Brown */
+    color: var(--white);
+    background-color: var(--accent-color);
 }
 
 .login .register_member:hover {
-  background-color: #723A0F;
+    filter: brightness(0.95);
 }

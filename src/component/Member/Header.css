@@ -30,7 +30,7 @@
 
 .header-main .search-container:focus-within {
     border-color: var(--primary-color);
-    background-color: var(--white);
+    background-color: #f3f3f3;
     box-shadow: 0 0 0 3px rgba(127, 169, 155, 0.2);
 }
 
@@ -54,7 +54,7 @@
 }
 
 .header-main .search-container button:hover {
-    color: var(--accent-color);
+    color: rgb(1, 1, 187);
 }
 
 .header-main .header-info {
@@ -68,7 +68,7 @@
 .header-main .header-info .hotline {
     font-size: 16px;
     font-weight: 700;
-    color: var(--accent-color);
+    color: red;
     display: block;
 }
 
@@ -88,10 +88,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Center vertically */
+    justify-content: center;
     font-weight: 500;
-    height: 60px; /* Fixed height for consistency */
-    width: 80px; /* Fixed width for consistency */
+    height: 60px;
+    width: 80px;
 }
 
 .header-main .header-info-icons a:hover {
@@ -100,14 +100,14 @@
 
 .header-main .header-info-icons a i {
     font-size: 20px;
-    color: var(--primary-color);
+    color: #5558ff;
     margin-bottom: 4px;
     transition: transform 0.3s;
 }
 
 .header-main .header-info-icons a:hover i {
     transform: translateY(-2px);
-    color: var(--accent-color);
+    color: rgb(95, 95, 255);
 }
 
 .user-avatar {
@@ -115,7 +115,7 @@
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid #556B2F; /* Olive Green */
+    border: 1px solid #556b2f; /* Olive Green */
     margin-bottom: 4px;
     transition: transform 0.3s;
     display: block; /* Ensure it behaves like a block for margin */
@@ -123,19 +123,19 @@
 
 .header-main .header-info-icons a:hover .user-avatar {
     transform: translateY(-2px);
-    border-color: #8B4513; /* Saddle Brown */
+    border-color: #8b4513;
 }
 
 .header-nav {
     background-color: var(--primary-color);
     padding: 0;
-    margin-bottom: 0; /* Removed margin to blend with hero */
+    margin-bottom: 0;
 }
 
 .header-nav .navbar-nav > li > a {
     color: var(--white) !important;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     padding: 15px 20px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -147,7 +147,7 @@
 
 .header-nav .mainmenu .nav.navbar-nav {
     display: flex;
-    justify-content: center; /* Center menu */
+    justify-content: center;
     width: 100%;
     gap: 10px;
 }

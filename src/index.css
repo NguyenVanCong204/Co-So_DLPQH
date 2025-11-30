@@ -1,11 +1,14 @@
 :root {
-    --primary-color: #7FA99B; /* Sage Green */
-    --secondary-color: #FDFBF7; /* Cream/Beige */
-    --accent-color: #D98C75; /* Terracotta */
-    --text-color: #4A4A4A; /* Dark Gray */
-    --border-color: #E0E0E0;
+    /* Minimalist palette for the sales site */
+    --primary-color: #2c3e50; /* Deep slate (main UI color) */
+    --secondary-color: #f7f8fa; /* Very light background */
+    --muted-color: #9aa3a8; /* Muted text and icons */
+    --accent-color: #6c9ea0; /* Subtle accent */
+    --price-color: #e53935; /* Bright red for prices and sales */
+    --text-color: #2f3438; /* Primary text */
+    --border-color: #e6e9eb;
     --white: #ffffff;
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow: 0 6px 18px rgba(30, 40, 50, 0.06);
 }
 
 body {
@@ -29,10 +32,171 @@ a {
 }
 
 a:hover {
-    color: var(--accent-color);
+    color: var(--primary-color);
 }
 
 button {
     cursor: pointer;
     font-family: inherit;
+}
+
+/* Project-specific overrides to create a consistent minimalist layout */
+/* Header / content spacing */
+.header-main,
+.header-nav {
+    background: var(--white);
+}
+.header-nav {
+    margin-bottom: 18px;
+    padding: 10px 0;
+    box-shadow: var(--shadow);
+}
+
+/* Give main content a comfortable top spacing so HomeList doesn't stick to header */
+.container > .row {
+    gap: 18px;
+}
+.features_items,
+.category-products,
+.product-details,
+.blog-post-area,
+.recommended_items {
+    margin-top: 18px;
+}
+
+/* Minimalist controls and form inputs */
+input,
+select,
+textarea {
+    border: 1px solid var(--border-color) !important;
+    background: var(--white) !important;
+    color: var(--text-color) !important;
+    padding: 8px 10px !important;
+    border-radius: 8px !important;
+}
+
+/* Buttons */
+.btn,
+.add-to-cart,
+.get,
+.check_out,
+.update {
+    background: var(--primary-color) !important;
+    color: var(--white) !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    box-shadow: none !important;
+}
+
+/* Prices, sales and badges should be bright red to draw attention */
+.product-information span span,
+.cart_info .cart_total_price,
+.new,
+.sale,
+.productinfo h2,
+.breadcrumb .breadcrumb li a,
+.recommended-item-control i {
+    color: var(--price-color) !important;
+    background: transparent !important;
+}
+
+/* Make product image frames cleaner */
+.product-image-wrapper,
+.view-product img,
+.video-gallery .iframe-img {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+/* Scroll-up button customization */
+a#scrollUp {
+    bottom: 18px !important;
+    right: 18px !important;
+    padding: 10px 12px !important;
+    background: var(--primary-color) !important;
+    color: #fff !important;
+    border-radius: 50% !important;
+    width: 46px;
+    height: 46px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow) !important;
+    animation: none !important;
+}
+
+a#scrollUp i {
+    font-size: 18px !important;
+    color: #fff !important;
+}
+
+/* Make header search and icons align and spaced */
+.header-right-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    justify-content: flex-end;
+}
+.search-wrapper .search-container input {
+    width: 260px !important;
+}
+
+/* Lightweight typography adjustments */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-color);
+    font-weight: 600;
+}
+p,
+span,
+li,
+a {
+    color: var(--text-color);
+}
+
+/* Smooth element spacing for lists and product cards */
+.productinfo {
+    padding: 14px !important;
+}
+.product-image-wrapper {
+    padding: 12px !important;
+}
+
+/* Keep footer muted */
+#footer {
+    background: transparent !important;
+}
+
+/* Override old orange accents from legacy css to new palette */
+.product-overlay {
+    background: rgba(44, 62, 80, 0.85) !important;
+}
+.productinfo h2 {
+    color: var(--text-color) !important;
+}
+.h2.title,
+h2.title {
+    color: var(--primary-color) !important;
+}
+.mainmenu ul li a,
+.shop-menu ul li a {
+    color: var(--text-color) !important;
+}
+.breadcrumb .breadcrumb li a {
+    background: transparent !important;
+    color: var(--primary-color) !important;
+}
+
+/* Sale/new badges: bright red */
+.new,
+.sale {
+    background: var(--price-color) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    font-weight: 700 !important;
 }
