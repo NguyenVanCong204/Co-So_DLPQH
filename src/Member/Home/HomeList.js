@@ -202,8 +202,6 @@ function HomeList() {
         <div>
             <div className="hero-section">
                 <div className="hero-content">
-                    {/* <h1>Tinh Hoa Bếp Việt</h1>
-                    <p>Mang sự ấm cúng và tiện nghi đến ngôi nhà của bạn với bộ sưu tập đồ gia dụng cao cấp.</p> */}
                     <button
                         className="hero-btn"
                         onClick={() => {

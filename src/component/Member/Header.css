@@ -115,10 +115,10 @@
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
-    border: 1px solid #556b2f; /* Olive Green */
+    border: 1px solid #556b2f;
     margin-bottom: 4px;
     transition: transform 0.3s;
-    display: block; /* Ensure it behaves like a block for margin */
+    display: block;
 }
 
 .header-main .header-info-icons a:hover .user-avatar {

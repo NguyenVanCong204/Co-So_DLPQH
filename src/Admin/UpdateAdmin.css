@@ -1,74 +1,74 @@
 .register {
-  width: 600px;
-  margin: auto;
-  margin-top: 20px;
+    width: 600px;
+    margin: auto;
+    margin-top: 20px;
 }
 .register form {
-  width: 100%;
+    width: 100%;
 }
 .register input {
-  box-sizing: border-box;
-  width: 100%;
-  outline: none;
-  font-size: 16px;
-  padding: 5px;
-  border-radius: 3px;
-  border: 1px solid rgb(109, 108, 108);
+    box-sizing: border-box;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid rgb(109, 108, 108);
 }
 .register select {
-  margin-top: 10px;
-  font-size: 16px;
-  padding: 3px 5px;
-  outline: none;
+    margin-top: 10px;
+    font-size: 16px;
+    padding: 3px 5px;
+    outline: none;
 }
 .register button {
-  box-sizing: border-box;
-  padding: 5px 10px;
-  display: flex;
-  margin: 20px auto;
+    box-sizing: border-box;
+    padding: 5px 10px;
+    display: flex;
+    margin: 20px auto;
 }
 .register h2 {
-  text-align: center;
-  margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 20px;
 }
 .register p {
-  margin: 5px;
-  color: red;
+    margin: 5px;
+    color: red;
 }
 .register button {
-  cursor: pointer;
+    cursor: pointer;
 }
 .register a {
-  text-decoration: none;
+    text-decoration: none;
 }
 .register .avatar {
-  display: flex;
-  gap: 20px;
+    display: flex;
+    gap: 20px;
 }
 .register img {
-  width: 100%;
-  height: 140px;
+    width: 100%;
+    height: 140px;
 }
 .register .avatar_list {
-  width: 140px;
+    width: 140px;
 }
 .register textarea {
-  width: 100%;
-  box-sizing: border-box;
-  height: 100px;
-  outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100px;
+    outline: none;
 }
 .register .img_blog {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  width: 100px;
-  height: 100px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100px;
+    height: 100px;
 }
 .register .update {
-  border-radius: 5px;
-  font-size: 18px;
+    border-radius: 5px;
+    font-size: 18px;
 }
 .register .update:hover {
-  background: rgb(255, 166, 0);
-  color: rgb(234, 234, 234);
+    background: rgb(255, 166, 0);
+    color: rgb(234, 234, 234);
 }

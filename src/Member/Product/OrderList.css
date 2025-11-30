@@ -213,9 +213,6 @@
     filter: brightness(0.95);
 }
 
-/* ... other styles ... */
-
-/* Modal Styles */
 .modal-overlay {
     position: fixed;
     top: 0;

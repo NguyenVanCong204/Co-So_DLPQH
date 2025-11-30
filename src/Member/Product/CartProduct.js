@@ -79,7 +79,6 @@ function CartProduct() {
             navigate('/member/product/checkout');
         }
     }
-    // -----------------------------
 
     function renderData() {
         if (input.length === 0) {

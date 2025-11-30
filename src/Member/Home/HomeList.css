@@ -189,7 +189,7 @@
     transition: all 0.3s ease;
     margin-top: 15px;
     width: 100%;
-    opacity: 0; /* Hide button initially */
+    opacity: 0;
     transform: translateY(20px);
 }
 

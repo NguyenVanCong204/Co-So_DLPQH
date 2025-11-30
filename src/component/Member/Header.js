@@ -11,7 +11,6 @@ import apiMember from '../../API/apiMember';
 import MemberCartContext from '../../Context/MemberCartContext';
 
 function Header() {
-    // const user = JSON.parse(localStorage.getItem('user')); // Removed, using state instead
     const { SetCart } = useContext(MemberCartContext) || {};
     const navigate = useNavigate();
     const dispath = useDispatch();
@@ -83,7 +82,6 @@ function Header() {
 
         window.addEventListener('user-updated', handleUserUpdate);
 
-        // Also listen for storage events (in case update happens in another tab)
         window.addEventListener('storage', handleUserUpdate);
 
         return () => {

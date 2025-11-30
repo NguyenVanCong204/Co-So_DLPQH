@@ -19,7 +19,7 @@ const HeaderAdmin = () => {
 
     const getAvatarSrc = () => {
         if (!user || !user.avatar) {
-            return 'http://localhost:3001/no-image.png'; // Default avatar or placeholder
+            return 'http://localhost:3001/no-image.png';
         }
         try {
             const avatar = typeof user.avatar === 'string' ? JSON.parse(user.avatar) : user.avatar;
@@ -28,7 +28,6 @@ const HeaderAdmin = () => {
             }
             return `http://localhost:3001/${user.avatar}`;
         } catch (error) {
-            // If parsing fails, try using avatar directly as a string
             return `http://localhost:3001/${user.avatar}`;
         }
     };

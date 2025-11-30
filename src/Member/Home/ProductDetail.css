@@ -198,7 +198,6 @@
     color: var(--primary-color);
 }
 
-/* Override legacy orange hover/active from global CSS to use primary blue */
 .shop-details-tab .nav-tabs li a,
 .shop-details-tab .nav-tabs li a:focus {
     background: transparent !important;

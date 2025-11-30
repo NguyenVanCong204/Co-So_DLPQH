@@ -89,14 +89,7 @@ function LoginTest() {
                                 onChange={(e) => handleChangInput(e)}
                             />
                             <span>
-                                <i
-                                    className="fa-regular fa-eye"
-                                    //   className={
-                                    //     this.state.isShowPassword
-                                    //       ? "fa-regular fa-eye"
-                                    //       : "fa-regular fa-eye-slash"
-                                    //   }
-                                ></i>
+                                <i className="fa-regular fa-eye"></i>
                             </span>
                         </div>
                     </div>
