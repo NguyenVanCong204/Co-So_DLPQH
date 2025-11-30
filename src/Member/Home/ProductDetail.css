@@ -4,6 +4,8 @@
   background: #fff;
   padding: 20px;
   border: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-radius: 5px;
 }
 
 .product-image-gallery {
@@ -18,10 +20,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 5px;
 }
 .product-image-gallery .main-image img {
   max-width: 100%;
   max-height: 100%;
+  border-radius: 5px;
 }
 
 .product-image-gallery .thumbnail-list {
@@ -36,10 +40,11 @@
   cursor: pointer;
   opacity: 0.7;
   transition: all 0.3s ease;
+  border-radius: 4px;
 }
 .product-image-gallery .thumbnail-list img:hover,
 .product-image-gallery .thumbnail-list img.active {
-  border-color: #007bff;
+  border-color: #556B2F; /* Olive Green */
   opacity: 1;
 }
 
@@ -50,7 +55,7 @@
 .product-info-right .product-title {
   font-size: 24px;
   font-weight: bold;
-  color: #007bff;
+  color: #556B2F; /* Olive Green */
   margin-top: 0;
   margin-bottom: 15px;
   line-height: 1.3;
@@ -71,7 +76,7 @@
 .product-info-right .price-box .price-new {
   font-size: 28px;
   font-weight: bold;
-  color: #d9534f;
+  color: #8B4513; /* Saddle Brown */
   display: block;
 }
 .product-info-right .price-box .price-old {
@@ -108,6 +113,10 @@
   font-size: 18px;
   cursor: pointer;
   color: #777;
+  transition: background 0.2s;
+}
+.quantity-btn:hover {
+  background: #e0e0e0;
 }
 .quantity-input {
   width: 50px;
@@ -122,8 +131,8 @@
 }
 
 .product-info-right .add-to-cart-btn {
-  background-color: #ffc107;
-  color: #333;
+  background-color: #556B2F; /* Olive Green */
+  color: #fff;
   border: none;
   padding: 12px 25px;
   font-size: 16px;
@@ -133,16 +142,18 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-right: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 .product-info-right .add-to-cart-btn:hover {
-  background-color: #e0a800;
+  background-color: #4A5D29;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 .product-info-right .add-to-cart-btn i {
   margin-right: 8px;
 }
 
 .product-info-right .buy-by-phone-btn {
-  background-color: #d9534f;
+  background-color: #8B4513; /* Saddle Brown */
   color: white;
   border: none;
   padding: 12px 25px;
@@ -151,16 +162,22 @@
   text-transform: uppercase;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.3s;
+}
+.product-info-right .buy-by-phone-btn:hover {
+  background-color: #723A0F;
 }
 
 .shop-details-tab {
   margin-top: 30px;
   border: 1px solid #ddd;
   padding: 15px;
+  border-radius: 5px;
+  background: #fff;
 }
 .shop-details-tab .nav-tabs {
   background: #f5f5f5;
-  border-bottom: 2px solid #007bff;
+  border-bottom: 2px solid #556B2F; /* Olive Green */
 }
 .shop-details-tab .nav-tabs > li {
   margin-bottom: -2px;
@@ -176,9 +193,9 @@
 .shop-details-tab .nav-tabs > li.active > a,
 .shop-details-tab .nav-tabs > li.active > a:hover,
 .shop-details-tab .nav-tabs > li.active > a:focus {
-  border-color: #007bff #007bff transparent;
+  border-color: #556B2F #556B2F transparent;
   background: #fff;
-  color: #007bff;
+  color: #556B2F;
 }
 .shop-details-tab .tab-content {
   padding: 20px;
@@ -201,7 +218,8 @@
   text-align: left;
 }
 .shop-details-tab .tab-content th {
-  background: #f9f9f9;
+  background: #FAF0E6; /* Linen */
   width: 30%;
   font-weight: 600;
+  color: #556B2F;
 }

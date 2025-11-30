@@ -1,5 +1,5 @@
 .left-sidebar h2 {
-    background-color: #007bff;
+    background-color: #556B2F; /* Dark Olive Green */
     color: white;
     font-size: 16px;
     font-weight: bold;
@@ -9,12 +9,14 @@
     margin-bottom: 0;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    letter-spacing: 0.5px;
 }
 
 .left-sidebar .panel-group {
-    border: 1px solid #007bff;
+    border: 1px solid #E0E0E0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .left-sidebar .panel {
@@ -42,15 +44,17 @@
 .left-sidebar .panel-title > a {
     color: #333;
     display: block;
-    padding: 10px 20px;
+    padding: 12px 20px;
     text-decoration: none;
     font-weight: 500;
     position: relative;
+    transition: all 0.3s ease;
 }
 
 .left-sidebar .panel-title > a:hover {
-    background-color: #f9f9f9;
-    color: #007bff;
+    background-color: #FAF0E6; /* Linen */
+    color: #556B2F;
+    padding-left: 25px; /* Subtle slide effect */
 }
 
 .left-sidebar .panel-title > a[data-toggle='collapse']::after {
@@ -60,15 +64,18 @@
     right: 20px;
     font-weight: bold;
     transition: all 0.3s ease;
+    color: #999;
 }
 
 .left-sidebar .panel-title > a[data-toggle='collapse'][aria-expanded='true']::after {
     transform: rotate(90deg);
+    color: #556B2F;
 }
 
 .left-sidebar .panel-body {
     padding: 10px 0 10px 35px;
     border-top: none;
+    background-color: #FCFCFA;
 }
 
 .left-sidebar .panel-body ul {
@@ -79,12 +86,14 @@
 .left-sidebar .panel-body li a {
     color: #555;
     font-size: 13px;
-    padding: 5px 0;
+    padding: 6px 0;
     display: block;
     text-decoration: none;
+    transition: color 0.2s;
 }
 .left-sidebar .panel-body li a:hover {
-    color: #007bff;
+    color: #556B2F;
+    font-weight: 600;
 }
 
 .left-sidebar h2::before {

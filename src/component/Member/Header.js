@@ -11,7 +11,7 @@ import apiMember from '../../API/apiMember';
 import MemberCartContext from '../../Context/MemberCartContext';
 
 function Header() {
-    const user = JSON.parse(localStorage.getItem('user'));
+    // const user = JSON.parse(localStorage.getItem('user')); // Removed, using state instead
     const { SetCart } = useContext(MemberCartContext) || {};
     const navigate = useNavigate();
     const dispath = useDispatch();
@@ -74,6 +74,24 @@ function Header() {
         navigate(`/member/home/product/detail/${product._id}`);
     }
 
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+
+    useEffect(() => {
+        const handleUserUpdate = () => {
+            setUser(JSON.parse(localStorage.getItem('user')));
+        };
+
+        window.addEventListener('user-updated', handleUserUpdate);
+        
+        // Also listen for storage events (in case update happens in another tab)
+        window.addEventListener('storage', handleUserUpdate);
+
+        return () => {
+            window.removeEventListener('user-updated', handleUserUpdate);
+            window.removeEventListener('storage', handleUserUpdate);
+        };
+    }, []);
+
     function HandleCart() {
         navigate('/member/home/cart');
     }
@@ -89,6 +107,7 @@ function Header() {
         dispath(resetCartRedux());
         dispath(resetCartSlider());
         dispath(Search(''));
+        setUser(null); // Clear user state
         navigate('/');
         toast.success('Logout thành công');
     }
@@ -169,7 +188,26 @@ function Header() {
                                     {user ? (
                                         <>
                                             <a href="#" onClick={() => Account()}>
-                                                <i className="fa fa-user"></i>
+                                                {(() => {
+                                                    let userAvatar = null;
+                                                    if (user.avatar) {
+                                                        try {
+                                                            const avatars = JSON.parse(user.avatar);
+                                                            if (Array.isArray(avatars) && avatars.length > 0) {
+                                                                userAvatar = avatars[0];
+                                                            }
+                                                        } catch (e) {}
+                                                    }
+                                                    return userAvatar ? (
+                                                        <img 
+                                                            src={`http://localhost:3001/${userAvatar}`} 
+                                                            alt="Avatar" 
+                                                            className="user-avatar" 
+                                                        />
+                                                    ) : (
+                                                        <i className="fa fa-user"></i>
+                                                    );
+                                                })()}
                                                 <span>{user.name}</span>
                                             </a>
                                             <a href="#" onClick={() => Logout()}>

@@ -1,13 +1,14 @@
 
 
 .checkout-title-bar {
-  background: #007bff;
+  background: #556B2F; /* Olive Green */
   color: white;
   padding: 12px 20px;
   font-size: 16px;
   font-weight: bold;
   text-transform: uppercase;
   border-radius: 5px 5px 0 0;
+  letter-spacing: 0.5px;
 }
 
 .checkout-box {
@@ -17,6 +18,7 @@
   padding: 20px;
   margin-bottom: 20px;
   height: 100%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 .checkout-box h3 {
   font-size: 18px;
@@ -36,9 +38,10 @@
   font-size: 14px;
   margin-bottom: 5px;
   display: block;
+  color: #555;
 }
 .checkout-form label span {
-  color: red;
+  color: #8B4513; /* Saddle Brown for required asterisk */
 }
 .checkout-form .form-control {
   width: 100%;
@@ -47,6 +50,10 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   outline: none;
+  transition: border-color 0.2s;
+}
+.checkout-form .form-control:focus {
+  border-color: #556B2F;
 }
 .checkout-form textarea.form-control {
   min-height: 100px;
@@ -60,9 +67,14 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   cursor: pointer;
+  transition: background 0.2s;
+}
+.payment-box .radio-option:hover {
+  background-color: #FCFCFA;
 }
 .payment-box .radio-option input[type="radio"] {
   margin-right: 10px;
+  accent-color: #556B2F;
 }
 .payment-box .radio-option label {
   margin: 0;
@@ -73,10 +85,15 @@
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 .order-summary-box h3 {
   padding: 15px 20px;
   border-bottom: 1px solid #ddd;
+  color: #556B2F;
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .order-product-list {
@@ -99,6 +116,7 @@
   height: 60px;
   border: 1px solid #ddd;
   border-radius: 4px;
+  object-fit: cover;
 }
 .order-product-item .order-product-info {
   flex: 1;
@@ -119,7 +137,7 @@
 .order-product-item .price {
   font-size: 14px;
   font-weight: 600;
-  color: #333;
+  color: #555;
 }
 
 .order-coupon {
@@ -140,11 +158,13 @@
   color: #333;
   padding: 0 15px;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 .order-total-summary {
   padding: 15px 20px;
   border-top: 1px solid #f0f0f0;
+  background-color: #FCFCFA;
 }
 .order-total-summary ul {
   list-style: none;
@@ -155,13 +175,13 @@
   display: flex;
   justify-content: space-between;
   font-size: 14px;
-  color: #333;
+  color: #555;
   padding: 6px 0;
 }
 .order-total-summary li.total {
   font-size: 18px;
   font-weight: bold;
-  color: #d9534f;
+  color: #8B4513; /* Saddle Brown */
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px solid #ddd;
@@ -171,7 +191,7 @@
 }
 
 .order-submit-btn {
-  background: #ff7c00;
+  background: #556B2F; /* Olive Green */
   color: white;
   border: none;
   width: 100%;
@@ -181,9 +201,10 @@
   text-transform: uppercase;
   border-radius: 0 0 5px 5px;
   cursor: pointer;
+  transition: background 0.3s;
 }
 .order-submit-btn:hover {
-  background: #e66f00;
+  background: #4A5D29;
 }
 
 .breadcrumb-new {
@@ -193,7 +214,7 @@
   line-height: 1;
 }
 .breadcrumb-new a {
-  color: #007bff;
+  color: #556B2F;
   text-decoration: none;
 }
 .breadcrumb-new a:hover {
@@ -218,7 +239,7 @@
   width:50px;
   height:50px;
   border:6px solid #ccc;
-  border-top-color:#1a73e8;
+  border-top-color:#556B2F;
   border-radius:50%;
   animation: spin 1s linear infinite;
 }

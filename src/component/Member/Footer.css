@@ -3,10 +3,10 @@
 }
 
 .footer-policy {
-    background-color: #f8f8f8;
+    background-color: #FCFCFA; /* Light earthy background */
     padding: 20px 0;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #E0E0E0;
+    border-bottom: 1px solid #E0E0E0;
 }
 
 .policy-item {
@@ -17,7 +17,7 @@
 
 .policy-item i {
     font-size: 40px;
-    color: #007bff;
+    color: #556B2F; /* Olive Green */
 }
 
 .policy-item .policy-text h4 {
@@ -25,6 +25,7 @@
     font-size: 16px;
     font-weight: bold;
     color: #333;
+    text-transform: uppercase;
 }
 
 .policy-item .policy-text p {
@@ -34,7 +35,7 @@
 }
 
 .footer-top {
-    background: #007bff;
+    background: #556B2F; /* Olive Green */
     color: #fff;
     padding: 40px 0;
 }
@@ -46,6 +47,7 @@
     margin-top: 0;
     margin-bottom: 20px;
     color: #fff;
+    letter-spacing: 0.5px;
 }
 
 .footer-top .single-widget p,
@@ -59,9 +61,10 @@
     color: #f0f0f0;
     padding: 5px 0;
     text-decoration: none;
+    transition: color 0.2s;
 }
 .footer-top .single-widget .nav-stacked li a:hover {
-    color: #fff;
+    color: #FAF0E6; /* Linen */
     text-decoration: underline;
 }
 
@@ -81,16 +84,23 @@
     width: 100%;
     border-radius: 5px;
     outline: none;
+    color: #333;
 }
 
 .footer-top .searchform button {
-    background: #fe980f;
+    background: #8B4513; /* Saddle Brown */
     border: 0;
     color: #fff;
     padding: 10px 15px;
     border-radius: 5px;
     margin-top: 10px;
     font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-transform: uppercase;
+}
+.footer-top .searchform button:hover {
+    background: #723A0F;
 }
 
 .footer-top .social-icons ul {
@@ -106,7 +116,7 @@
 
 .footer-top .social-icons li a {
     background: #fff;
-    color: #007bff;
+    color: #556B2F; /* Olive Green */
     width: 35px;
     height: 35px;
     display: flex;
@@ -118,12 +128,37 @@
     transition: all 0.3s ease;
 }
 .footer-top .social-icons li a:hover {
-    background: #fe980f;
+    background: #8B4513; /* Saddle Brown */
     color: #fff;
 }
 
 .footer-bottom {
-    background: #f0f0f0;
+    background: #FAF0E6; /* Linen */
     padding: 15px 0;
     font-size: 13px;
+    color: #555;
+    border-top: 1px solid #E0E0E0;
+}
+
+/* Scroll Up Button */
+#scrollUp {
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: #8B4513; /* Saddle Brown */
+    color: #fff;
+    animation: bounce 2s ease infinite;
+    border-radius: 5px;
+    position: fixed;
+    z-index: 999;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#scrollUp:hover {
+    background: #556B2F; /* Olive Green */
+}
+
+#scrollUp i {
+    font-size: 20px;
 }
