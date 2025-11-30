@@ -165,44 +165,39 @@
   font-size: 14px;
 }
 
+/* ... existing styles ... */
+
 .btn-delivered,
 .btn-view-details {
-  padding: 10px 20px;
+  padding: 8px 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
   transition: all 0.3s;
+  text-transform: uppercase;
 }
 
 .btn-delivered {
-  background-color: #28a745;
+  background-color: #556B2F; /* Olive Green */
   color: white;
 }
 
 .btn-delivered:hover {
-  background-color: #218838;
+  background-color: #4A5D29;
 }
 
 .btn-view-details {
-  background-color: #0084c4;
+  background-color: #8B4513; /* Saddle Brown */
   color: white;
 }
 
 .btn-view-details:hover {
-  background-color: #006ba1;
+  background-color: #723A0F;
 }
 
-.empty-orders {
-  text-align: center;
-  padding: 60px 20px;
-  color: #999;
-}
-
-.empty-orders p {
-  font-size: 18px;
-}
+/* ... other styles ... */
 
 /* Modal Styles */
 .modal-overlay {
@@ -216,6 +211,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(2px);
 }
 
 .modal-content {
@@ -225,7 +221,8 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid #d0d0d0;
 }
 
 .modal-header {
@@ -234,11 +231,16 @@
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #e0e0e0;
+  background-color: #556B2F; /* Olive Green */
+  border-radius: 8px 8px 0 0;
 }
 
 .modal-header h3 {
   margin: 0;
-  color: #333;
+  color: white;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .close-btn {
@@ -246,78 +248,81 @@
   border: none;
   font-size: 28px;
   cursor: pointer;
-  color: #999;
+  color: rgba(255,255,255,0.8);
   padding: 0;
   width: 30px;
   height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color 0.2s;
 }
 
 .close-btn:hover {
-  color: #333;
+  color: white;
 }
 
 .modal-body {
-  padding: 20px;
+  padding: 25px;
 }
 
 .order-detail-section {
   margin-bottom: 25px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px dashed #ccc;
 }
 
 .order-detail-section p {
   margin: 10px 0;
-  color: #666;
+  color: #555;
   font-size: 15px;
 }
 
 .order-detail-section strong {
   color: #333;
   margin-right: 10px;
+  font-weight: 600;
 }
 
 .order-detail-products h4 {
   margin-bottom: 15px;
-  color: #333;
+  color: #556B2F; /* Olive Green */
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 16px;
 }
 
 .detail-product-item {
   display: flex;
   gap: 15px;
   padding: 15px;
-  background: #f9f9f9;
+  background: #FCFCFA; /* Light earthy background */
   border-radius: 6px;
   margin-bottom: 10px;
+  border: 1px solid #eee;
 }
 
 .detail-product-item img {
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
   border-radius: 4px;
-}
-
-.detail-product-info {
-  flex: 1;
+  border: 1px solid #ddd;
 }
 
 .detail-product-info h4 {
   margin: 0 0 8px 0;
-  color: #333;
   font-size: 16px;
 }
 
 .detail-product-info h4 a {
-  color: #0084c4;
+  color: #333;
   text-decoration: none;
+  transition: color 0.2s;
 }
 
 .detail-product-info h4 a:hover {
-  text-decoration: underline;
+  color: #556B2F;
 }
 
 .detail-product-info p {
@@ -335,6 +340,6 @@
 
 .order-detail-total strong {
   font-size: 20px;
-  color: #333;
+  color: #8B4513; /* Saddle Brown */
 }
 

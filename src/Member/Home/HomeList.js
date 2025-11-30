@@ -212,8 +212,20 @@ function HomeList() {
 
   return (
     <div>
-      <div className="features_items">
-        <h2 className="title text-center">HÀNG BÁN CHẠY NHẤT</h2>
+      {/* Hero Section */}
+      <div className="hero-section">
+        <div className="hero-content">
+          <h1>Tinh Hoa Bếp Việt</h1>
+          <p>Mang sự ấm cúng và tiện nghi đến ngôi nhà của bạn với bộ sưu tập đồ gia dụng cao cấp.</p>
+          <button className="hero-btn" onClick={() => {
+            const element = document.getElementById('products-grid');
+            element?.scrollIntoView({ behavior: 'smooth' });
+          }}>Khám Phá Ngay</button>
+        </div>
+      </div>
+
+      <div className="features_items" id="products-grid">
+        <h2 className="title text-center">Sản Phẩm Nổi Bật</h2>
 
         {renderData()}
       </div>

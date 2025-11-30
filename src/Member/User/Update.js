@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import apiMember from "../../API/apiMember";
 import { toast } from "react-toastify";
 import refershToken from "../../RefershToken/RefershToken";
+import "./Update.css";
 function UpdateMember() {
   let [input, SetInput] = useState({
     email: "",
@@ -135,6 +136,18 @@ function UpdateMember() {
           SetErr({});
           console.log(res);
           toast.success("Update thành công");
+          
+          const updatedUser = {
+            ...JSON.parse(localStorage.getItem("user")),
+            name: input.name,
+            phone: input.phone,
+            address: input.address,
+            avatar: res.data.data.avatar
+          };
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          
+          window.dispatchEvent(new Event("user-updated"));
+          
           getDataUser();
         })
         .catch(async (error) => {
@@ -197,8 +210,11 @@ function UpdateMember() {
       <div className="register">
         <h3>Update Admin</h3>
         <form encType="multipart/form-data">
+          <label>Email</label>
           <input name="email" type="text" readOnly value={input.email} />
           <p></p>
+          
+          <label>Full Name</label>
           <input
             name="name"
             type="text"
@@ -207,6 +223,8 @@ function UpdateMember() {
             onChange={changInput}
           ></input>
           <p>{err.name}</p>
+
+          <label>Password</label>
           <input
             name="pass"
             type="password"
@@ -215,6 +233,8 @@ function UpdateMember() {
             value={input.pass}
           ></input>
           <p>{err.pass}</p>
+
+          <label>Phone Number</label>
           <input
             name="phone"
             type="text"
@@ -223,6 +243,8 @@ function UpdateMember() {
             value={input.phone}
           ></input>
           <p>{err.phone}</p>
+
+          <label>Address</label>
           <input
             name="address"
             type="text"
@@ -231,6 +253,8 @@ function UpdateMember() {
             value={input.address}
           ></input>
           <p>{err.address}</p>
+
+          <label>Country</label>
           <select name="country" value={input.country} onChange={changInput}>
             <option value="">---Chọn country---</option>
             {country &&
@@ -243,6 +267,8 @@ function UpdateMember() {
               })}
           </select>
           <p>{err.country}</p>
+
+          <label>Avatar</label>
           <input
             name="avatar"
             type="file"

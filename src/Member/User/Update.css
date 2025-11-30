@@ -1,0 +1,85 @@
+.register {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 30px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.register h3 {
+    text-align: center;
+    color: #556B2F; /* Olive Green */
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.register label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 14px;
+}
+
+.register input,
+.register select {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.register input:focus,
+.register select:focus {
+    border-color: #556B2F;
+}
+
+.register p {
+    color: #d9534f;
+    font-size: 13px;
+    margin-bottom: 15px;
+    min-height: 20px;
+}
+
+.register button {
+    width: 100%;
+    padding: 12px;
+    background-color: #556B2F;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+.register button:hover {
+    background-color: #4A5D29;
+}
+
+.register .avatar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.register .avatar_list img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}

@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import apiMember from "../../API/apiMember";
 import auth from "../../API/auth";
 import "./Login.css";
 import { toast } from "react-toastify";
+
 function LoginMember() {
   const navigate = useNavigate();
   let [err, SetErr] = useState({});
@@ -12,6 +13,18 @@ function LoginMember() {
     password: "",
     level: "0",
   });
+
+  useEffect(() => {
+    // Clear session data when visiting login page
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenReferesh");
+    localStorage.removeItem("user");
+    localStorage.removeItem("IdUser");
+    
+    // Notify Header to update (clear user)
+    window.dispatchEvent(new Event("user-updated"));
+  }, []);
+
   function handleChangInput(e) {
     let name = e.target.name;
     let value = e.target.value;
@@ -50,6 +63,10 @@ function LoginMember() {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("tokenReferesh", res.data.tokenReferesh);
           localStorage.setItem("user", JSON.stringify(res.data.user));
+          
+          // Notify Header to update (show user)
+          window.dispatchEvent(new Event("user-updated"));
+          
           toast.success("Đăng nhập thành công");
           navigate("/member/home");
         })
