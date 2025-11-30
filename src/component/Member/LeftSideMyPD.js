@@ -15,7 +15,7 @@ function LeftSideMyPD() {
     return (
         <div className="col-sm-3">
             <div className="left-sidebar">
-                <h2>Account</h2>
+                <h2>TÀI KHOẢN</h2>
                 <div className="panel-group category-products" id="accordian">
                     {/*category-productsr*/}
                     <div className="panel panel-default">
@@ -26,7 +26,7 @@ function LeftSideMyPD() {
                                     onClick={() => Account()}
                                     className={check === 'account' ? 'text-yellow' : ''}
                                 >
-                                    account
+                                    Thông tin cá nhân
                                 </a>
                             </h4>
                         </div>
@@ -39,7 +39,7 @@ function LeftSideMyPD() {
                                     onClick={() => MyProduct()}
                                     className={check === 'myproduct' ? 'text-yellow' : ''}
                                 >
-                                    My product
+                                    Đơn hàng
                                 </a>
                             </h4>
                         </div>

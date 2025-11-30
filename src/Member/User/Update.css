@@ -1,18 +1,18 @@
 .register {
     max-width: 600px;
     margin: 30px auto;
-    padding: 30px;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    padding: 28px;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
 }
 
 .register h3 {
     text-align: center;
-    color: #556B2F; /* Olive Green */
-    font-weight: bold;
-    margin-bottom: 30px;
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 24px;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
@@ -29,44 +29,55 @@
 .register select {
     width: 100%;
     padding: 12px 15px;
-    margin-bottom: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    margin-bottom: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
     font-size: 14px;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.15s;
     box-sizing: border-box;
+    background: var(--white);
+    color: var(--text-color);
 }
 
 .register input:focus,
 .register select:focus {
-    border-color: #556B2F;
+    border-color: var(--primary-color);
 }
 
 .register p {
-    color: #d9534f;
+    color: var(--price-color);
     font-size: 13px;
-    margin-bottom: 15px;
+    margin-bottom: 6px;
+    margin-top: -4px;
     min-height: 20px;
 }
 
 .register button {
-    width: 100%;
-    padding: 12px;
-    background-color: #556B2F;
-    color: white;
+    width: 60%;
+    padding: 10px 0;
+    background-color: rgb(1, 1, 198);
+    color: var(--white);
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
-    transition: background 0.3s;
-    margin-top: 10px;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin-top: 14px;
+    box-shadow: var(--shadow);
 }
 
 .register button:hover {
-    background-color: #4A5D29;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background-color: blue;
+}
+
+.register button:active {
+    transform: translateY(0);
 }
 
 .register .avatar {

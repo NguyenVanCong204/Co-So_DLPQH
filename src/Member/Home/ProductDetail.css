@@ -1,225 +1,240 @@
 .product-details-new {
-  display: flex;
-  flex-wrap: wrap;
-  background: #fff;
-  padding: 20px;
-  border: 1px solid #f0f0f0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 5px;
 }
 
 .product-image-gallery {
-  padding-right: 20px;
+    padding-right: 20px;
 }
 
 .product-image-gallery .main-image {
-  border: 1px solid #f0f0f0;
-  text-align: center;
-  margin-bottom: 15px;
-  height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
+    border: 1px solid #f0f0f0;
+    text-align: center;
+    margin-bottom: 15px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
 }
 .product-image-gallery .main-image img {
-  max-width: 100%;
-  max-height: 100%;
-  border-radius: 5px;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 5px;
 }
 
 .product-image-gallery .thumbnail-list {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
 }
 .product-image-gallery .thumbnail-list img {
-  width: 80px;
-  height: 80px;
-  border: 2px solid #ddd;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: all 0.3s ease;
-  border-radius: 4px;
+    width: 80px;
+    height: 80px;
+    border: 2px solid #ddd;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    border-radius: 4px;
 }
 .product-image-gallery .thumbnail-list img:hover,
 .product-image-gallery .thumbnail-list img.active {
-  border-color: #556B2F; /* Olive Green */
-  opacity: 1;
+    border-color: var(--primary-color);
+    opacity: 1;
 }
 
 .product-info-right {
-  padding-left: 20px;
+    padding-left: 20px;
 }
 
 .product-info-right .product-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #556B2F; /* Olive Green */
-  margin-top: 0;
-  margin-bottom: 15px;
-  line-height: 1.3;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: 15px;
+    line-height: 1.3;
 }
 
 .product-info-right .product-summary {
-  font-size: 14px;
-  color: #555;
-  line-height: 1.6;
-  margin-bottom: 20px;
-  border-bottom: 1px dashed #ccc;
-  padding-bottom: 15px;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 15px;
 }
 
 .product-info-right .price-box {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 .product-info-right .price-box .price-new {
-  font-size: 28px;
-  font-weight: bold;
-  color: #8B4513; /* Saddle Brown */
-  display: block;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--price-color);
+    display: block;
 }
 .product-info-right .price-box .price-old {
-  font-size: 18px;
-  color: #999;
-  text-decoration: line-through;
-  display: block;
-  margin-top: 5px;
+    font-size: 18px;
+    color: var(--muted-color);
+    text-decoration: line-through;
+    display: block;
+    margin-top: 5px;
 }
 
 .quantity-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: Arial, sans-serif;
-  margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: Arial, sans-serif;
+    margin-bottom: 20px;
 }
 .quantity-label {
-  font-size: 16px;
-  color: #555;
-  font-weight: bold;
+    font-size: 16px;
+    color: #555;
+    font-weight: bold;
 }
 .quantity-control {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
 }
 .quantity-btn {
-  background: #f5f5f5;
-  border: none;
-  padding: 8px 14px;
-  font-size: 18px;
-  cursor: pointer;
-  color: #777;
-  transition: background 0.2s;
+    background: #f5f5f5;
+    border: none;
+    padding: 8px 14px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #777;
+    transition: background 0.2s;
 }
 .quantity-btn:hover {
-  background: #e0e0e0;
+    background: #e0e0e0;
 }
 .quantity-input {
-  width: 50px;
-  text-align: center;
-  border: none;
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  outline: none;
-  font-size: 16px;
-  color: #333;
-  padding: 8px 0;
+    width: 50px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    padding: 8px 0;
 }
 
 .product-info-right .add-to-cart-btn {
-  background-color: #556B2F; /* Olive Green */
-  color: #fff;
-  border: none;
-  padding: 12px 25px;
-  font-size: 16px;
-  font-weight: bold;
-  text-transform: uppercase;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-right: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    margin-right: 10px;
+    box-shadow: var(--shadow);
 }
 .product-info-right .add-to-cart-btn:hover {
-  background-color: #4A5D29;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 .product-info-right .add-to-cart-btn i {
-  margin-right: 8px;
+    margin-right: 8px;
 }
 
 .product-info-right .buy-by-phone-btn {
-  background-color: #8B4513; /* Saddle Brown */
-  color: white;
-  border: none;
-  padding: 12px 25px;
-  font-size: 16px;
-  font-weight: bold;
-  text-transform: uppercase;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s;
+    background-color: rgb(255, 111, 0);
+    color: var(--white);
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
 }
 .product-info-right .buy-by-phone-btn:hover {
-  background-color: #723A0F;
+    filter: brightness(0.95);
 }
 
 .shop-details-tab {
-  margin-top: 30px;
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 5px;
-  background: #fff;
+    margin-top: 30px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    background: #fff;
 }
 .shop-details-tab .nav-tabs {
-  background: #f5f5f5;
-  border-bottom: 2px solid #556B2F; /* Olive Green */
+    background: #f5f5f5;
+    border-bottom: 2px solid var(--primary-color);
 }
 .shop-details-tab .nav-tabs > li {
-  margin-bottom: -2px;
+    margin-bottom: -2px;
 }
 .shop-details-tab .nav-tabs > li > a {
-  border: 1px solid transparent;
-  border-radius: 5px 5px 0 0;
-  margin-right: 2px;
-  color: #333;
-  font-weight: bold;
-  text-transform: uppercase;
+    border: 1px solid transparent;
+    border-radius: 5px 5px 0 0;
+    margin-right: 2px;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 .shop-details-tab .nav-tabs > li.active > a,
 .shop-details-tab .nav-tabs > li.active > a:hover,
 .shop-details-tab .nav-tabs > li.active > a:focus {
-  border-color: #556B2F #556B2F transparent;
-  background: #fff;
-  color: #556B2F;
+    border-color: var(--primary-color) var(--primary-color) transparent;
+    background: #fff;
+    color: var(--primary-color);
+}
+
+/* Override legacy orange hover/active from global CSS to use primary blue */
+.shop-details-tab .nav-tabs li a,
+.shop-details-tab .nav-tabs li a:focus {
+    background: transparent !important;
+    color: var(--text-color) !important;
+}
+.shop-details-tab .nav-tabs li a:hover,
+.shop-details-tab .nav-tabs li.active a,
+.shop-details-tab .nav-tabs li.active a:hover,
+.shop-details-tab .nav-tabs li.active a:focus {
+    background-color: var(--primary-color) !important;
+    color: #fff !important;
+    border-color: var(--primary-color) !important;
 }
 .shop-details-tab .tab-content {
-  padding: 20px;
-  font-size: 14px;
-  line-height: 1.7;
+    padding: 20px;
+    font-size: 14px;
+    line-height: 1.7;
 }
 .shop-details-tab .tab-content h4 {
-  font-weight: bold;
-  color: #333;
-  margin-top: 0;
+    font-weight: bold;
+    color: #333;
+    margin-top: 0;
 }
 .shop-details-tab .tab-content table {
-  width: 100%;
-  border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
 .shop-details-tab .tab-content th,
 .shop-details-tab .tab-content td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
 }
 .shop-details-tab .tab-content th {
-  background: #FAF0E6; /* Linen */
-  width: 30%;
-  font-weight: 600;
-  color: #556B2F;
+    background: #ffffff;
+    width: 30%;
+    font-weight: 600;
+    color: #000000;
 }

@@ -38,7 +38,7 @@ function LeftSide() {
 
         return categories.map((category, index) => {
             const hasSubmenu = false;
-            const uniqueId = `category-${index}`;
+            const uniqueId = 'category-${index}';
 
             return (
                 <div className="panel panel-default" key={category._id}>
@@ -48,7 +48,7 @@ function LeftSide() {
                                 <a
                                     data-toggle="collapse"
                                     data-parent="#accordian"
-                                    href={`#${uniqueId}`}
+                                    href={'#${uniqueId}'}
                                     aria-expanded="false"
                                 >
                                     {category.name}
