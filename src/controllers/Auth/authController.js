@@ -42,15 +42,11 @@ export const createUser = async (req, res) => {
   const avatarFiles = req.files;
   const err = CreateUserValidation(data, avatarFiles);
   const errEmail = await User.checkEmail(data.email);
-  const errCountry = await User.checkCountry(data.id_country);
   if (Object.keys(err).length > 0) {
     return res.status(400).json({ errors: err });
   }
   if (Object.keys(errEmail).length > 0) {
     return res.status(400).json({ error: errEmail });
-  }
-  if (Object.keys(errCountry).length > 0) {
-    return res.status(400).json({ error: errCountry });
   }
   data.avatar = avatarFiles ? avatarFiles.map((file) => file.path) : [];
   data.avatar = JSON.stringify(data.avatar);

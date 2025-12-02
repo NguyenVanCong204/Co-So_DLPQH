@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import Category from "./Category.js";
 import Brand from "./Brand.js";
-import User from "./User.js";
 import mongooseDelete from "mongoose-delete";
 
 const productSchema = new mongoose.Schema(

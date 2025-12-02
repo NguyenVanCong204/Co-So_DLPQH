@@ -25,9 +25,6 @@ const CreateUserValidation = (data, file) => {
   if (!data.address) {
     error.address = "Vui lòng nhập address";
   }
-  if (!data.id_country) {
-    error.country = "Vui lòng nhập country";
-  }
   if (file.length == 0) {
     error.avatar = "Vui lòng upload avatar";
   } else {

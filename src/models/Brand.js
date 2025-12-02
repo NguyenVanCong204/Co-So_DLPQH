@@ -17,6 +17,12 @@ brandSchema.statics.createBrand = async function (data) {
 brandSchema.statics.getBrand = async function () {
   return await this.find();
 };
+brandSchema.statics.deleteBrand = async function (id) {
+  return await this.delete({ _id : id });
+};
+brandSchema.statics.updateBrand = async function ( id, data ) {
+  return await this.findByIdAndUpdate({_id: id}, data);
+}
 brandSchema.plugin(mongooseDelete, {
   deletedAt: true,
   overrideMethods: "all",

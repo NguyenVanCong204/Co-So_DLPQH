@@ -6,7 +6,6 @@ import {
 } from "../../controllers/Admin/userController.js";
 import {
   createCountry,
-  getCountry,
   deleteCountry,
   updateCountry,
 } from "../../controllers/Admin/countryController.js";
@@ -31,19 +30,22 @@ import {
   forceDelete,
 } from "../../controllers/Admin/productController.js";
 import { confirmOrder, getAllOrders } from "../../controllers/Member/historyController.js";
-import { createBrand, getBrand } from "../../controllers/Admin/brandController.js";
-import { createCategory, getCategory } from "../../controllers/Admin/categoryController.js";
+import { createBrand, deleteBrand, getBrand, updateBrand } from "../../controllers/Admin/brandController.js";
+import { createCategory, deleteCategory, getCategory, updateCategory } from "../../controllers/Admin/categoryController.js";
 import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 router.use(requireAuth, authorize(1));
 
-router.get("/country", getCountry);
 router.get("/brand", getBrand);
 router.post("/brand", createBrand);
-router.post("/category", createCategory);
+router.delete("/brand/delete/:id",deleteBrand)
+router.put("/brand/update/:id",updateBrand)
 router.get("/category", getCategory);
+router.post("/category", createCategory);
+router.delete("/category/delete/:id",deleteCategory)
+router.put("/category/update/:id",updateCategory)
 
 router.get("/product", getProduct);
 router.post("/product", uploadProduct, createProduct);
