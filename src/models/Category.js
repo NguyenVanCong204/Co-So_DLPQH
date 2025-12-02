@@ -17,6 +17,12 @@ categorySchema.statics.createCategory = async function (data) {
 categorySchema.statics.getCategory = async function () {
   return await this.find();
 };
+categorySchema.statics.deleteCategory = async function (id) {
+  return await this.delete({ _id : id });
+};
+categorySchema.statics.updateCategory = async function ( id, data ) {
+  return await this.findByIdAndUpdate({_id: id}, data);
+}
 categorySchema.plugin(mongooseDelete, {
   deletedAt: true,
   overrideMethods: "all",

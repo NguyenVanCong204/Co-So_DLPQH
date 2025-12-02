@@ -13,3 +13,4 @@ export const getBrand = async (req, res) => {
     });
   }
 };
+
