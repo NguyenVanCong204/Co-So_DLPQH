@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './RegisterTest.css';
-import apiAdmin from '../API/apiAdmin';
 import auth from '../API/auth';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -12,11 +11,9 @@ function RegisterTest() {
         pass: '',
         phone: '',
         address: '',
-        country: '',
         level: 1,
         avatar: [],
     });
-    let [country, SetCountry] = useState([]);
     let config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -24,15 +21,7 @@ function RegisterTest() {
         },
     };
     let [err, SetErr] = useState({});
-    useEffect(() => {
-        let res = apiAdmin
-            .get('/country')
-            .then((res) => {
-                SetCountry(res.data);
-            })
-            .catch((errors) => console.log(errors));
-    }, []);
-    function hanldeChangInput(e) {
+    function handleChangInput(e) {
         let name = e.target.name;
         let value = e.target.value;
         SetInput((states) => ({ ...states, [name]: value }));
@@ -79,10 +68,6 @@ function RegisterTest() {
             errAll.address = 'Vui lòng nhập address';
             chek = false;
         }
-        if (input.country == '') {
-            errAll.country = 'Vui lòng nhập country';
-            chek = false;
-        }
         if (input.avatar.length <= 0) {
             errAll.files = 'Vui lòng chọn files';
             chek = false;
@@ -112,7 +97,6 @@ function RegisterTest() {
             data.append('password', input.pass);
             data.append('phone', input.phone);
             data.append('address', input.address);
-            data.append('id_country', input.country);
             data.append('level', input.level);
             input.avatar.map((value, index) => {
                 data.append('avatar', value);
@@ -162,7 +146,7 @@ function RegisterTest() {
                                 name="email"
                                 className="form-control"
                                 placeholder="Nhập email của bạn"
-                                onChange={(e) => hanldeChangInput(e)}
+                                onChange={(e) => handleChangInput(e)}
                             />
                         </div>
                         <p>{err.email}</p>
@@ -173,7 +157,7 @@ function RegisterTest() {
                                 type="text"
                                 className="form-control"
                                 placeholder="Nhập tên của bạn"
-                                onChange={(e) => hanldeChangInput(e)}
+                                onChange={(e) => handleChangInput(e)}
                             />
                         </div>
                         <p>{err.name}</p>
@@ -184,7 +168,7 @@ function RegisterTest() {
                                 type="password"
                                 className="form-control"
                                 placeholder="Nhập mật khẩu của bạn"
-                                onChange={(e) => hanldeChangInput(e)}
+                                onChange={(e) => handleChangInput(e)}
                             />
                         </div>
                         <p>{err.pass}</p>
@@ -195,7 +179,7 @@ function RegisterTest() {
                                 type="text"
                                 className="form-control"
                                 placeholder="Nhập Phone của bạn"
-                                onChange={(e) => hanldeChangInput(e)}
+                                onChange={(e) => handleChangInput(e)}
                             />
                         </div>
                         <p>{err.phone}</p>
@@ -206,26 +190,10 @@ function RegisterTest() {
                                 type="text"
                                 className="form-control"
                                 placeholder="Nhập address của bạn"
-                                onChange={(e) => hanldeChangInput(e)}
+                                onChange={(e) => handleChangInput(e)}
                             />
                         </div>
                         <p>{err.address}</p>
-                        <select
-                            name="country"
-                            onChange={(e) => hanldeChangInput(e)}
-                            className="col-12 form-group country"
-                        >
-                            <option value="">---Chọn country---</option>
-                            {country &&
-                                country.map((value, index) => {
-                                    return (
-                                        <option key={index} value={value._id}>
-                                            {value.name}
-                                        </option>
-                                    );
-                                })}
-                        </select>
-                        <p>{err.country}</p>
                         <div className="col-6 form-group CCCD/CMND">
                             <input
                                 name="avatar"

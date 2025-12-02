@@ -109,7 +109,7 @@ a#scrollUp {
     border-radius: 50% !important;
     width: 46px;
     height: 46px;
-    display: flex !important;
+    display: none;
     align-items: center;
     justify-content: center;
     box-shadow: var(--shadow) !important;

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
@@ -27,6 +27,8 @@ import ProductListAdmin from './Admin/Pages/Product/ProductList';
 import CreateProduct from './Admin/Pages/Product/CreateProduct/CreateProduct';
 import UpdateProduct from './Admin/Pages/Product/UpdateProduct/UpdateProduct';
 import TrashProduct from './Admin/Pages/Product/TrashProduct/TrashProduct';
+import Category from './Admin/Pages/Category/Category';
+import Brand from './Admin/Pages/Brand/Brand';
 import MemberProtectedRoute from './component/Member/MemberProtectedRoute';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -51,6 +53,8 @@ root.render(
                         <Route path="/admin/product/update-product" element={<UpdateProduct />} />
                         <Route path="/admin/product/trash-product" element={<TrashProduct />} />
                         <Route path="/admin/update-profile" element={<UpdateAdmin />} />
+                        <Route path="/admin/category" element={<Category />} />
+                        <Route path="/admin/brand" element={<Brand />} />
                         <Route path="/member/register" element={<RegisterMember />} />
                         <Route index path="/" element={<LoginMember />} />
                         <Route path="/member/account/update" element={<UpdateMember />} />
