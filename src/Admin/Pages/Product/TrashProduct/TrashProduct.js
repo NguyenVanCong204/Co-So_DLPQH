@@ -81,7 +81,7 @@ function TrashProduct() {
                                 <td>{index + 1}</td>
                                 <td>{item.name}</td>
                                 <td>{item.id_brand.name}</td>
-                                <td>{item.id_category.name}</td>
+                                <td>{item.id_category?.name ?? ''}</td>
                                 <td>{item.price.toLocaleString('vi-VN')}</td>
                                 <td>{item.quantity}</td>
                                 <td>

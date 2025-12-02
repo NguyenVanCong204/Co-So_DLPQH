@@ -1,7 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 import styles from './Sidebar.module.scss';
 import classNames from 'classnames/bind';
-import { FaUser, FaGlobeAsia, FaSignOutAlt, FaRegListAlt } from 'react-icons/fa';
+import { FaUser, FaGlobeAsia, FaSignOutAlt, FaRegListAlt, FaShippingFast } from 'react-icons/fa';
+import { TbCategoryFilled } from 'react-icons/tb';
 import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
@@ -19,7 +20,7 @@ const Sidebar = () => {
             <ul className={cx('sidebar-menu')}>
                 <li>
                     <Link to="/admin/order-list">
-                        <FaRegListAlt className={cx('icon')} />
+                        <FaShippingFast className={cx('icon')} />
                         <span>Đơn hàng</span>
                     </Link>
                 </li>
@@ -36,9 +37,15 @@ const Sidebar = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/dashboard/country/list">
-                        <FaGlobeAsia className={cx('icon')} />
+                    <Link to="/admin/category">
+                        <TbCategoryFilled className={cx('icon')} />
                         <span>Danh mục</span>
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/admin/brand">
+                        <FaGlobeAsia className={cx('icon')} />
+                        <span>Thương hiệu</span>
                     </Link>
                 </li>
                 <li>

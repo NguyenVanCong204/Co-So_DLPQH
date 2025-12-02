@@ -6,8 +6,7 @@ import apiAdmin from '../../../API/apiAdmin';
 const cx = classNames.bind(styles);
 const HeaderAdmin = () => {
     const [user, setUser] = useState({});
-
-    const idUser = localStorage.getItem('IdUser');
+    const idUser = localStorage.getItem('adminId');
     useEffect(() => {
         if (idUser) {
             apiAdmin

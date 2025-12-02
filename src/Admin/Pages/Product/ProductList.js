@@ -60,7 +60,7 @@ function ProductList() {
     const handleDelete = async (id) => {
         try {
             const result = await Swal.fire({
-                title: 'Xóa sản phẩm?',
+                title: 'Xóa sản phẩm',
                 text: 'Bạn có chắc chắn muốn xóa?',
                 icon: 'warning',
                 showCancelButton: true,
@@ -148,7 +148,7 @@ function ProductList() {
                                 <th>
                                     <input type="checkbox" checked={isCheckedAll} onChange={handleCheckedAll} />
                                 </th>
-                                <th>STT</th>
+                                <th>Stt</th>
                                 <th>Tên sản phẩm</th>
                                 <th>Thương hiệu</th>
                                 <th>Danh mục</th>
@@ -172,7 +172,7 @@ function ProductList() {
                                     <td>{index + 1}</td>
                                     <td>{item.name}</td>
                                     <td>{item.id_brand.name}</td>
-                                    <td>{item.id_category.name}</td>
+                                    <td>{item.id_category?.name ?? ''}</td>
                                     <td>{item.price.toLocaleString('vi-VN')}</td>
                                     <td>{item.quantity}</td>
                                     <td>
