@@ -10,7 +10,6 @@ function UpdateProduct() {
     const location = useLocation();
     const data = location.state.data;
     const id = data._id;
-
     const [name, setName] = useState('');
     const [category, setCategory] = useState('');
     const [brand, setBrand] = useState('');
@@ -19,7 +18,6 @@ function UpdateProduct() {
     const [quality, setQuality] = useState(0);
     const [image, setImage] = useState([]);
     const [detail, setDetail] = useState('');
-
     const [categoryList, setCategoryList] = useState([]);
     const [brandList, setBrandList] = useState([]);
 
@@ -30,12 +28,11 @@ function UpdateProduct() {
             setBrand(data.id_brand?._id || '');
             setPrice(data.price || 0);
             setSale(data.sale || 0);
-            setQuality(data.qualty || 0);
-            setImage(data.image || []);
+            setQuality(data.quantity || 0);
+            setImage(JSON.parse(data.image) || []);
             setDetail(data.detail || '');
         }
     }, [data]);
-
     const getCategory = () => {
         apiAdmin
             .get('/category')
@@ -65,10 +62,10 @@ function UpdateProduct() {
             formData.append('id_brand', brand);
             formData.append('price', price);
             formData.append('sale', sale);
-            formData.append('qualty', quality);
+            formData.append('quantity', quality);
             formData.append('image', image);
             formData.append('detail', detail);
-            await apiAdmin.put(`/product/${id}`, formData, {
+            await apiAdmin.put(`/product/update/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -139,7 +136,7 @@ function UpdateProduct() {
                             <label>Số lượng</label>
                             <input
                                 type="number"
-                                name="qualty"
+                                name="quantity"
                                 value={quality}
                                 onChange={(e) => setQuality(e.target.value)}
                             />
@@ -165,7 +162,7 @@ function UpdateProduct() {
                                         src={
                                             file instanceof File
                                                 ? URL.createObjectURL(file)
-                                                : `http://localhost:3001/uploads/product/${file}`
+                                                : `http://localhost:3001/${file}`
                                         }
                                         alt="preview"
                                         className={cx('preview')}
