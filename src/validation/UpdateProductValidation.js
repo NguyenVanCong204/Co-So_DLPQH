@@ -12,11 +12,11 @@ export const UpdateProductValidation = (data, file) => {
   if (!data.price) {
     err.price = "Thiếu price";
   }
-  if (!data.qualty) {
-    err.qualty = "Thiếu qualty";
+  if (!data.quantity) {
+    err.quantity = "Thiếu quantity";
   }
-  if (data.qualty <= 0) {
-    err.qualty = "Số lượng phải lớn hơn 0";
+  if (data.quantity <= 0) {
+    err.quantity = "Số lượng phải lớn hơn 0";
   }
   if (!data.detail) {
     err.detail = "Thiếu detail";
