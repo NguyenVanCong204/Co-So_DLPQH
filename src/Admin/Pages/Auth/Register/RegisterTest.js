@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import './RegisterTest.css';
-import auth from '../API/auth';
+import auth from '../../../../API/auth';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import styles from './RegisterTest.module.scss';
+import classNames from 'classnames/bind';
+const cx = classNames.bind(styles);
+
 function RegisterTest() {
     const navigate = useNavigate();
     let [input, SetInput] = useState({
@@ -134,67 +137,67 @@ function RegisterTest() {
         }
     }
     return (
-        <div className="register-background">
-            <div className="register-container">
-                <div className="register-content row">
-                    <div className="col-12 text-center Register">Đăng Kí</div>
+        <div className={cx('register-background')}>
+            <div className={cx('register-container')}>
+                <div className={cx('register-content', 'row')}>
+                    <div className={cx('col-12', ' text-center ', ' Register')}>Đăng Kí</div>
                     <form encType="multipart/form-data">
-                        <div className="col-12 form-group Email">
+                        <div className={cx('col-12', ' form-group', 'Email')}>
                             <label>Email:</label>
                             <input
                                 type="text"
                                 name="email"
-                                className="form-control"
+                                className={cx('form-control')}
                                 placeholder="Nhập email của bạn"
                                 onChange={(e) => handleChangInput(e)}
                             />
                         </div>
                         <p>{err.email}</p>
-                        <div className="col-12 form-group Password">
+                        <div className={cx('col-12', ' form-group', 'Password')}>
                             <label>Name:</label>
                             <input
                                 name="name"
                                 type="text"
-                                className="form-control"
+                                className={cx('form-control')}
                                 placeholder="Nhập tên của bạn"
                                 onChange={(e) => handleChangInput(e)}
                             />
                         </div>
                         <p>{err.name}</p>
-                        <div className="col-12 form-group confirm-password">
+                        <div className={cx('col-12', ' form-group', 'confirm-password')}>
                             <label>Password:</label>
                             <input
                                 name="pass"
                                 type="password"
-                                className="form-control"
+                                className={cx('form-control')}
                                 placeholder="Nhập mật khẩu của bạn"
                                 onChange={(e) => handleChangInput(e)}
                             />
                         </div>
                         <p>{err.pass}</p>
-                        <div className="col-12 form-group name">
+                        <div className={cx('col-12', ' form-group', 'name')}>
                             <label>Phone:</label>
                             <input
                                 name="phone"
                                 type="text"
-                                className="form-control"
+                                className={cx('form-control')}
                                 placeholder="Nhập Phone của bạn"
                                 onChange={(e) => handleChangInput(e)}
                             />
                         </div>
                         <p>{err.phone}</p>
-                        <div className="col-12 form-group birthday">
+                        <div className={cx('col-12', ' form-group', 'birthday')}>
                             <label>Address:</label>
                             <input
                                 name="address"
                                 type="text"
-                                className="form-control"
+                                className={cx('form-control')}
                                 placeholder="Nhập address của bạn"
                                 onChange={(e) => handleChangInput(e)}
                             />
                         </div>
                         <p>{err.address}</p>
-                        <div className="col-6 form-group CCCD/CMND">
+                        <div className={cx('col-6', 'form-group', 'CCCD/CMND')}>
                             <input
                                 name="avatar"
                                 type="file"
@@ -204,8 +207,8 @@ function RegisterTest() {
                             ></input>
                         </div>
                         <p>{err.files}</p>
-                        <div className="col-12">
-                            <button className="btn-register" onClick={(e) => CheckInput(e)}>
+                        <div className={cx('col-12', '')}>
+                            <button className={cx('btn-register')} onClick={(e) => CheckInput(e)}>
                                 Đăng Kí
                             </button>
                         </div>

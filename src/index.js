@@ -4,10 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
-
-import UpdateAdmin from './Admin/UpdateAdmin';
 import RegisterMember from './Member/User/Register';
 import LoginMember from './Member/User/Login';
 import UpdateMember from './Member/User/Update';
@@ -20,8 +17,8 @@ import HomeList from './Member/Home/HomeList';
 import ProductDetail from './Member/Home/ProductDetail';
 import CartProduct from './Member/Product/CartProduct';
 import CheckOut from './Member/Product/CheckOut';
-import LoginTest from './Admin/LoginTest';
-import RegisterTest from './Admin/RegisterTest';
+import LoginTest from './Admin/Pages/Auth/Login/LoginTest';
+import RegisterTest from './Admin/Pages/Auth/Register/RegisterTest';
 import OrderListAdmin from './Admin/Pages/Order/OrderListAdmin';
 import ProductListAdmin from './Admin/Pages/Product/ProductList';
 import CreateProduct from './Admin/Pages/Product/CreateProduct/CreateProduct';
@@ -52,7 +49,6 @@ root.render(
                         <Route path="/admin/product/create-product" element={<CreateProduct />} />
                         <Route path="/admin/product/update-product" element={<UpdateProduct />} />
                         <Route path="/admin/product/trash-product" element={<TrashProduct />} />
-                        <Route path="/admin/update-profile" element={<UpdateAdmin />} />
                         <Route path="/admin/category" element={<Category />} />
                         <Route path="/admin/brand" element={<Brand />} />
                         <Route path="/member/register" element={<RegisterMember />} />
