@@ -15,36 +15,108 @@
     box-shadow: var(--shadow);
 }
 
-.hero-content h1 {
-    font-size: 48px;
-    font-weight: 700;
-    margin-bottom: 15px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+.hero-slider-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 20px;
 }
 
-.hero-content p {
-    font-size: 18px;
-    margin-bottom: 30px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+.hero-product-card {
+    background: white;
+    border-radius: 10px;
+    width: 280px;
+    padding: 15px;
+    position: absolute;
+    top: 50px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    transition: all 0.5s ease-in-out;
 }
 
-.hero-btn {
-    background-color: rgb(2, 2, 224);
-    color: white;
-    border: none;
-    padding: 12px 30px;
+.card-center {
+    left: 50%;
+    transform: translateX(-50%) scale(1.1);
+    z-index: 10;
+    opacity: 1;
+    filter: none;
+}
+
+.card-left {
+    left: 20%;
+    transform: translateX(-50%) scale(0.85);
+    z-index: 5;
+    opacity: 0.8;
+    filter: blur(0.5px);
+}
+
+.card-right {
+    left: 80%;
+    transform: translateX(-50%) scale(0.85);
+    z-index: 5;
+    opacity: 0.8;
+    filter: blur(0.5px);
+}
+
+.card-far-left {
+    left: -10%;
+    transform: translateX(-50%) scale(0.5);
+    opacity: 0;
+    z-index: 1;
+}
+
+.card-far-right {
+    left: 110%;
+    transform: translateX(-50%) scale(0.5);
+    opacity: 0;
+    z-index: 1;
+}
+
+.card-hidden {
+    display: none;
+}
+
+.hero-product-card .product-image {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.hero-product-card .product-image img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.hero-product-card .product-name {
     font-size: 16px;
-    font-weight: 600;
-    border-radius: 30px;
-    transition: transform 0.3s, background-color 0.3s;
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.hero-btn:hover {
-    background-color: #49a1ff;
-    transform: translateY(-2px);
+.hero-product-card .price-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-product-card .sale-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: red;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 .features_items {

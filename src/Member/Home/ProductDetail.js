@@ -78,7 +78,7 @@ function ProductDetail() {
     function renderData() {
         const avatar = input?.image ? JSON.parse(input.image) : [];
 
-        const is_on_sale = input.status == 0 && input.sale > 0;
+        const is_on_sale = input.sale > 0;
         const original_price = input.price;
         const sale_percent = input.sale;
         const new_price = original_price * (1 - sale_percent / 100);
@@ -108,7 +108,7 @@ function ProductDetail() {
                     <h2 className="product-title">{input.name}</h2>
 
                     <p className="product-summary">
-                        Thương hiệu: <strong>{input.company || 'Đang cập nhật'}</strong>
+                        Thương hiệu: <strong>{input.id_brand?.name || input.company || 'Đang cập nhật'}</strong>
                         <br />
                     </p>
 
