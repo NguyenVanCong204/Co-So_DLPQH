@@ -31,7 +31,7 @@ function CartProduct() {
             const products = Array.isArray(res.data.data) ? res.data.data : [];
             SetInput(products);
             products.map((value, index) => {
-                const is_on_sale = value.status == 0 && value.sale > 0;
+                const is_on_sale = value.sale > 0;
                 const original_price = value.price;
                 const new_price = is_on_sale ? original_price * (1 - value.sale / 100) : original_price;
 
@@ -93,7 +93,7 @@ function CartProduct() {
 
         return input.map((value, index) => {
             const avatar = JSON.parse(value.image);
-            const is_on_sale = value.status == 0 && value.sale > 0;
+            const is_on_sale = value.sale > 0;
             const original_price = value.price;
             const new_price = is_on_sale ? original_price * (1 - value.sale / 100) : original_price;
             return (

@@ -20,8 +20,9 @@ function HomeList() {
     const dispath = useDispatch();
     let totallocal = useContext(MemberCartContext);
     const [input, SetInput] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 6;
+    const [visibleCount, setVisibleCount] = useState(12);
+    const [sliderIndex, setSliderIndex] = useState(0);
+    const [sliderProducts, setSliderProducts] = useState([]);
 
     const { categoryId } = useParams();
     const search = useSelector((state) => state.cart.search);
@@ -39,7 +40,7 @@ function HomeList() {
     }
 
     useEffect(() => {
-        setCurrentPage(1);
+        setVisibleCount(12);
 
         if (search) {
             apiMember
@@ -66,59 +67,21 @@ function HomeList() {
         }
     }, [categoryId, search]);
 
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
+    useEffect(() => {
+        apiMember.get('/product').then((res) => {
+            if (Array.isArray(res.data.data)) {
+                setSliderProducts(res.data.data);
+            }
+        });
 
-    const renderPagination = () => {
-        if (!Array.isArray(input)) return null;
-        const totalPages = Math.ceil(input.length / itemsPerPage);
-        if (totalPages <= 1) return null;
-        const pageButtons = [];
+        const interval = setInterval(() => {
+            setSliderIndex((prev) => (prev + 1) % 6);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
 
-        pageButtons.push(
-            <li key="prev" className={currentPage === 1 ? 'disabled' : ''}>
-                {currentPage === 1 ? (
-                    <a>&laquo;</a>
-                ) : (
-                    <a onClick={() => handlePageChange(currentPage - 1)} href="#">
-                        &laquo;
-                    </a>
-                )}
-            </li>,
-        );
-        let startPage = Math.max(1, currentPage - 1);
-        let endPage = Math.min(totalPages, currentPage + 1);
-
-        if (currentPage === 1) {
-            endPage = Math.min(totalPages, 3);
-        }
-        if (currentPage === totalPages) {
-            startPage = Math.max(1, totalPages - 2);
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            pageButtons.push(
-                <li key={i} className={currentPage === i ? 'active' : ''}>
-                    <a onClick={() => handlePageChange(i)} href="#">
-                        {i}
-                    </a>
-                </li>,
-            );
-        }
-        pageButtons.push(
-            <li key="next" className={currentPage === totalPages ? 'disabled' : ''}>
-                {currentPage === totalPages ? (
-                    <a>&raquo;</a>
-                ) : (
-                    <a onClick={() => handlePageChange(currentPage + 1)} href="#">
-                        &raquo;
-                    </a>
-                )}
-            </li>,
-        );
-
-        return <ul className="pagination">{pageButtons}</ul>;
+    const handleLoadMore = () => {
+        setVisibleCount((prev) => prev + 12);
     };
 
     function AddCart(id) {
@@ -144,14 +107,12 @@ function HomeList() {
 
     function renderData() {
         if (!Array.isArray(input)) return null;
-        const lastIndex = currentPage * itemsPerPage;
-        const firstIndex = lastIndex - itemsPerPage;
-        const currentItems = input.slice(firstIndex, lastIndex);
+        const currentItems = input.slice(0, visibleCount);
 
         return currentItems.map((value, index) => {
             const avatar = JSON.parse(value.image);
 
-            const is_on_sale = value.status == 0 && value.sale > 0;
+            const is_on_sale = value.sale > 0;
             const original_price = value.price;
             const sale_percent = value.sale;
             const new_price = original_price * (1 - sale_percent / 100);
@@ -198,20 +159,64 @@ function HomeList() {
         });
     }
 
+    function renderHeroSlider() {
+        if (!Array.isArray(sliderProducts)) return null;
+        
+        // Get top 6 sale products
+        const saleProducts = sliderProducts
+            .filter(p => p.sale > 0)
+            .sort((a, b) => b.sale - a.sale)
+            .slice(0, 6);
+
+        if (saleProducts.length === 0) return null;
+
+        return (
+            <div className="hero-slider-container">
+                {saleProducts.map((value, index) => {
+                    const avatar = JSON.parse(value.image);
+                    const is_on_sale = value.sale > 0;
+                    const original_price = value.price;
+                    const sale_percent = value.sale;
+                    const new_price = original_price * (1 - sale_percent / 100);
+
+                    // Calculate position relative to sliderIndex
+                    let positionClass = 'card-hidden';
+                    const diff = (index - sliderIndex + 6) % 6;
+
+                    if (diff === 0) positionClass = 'card-center';
+                    else if (diff === 1) positionClass = 'card-right';
+                    else if (diff === 2) positionClass = 'card-far-right';
+                    else if (diff === 5) positionClass = 'card-left';
+                    else if (diff === 4) positionClass = 'card-far-left';
+
+                    return (
+                        <div className={`hero-product-card ${positionClass}`} key={index}>
+                            <div className="sale-badge">-{sale_percent}%</div>
+                            <Link to={`/member/home/product/detail/${value._id}`}>
+                                <div className="product-image">
+                                    <img src={`http://localhost:3001/${avatar[0]}`} alt={value.name} />
+                                </div>
+                            </Link>
+                            <div className="product-info">
+                                <Link to={`/member/home/product/detail/${value._id}`} className="product-name">
+                                    {value.name}
+                                </Link>
+                                <div className="price-container">
+                                    <span className="price-new">{formatPrice(new_price)}</span>
+                                    <span className="price-old">{formatPrice(original_price)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+
     return (
         <div>
             <div className="hero-section">
-                <div className="hero-content">
-                    <button
-                        className="hero-btn"
-                        onClick={() => {
-                            const element = document.getElementById('products-grid');
-                            element?.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                    >
-                        Khám Phá Ngay
-                    </button>
-                </div>
+                {renderHeroSlider()}
             </div>
 
             <div className="features_items" id="products-grid">
@@ -220,9 +225,21 @@ function HomeList() {
                 {renderData()}
             </div>
 
-            <div className="col-sm-12" style={{ textAlign: 'center' }}>
-                {renderPagination()}
-            </div>
+                {visibleCount < input.length && (
+                    <div style={{ textAlign: 'center', width: '100%', marginTop: '20px', clear: 'both' }}>
+                        <button
+                            onClick={handleLoadMore}
+                            className="btn btn-default"
+                            style={{
+                                fontSize: '18px',
+                                fontWeight: 'bold',
+                                padding: '10px 25px',
+                            }}
+                        >
+                            Hiển thị thêm sản phẩm
+                        </button>
+                    </div>
+                )}
         </div>
     );
 }
