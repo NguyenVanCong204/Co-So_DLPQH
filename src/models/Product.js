@@ -48,7 +48,7 @@ productSchema.statics.checkBrand = async function (id_brand) {
 productSchema.statics.createProduct = async function (data) {
   return await this.create(data);
 };
-productSchema.statics.getProduct = async function (page = 1, limit = 8) {
+productSchema.statics.getProduct = async function (page = 1, limit = 1000) {
   const skip = (page - 1) * limit
   const data = await this.find()
     .skip(skip)
@@ -69,7 +69,9 @@ productSchema.statics.countTrashProduct = async function () {
   return count;
 }
 productSchema.statics.getProductById = async function (id) {
-  return await this.findOne({ _id: id });
+  return await this.findOne({ _id: id })
+    .populate('id_brand', 'name')
+    .populate('id_category', 'name');
 };
 productSchema.statics.deleteProduct = async function (id) {
   return await this.delete({ _id: id });
