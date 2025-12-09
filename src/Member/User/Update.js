@@ -3,6 +3,7 @@ import apiMember from '../../API/apiMember';
 import { toast } from 'react-toastify';
 import refershToken from '../../RefershToken/RefershToken';
 import './Update.css';
+import Breadcrumb from '../../component/Member/Breadcrumb';
 function UpdateMember() {
     let [input, SetInput] = useState({
         email: '',
@@ -203,6 +204,7 @@ function UpdateMember() {
     }
     return (
         <div>
+            <Breadcrumb items={[{ label: 'Tài Khoản', path: '/member/account/update' }, { label: 'Cập nhật thông tin' }]} />
             <div className="register">
                 <h3>Cập Nhật Thông Tin</h3>
                 <form encType="multipart/form-data">

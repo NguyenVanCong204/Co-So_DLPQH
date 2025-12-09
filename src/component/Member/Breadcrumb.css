@@ -1,0 +1,33 @@
+
+.breadcrumb-container {
+    background-color: #f5f5f5;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+    padding: 0;
+    background-color: transparent;
+}
+
+.breadcrumb-item a {
+    color: #555;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: #FE980F;
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: #999;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "»";
+    font-family: Arial, sans-serif;
+    color: #ccc;
+}

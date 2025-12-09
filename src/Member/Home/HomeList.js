@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import './HomeList.css';
 import apiMember from '../../API/apiMember';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import MemberCartContext from '../../Context/MemberCartContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../features/cart/CartSlider';
@@ -25,6 +25,7 @@ function HomeList() {
     const [sliderProducts, setSliderProducts] = useState([]);
 
     const { categoryId } = useParams();
+    const location = useLocation();
     const search = useSelector((state) => state.cart.search);
 
     function getAllProduct() {
@@ -42,30 +43,42 @@ function HomeList() {
     useEffect(() => {
         setVisibleCount(12);
 
+        const fetchFilteredProducts = (filters) => {
+            let query = '/search/product?';
+            if (filters.name) query += `name=${filters.name}&`;
+            if (filters.minPrice) query += `minPrice=${filters.minPrice}&`;
+            if (filters.maxPrice) query += `maxPrice=${filters.maxPrice}&`;
+            if (filters.brand) query += `brand=${filters.brand}&`;
+            if (filters.category) query += `category=${filters.category}&`;
+
+            apiMember.get(query)
+                .then(res => {
+                    SetInput(Array.isArray(res.data.data) ? res.data.data : []);
+                })
+                .catch(err => {
+                    console.error(err);
+                    SetInput([]);
+                });
+        };
+
+        const handleFilterEvent = (e) => {
+            fetchFilteredProducts(e.detail);
+        };
+
+        window.addEventListener('product-filter', handleFilterEvent);
+
         if (search) {
-            apiMember
-                .get('/search/product?name=' + search)
-                .then((res) => {
-                    SetInput(Array.isArray(res.data.data) ? res.data.data : []);
-                })
-                .catch((err) => {
-                    console.error(err);
-                    SetInput([]);
-                });
+            fetchFilteredProducts({ name: search });
         } else if (categoryId) {
-            apiMember
-                .get(`/product/category/${categoryId}`)
-                .then((res) => {
-                    SetInput(Array.isArray(res.data.data) ? res.data.data : []);
-                })
-                .catch((err) => {
-                    console.error(err);
-                    SetInput([]);
-                });
+            fetchFilteredProducts({ category: categoryId });
         } else {
             getAllProduct();
         }
-    }, [categoryId, search]);
+
+        return () => {
+            window.removeEventListener('product-filter', handleFilterEvent);
+        };
+    }, [categoryId, search, location.pathname]);
 
     useEffect(() => {
         apiMember.get('/product').then((res) => {
@@ -179,7 +192,6 @@ function HomeList() {
                     const sale_percent = value.sale;
                     const new_price = original_price * (1 - sale_percent / 100);
 
-                    // Calculate position relative to sliderIndex
                     let positionClass = 'card-hidden';
                     const diff = (index - sliderIndex + 6) % 6;
 

@@ -7,6 +7,7 @@ import apiMember from '../../API/apiMember';
 import { useDispatch } from 'react-redux';
 import MemberCartContext from '../../Context/MemberCartContext';
 import { toast } from 'react-toastify';
+import Breadcrumb from '../../component/Member/Breadcrumb';
 
 function formatPrice(price) {
     if (!price) return '';
@@ -153,6 +154,15 @@ function ProductDetail() {
 
     return (
         <div>
+            {input.name && (
+                <Breadcrumb 
+                    items={[
+                        { label: 'Sản Phẩm', path: '/member/home' },
+                        ...(input.id_category ? [{ label: input.id_category.category, path: `/member/category/${input.id_category._id}` }] : []), // Assuming populate returns .category or .name
+                        { label: input.name }
+                    ]} 
+                />
+            )}
             {renderData()}
 
             <div className="category-tab shop-details-tab">
@@ -186,7 +196,7 @@ function ProductDetail() {
                                 </tr>
                                 <tr>
                                     <th>Thương hiệu</th>
-                                    <td>{input.company}</td>
+                                    <td>{input.id_brand?.name || input.brand || input.company}</td>
                                 </tr>
                                 <tr>
                                     <th>Chi tiết</th>

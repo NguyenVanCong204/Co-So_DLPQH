@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import './CheckOut.css';
+import Breadcrumb from '../../component/Member/Breadcrumb';
 
 const VND_TO_USD_RATE = 25000;
 
@@ -67,7 +68,7 @@ function CheckOut() {
 
                 let total = 0;
                 products.forEach((value) => {
-                    const is_on_sale = value.status === 0 && value.sale > 0;
+                    const is_on_sale = value.sale > 0;
                     const price = is_on_sale ? value.price * (1 - value.sale / 100) : value.price;
                     total += price * value.qty;
                 });
@@ -108,7 +109,7 @@ function CheckOut() {
             } catch {
                 avatar = [];
             }
-            const is_on_sale = value.status === 0 && value.sale > 0;
+            const is_on_sale = value.sale > 0;
             const new_price = is_on_sale ? value.price * (1 - value.sale / 100) : value.price;
 
             return (
@@ -293,17 +294,14 @@ function CheckOut() {
             }}
         >
             <section className="checkout-page">
+                <div className="container" style={{marginBottom: '20px'}}>
+                    <Breadcrumb items={[{ label: 'Thanh toán' }]} />
+                </div>
                 {isLoading && (
                     <div className="loading-overlay">
                         <div className="spinner"></div>
                     </div>
                 )}
-
-                <div className="breadcrumb-new">
-                    <Link to="/member/home">Trang chủ</Link>
-                    <span> » </span>
-                    <span>Thanh toán</span>
-                </div>
 
                 <div className="checkout-title-bar">THANH TOÁN</div>
 
