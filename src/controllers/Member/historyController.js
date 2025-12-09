@@ -22,7 +22,6 @@ export const createHistory = async (req, res) => {
     console.log("🛒 Cart keys:", Object.keys(cart));
     const ids = Object.keys(cart);
 
-    // Convert string IDs to ObjectId if needed
     const objectIds = ids.map(id => {
       try {
         return mongoose.Types.ObjectId.isValid(id) ? new mongoose.Types.ObjectId(id) : id;
@@ -51,7 +50,6 @@ export const createHistory = async (req, res) => {
       return res.status(400).json({ errors: err });
     }
 
-    // Check stock availability and update quantities
     const stockErrors = [];
     for (const product of products) {
       const productId = product._id?.toString() || product.id?.toString();
@@ -79,34 +77,29 @@ export const createHistory = async (req, res) => {
       });
     }
 
-    // Stock deduction moved to confirmOrder
-    // We only check availability here (already done above)
     console.log("✅ Product quantities updated");
 
     const total = products.reduce((sum, p) => {
       const productId = p._id?.toString() || p.id?.toString();
       const qty = parseInt(cart[productId] || cart[p._id] || cart[p.id] || 0);
-      const is_on_sale = p.status === 0 && p.sale > 0;
+      const is_on_sale = p.sale > 0;
       const price = is_on_sale ? p.price * (1 - p.sale / 100) : p.price;
       return sum + (price * qty);
     }, 0);
 
-    // Add Eco Tax
     const ecoTax = products.length > 0 ? 2 : 0;
     const finalTotal = total + ecoTax;
 
-    // Generate order code
     const orderCode = History.generateOrderCode();
     const paymentMethod = req.body.paymentMethod || 'cod';
     const address = user.address || '';
     const note = user.note || '';
 
     console.log("💾 Creating order records...");
-    // Create orders first
     const orderPromises = products.map((value) => {
       const productId = value._id?.toString() || value.id?.toString();
       const qty = parseInt(cart[productId] || cart[value._id] || cart[value.id] || 0);
-      const is_on_sale = value.status === 0 && value.sale > 0;
+      const is_on_sale = value.sale > 0;
       const finalPrice = is_on_sale ? value.price * (1 - value.sale / 100) : value.price;
 
       return History.createHistory({
@@ -118,20 +111,18 @@ export const createHistory = async (req, res) => {
         paymentMethod,
         address,
         note,
-        status: 0, // Waiting for confirmation
+        status: 0,
       });
     });
 
     await Promise.all(orderPromises);
     console.log("✅ Order records created");
 
-    // Try to send email, but don't fail the order if email fails
     try {
       console.log("📧 Gửi email đến:", user.email);
       await sendMailOrder(user, products, cart, finalTotal, orderCode);
     } catch (emailError) {
       console.error("Lỗi khi gửi email (nhưng đơn hàng đã được tạo):", emailError);
-      // Continue even if email fails
     }
 
     console.log("✅ Order created successfully:", orderCode);
@@ -181,14 +172,12 @@ export const markAsDelivered = async (req, res) => {
       return res.status(404).json({ error: "Không tìm thấy đơn hàng" });
     }
 
-    // Update all orders with the same orderCode
     if (order.orderCode) {
       await History.updateMany(
         { orderCode: order.orderCode },
-        { status: 2 } // 2 = Delivered
+        { status: 2 }
       );
     } else {
-      // For backward compatibility with old orders
       await History.updateOrderStatus(id, 2);
     }
 
@@ -211,18 +200,14 @@ export const cancelOrder = async (req, res) => {
       return res.status(400).json({ error: "Chỉ có thể hủy đơn hàng khi đang chờ xác nhận" });
     }
 
-    // Update all orders with the same orderCode
     if (order.orderCode) {
       await History.updateMany(
         { orderCode: order.orderCode },
-        { status: 3 } // 3 = Cancelled
+        { status: 3 }
       );
-
-      // Stock restoration removed as it is not deducted yet
 
     } else {
       await History.updateOrderStatus(id, 3);
-      // Stock restoration removed as it is not deducted yet
     }
 
     return res.status(200).json({ message: "Hủy đơn hàng thành công" });
@@ -243,28 +228,21 @@ export const confirmOrder = async (req, res) => {
       return res.status(400).json({ error: "Đơn hàng không ở trạng thái chờ xác nhận" });
     }
 
-    // Update all orders with the same orderCode
     let ordersToConfirm = [];
     if (order.orderCode) {
       ordersToConfirm = await History.find({ orderCode: order.orderCode }).populate('id_product');
       await History.updateMany(
         { orderCode: order.orderCode },
-        { status: 1 } // 1 = Waiting for delivery
+        { status: 1 }
       );
     } else {
       ordersToConfirm = [await History.findById(id).populate('id_product')];
       await History.updateOrderStatus(id, 1);
     }
 
-    // Deduct stock
     for (const o of ordersToConfirm) {
       if (o.id_product) {
         const product = o.id_product;
-        // Handle both quantity and qualty fields if necessary, but model uses quantity
-        // Note: Product.findByIdAndUpdate uses $inc with negative value to deduct
-        // But we need to check if enough stock first?
-        // Ideally we should have checked before updating status, but let's do it now or assume admin checked.
-        // Better: Check stock first.
 
         const currentQty = parseInt(product.quantity || product.qualty || 0);
         const orderQty = o.qualty;
@@ -299,7 +277,7 @@ const sendMailOrder = async (user, products, cart, total, orderCode) => {
     service: "gmail",
     auth: {
       user: "congnguyenvan522@gmail.com",
-      pass: "kyiwxbaszelhngsw", // dùng App Password
+      pass: "kyiwxbaszelhngsw",
     },
   });
 
@@ -307,7 +285,7 @@ const sendMailOrder = async (user, products, cart, total, orderCode) => {
     .map(
       (p) => {
         const qty = cart[p._id.toString()] || cart[p.id] || 0;
-        const is_on_sale = p.status === 0 && p.sale > 0;
+        const is_on_sale = p.sale > 0;
         const finalPrice = is_on_sale ? p.price * (1 - p.sale / 100) : p.price;
         return `
       <tr>
