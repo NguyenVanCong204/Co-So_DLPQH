@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { confirmDialog } from '../../component/confirmDialog';
 import './OrderList.css';
+import Breadcrumb from '../../component/Member/Breadcrumb';
 
 function formatPrice(price) {
     if (!price) return '';
@@ -310,6 +311,7 @@ function OrderList() {
 
     return (
         <div className="order-list-page">
+            <Breadcrumb items={[{ label: 'Tài Khoản', path: '/member/account/update' }, { label: 'Đơn hàng của tôi' }]} />
             <h2>QUẢN LÝ ĐƠN HÀNG</h2>
 
             <div className="order-tabs">

@@ -7,6 +7,7 @@ import { addToCart } from '../../features/cart/CartSlider';
 import MemberCartContext from '../../Context/MemberCartContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Breadcrumb from '../../component/Member/Breadcrumb';
 
 function formatPrice(price) {
     if (!price) return '';
@@ -151,6 +152,7 @@ function CartProduct() {
 
     return (
         <section id="cart_items_new">
+            <Breadcrumb items={[{ label: 'Giỏ hàng' }]} />
             <h2 className="cart_title">Giỏ Hàng Của Bạn</h2>
 
             <div className="row">
