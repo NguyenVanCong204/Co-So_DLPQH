@@ -250,7 +250,9 @@ function CheckOut() {
             toast.error('Vui lòng điền đầy đủ thông tin mua hàng trước.');
             return Promise.reject('Thiếu thông tin');
         }
-        const totalUSD = (AllQualtyCart / VND_TO_USD_RATE).toFixed(2);
+        const ecoTax = inputProducts.length > 0 ? 2 : 0;
+        const finalTotal = AllQualtyCart + ecoTax;
+        const totalUSD = (finalTotal / VND_TO_USD_RATE).toFixed(2);
 
         if (parseFloat(totalUSD) <= 0) {
             toast.error('Không thể thanh toán PayPal cho đơn hàng 0đ.');
@@ -388,8 +390,11 @@ function CheckOut() {
                                         <li>
                                             Tạm tính <span>{formatPrice(AllQualtyCart)}</span>
                                         </li>
+                                        <li>
+                                            Eco Tax <span>{formatPrice(inputProducts.length > 0 ? 2 : 0)}</span>
+                                        </li>
                                         <li className="total">
-                                            Tổng cộng <span>{formatPrice(AllQualtyCart)}</span>
+                                            Tổng cộng <span>{formatPrice(AllQualtyCart + (inputProducts.length > 0 ? 2 : 0))}</span>
                                         </li>
                                     </ul>
                                 </div>
