@@ -91,6 +91,10 @@ export const createHistory = async (req, res) => {
       return sum + (price * qty);
     }, 0);
 
+    // Add Eco Tax
+    const ecoTax = products.length > 0 ? 2 : 0;
+    const finalTotal = total + ecoTax;
+
     // Generate order code
     const orderCode = History.generateOrderCode();
     const paymentMethod = req.body.paymentMethod || 'cod';
@@ -124,7 +128,7 @@ export const createHistory = async (req, res) => {
     // Try to send email, but don't fail the order if email fails
     try {
       console.log("📧 Gửi email đến:", user.email);
-      await sendMailOrder(user, products, cart, total, orderCode);
+      await sendMailOrder(user, products, cart, finalTotal, orderCode);
     } catch (emailError) {
       console.error("Lỗi khi gửi email (nhưng đơn hàng đã được tạo):", emailError);
       // Continue even if email fails
@@ -331,6 +335,7 @@ const sendMailOrder = async (user, products, cart, total, orderCode) => {
       ${productHTML}
     </tbody>
   </table>
+  <p>Eco Tax: ${products.length > 0 ? 2 : 0} VND</p>
   <p><strong>Tổng cộng: ${total} VND</strong></p>
   <p>Phí ship: Free</p>
   <p>Cảm ơn bạn đã tin tưởng chúng tôi!</p>
