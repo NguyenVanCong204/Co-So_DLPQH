@@ -41,7 +41,7 @@ export const upload = multer({
 export const getProduct = async (req, res) => {
   try {
     const result = await Product.getProduct();
-    const product = result.data || result; // Handle both {data, total} and array formats
+    const product = result.data || result;
     if (!product || (Array.isArray(product) && product.length === 0)) {
       return res.status(200).json({
         data: [],
@@ -213,7 +213,35 @@ export const getProductCart = async (req, res) => {
 export const searchProduct = async (req, res) => {
   try {
     const name = req.query.name || "";
-    const product = await Product.searchProduct(name);
+    const minPrice = req.query.minPrice;
+    const maxPrice = req.query.maxPrice;
+    const brand = req.query.brand;
+    const category = req.query.category;
+
+    let query = {};
+
+    if (name) {
+      query.name = { $regex: name, $options: "i" };
+    }
+
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    if (brand) {
+      query.id_brand = brand;
+    }
+
+    if (category) {
+      query.id_category = category;
+    }
+
+    const product = await Product.find(query)
+      .populate('id_brand', 'name')
+      .populate('id_category', 'name');
+
     return res.status(200).json({
       data: product,
     });
@@ -229,14 +257,14 @@ export const getProductByCategory = async (req, res) => {
   try {
     const id_category = req.params.id_category;
     const product = await Product.getProductByCategory(id_category);
-    
+
     if (!product || product.length === 0) {
       return res.status(200).json({
         message: "Không tìm thấy sản phẩm nào thuộc danh mục này",
-        data: [], 
+        data: [],
       });
     }
-    
+
     return res.status(200).json({
       data: product,
     });
