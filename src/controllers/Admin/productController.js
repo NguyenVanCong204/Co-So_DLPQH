@@ -250,8 +250,9 @@ export const updateProduct = async (req, res) => {
       }
     } else {
       if (data.imageDelete) {
+        const listDelete = JSON.parse(data.imageDelete);
         const avatarnew = avatarold.filter(
-          (f) => !data.imageDelete.includes(f)
+        (f) => !listDelete.includes(f)
         );
         const err = checkFile(avatarnew);
         if (Object.keys(err).length > 0) {
