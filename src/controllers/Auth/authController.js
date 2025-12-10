@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import path from "path";
 import multer from "multer";
 import CreateUserValidation from "../../validation/CreateUserValidation.js";
+import Verification from "../../models/Verification.js";
+import sendMail from "../../utils/sendMail.js";
 
 const RefreshTokens = [];
 const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
@@ -48,12 +50,118 @@ export const createUser = async (req, res) => {
   if (Object.keys(errEmail).length > 0) {
     return res.status(400).json({ error: errEmail });
   }
+
   data.avatar = avatarFiles ? avatarFiles.map((file) => file.path) : [];
   data.avatar = JSON.stringify(data.avatar);
   data.password = await bcrypt.hash(data.password, 10);
   data.level = parseInt(data.level);
-  const user = await User.createUser(data);
-  res.json(user);
+
+  try {
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await Verification.deleteOne({ email: data.email });
+
+    await Verification.create({
+      email: data.email,
+      code: code,
+      userData: data,
+      expiresAt: expiresAt,
+      lastSentAt: new Date()
+    });
+
+    const subject = "Mã xác thực đăng ký HKDN";
+    const text = `Mã xác thực của bạn là: ${code}. Mã có hiệu lực trong 10 phút.`;
+    const html = `<h3>Chào mừng bạn đến với HKDN!</h3><p>Mã xác thực của bạn là: <b>${code}</b></p><p>Mã này sẽ hết hạn sau 10 phút.</p>`;
+
+    const sent = await sendMail(data.email, subject, text, html);
+
+    if (!sent) {
+      return res.status(500).json({ error: "Lỗi gửi email xác thực. Vui lòng thử lại." });
+    }
+
+    return res.status(200).json({
+      message: "Mã xác thực đã được gửi đến email của bạn.",
+      requireVerification: true,
+      email: data.email
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Lỗi hệ thống khi tạo mã xác thực." });
+  }
+};
+
+export const verifyCode = async (req, res) => {
+  try {
+    const { email, code } = req.body;
+
+    const record = await Verification.findOne({ email });
+
+    if (!record) {
+      return res.status(400).json({ error: "Mã xác thực không tồn tại hoặc đã hết hạn." });
+    }
+
+    if (record.code !== code) {
+      return res.status(400).json({ error: "Mã xác thực không chính xác." });
+    }
+
+    const userData = record.userData;
+    const user = await User.createUser(userData);
+
+    await Verification.deleteOne({ email });
+
+    const token = createJWT(user._id.toString(), user.level);
+    const tokenReferesh = createJWTReferesh(user._id.toString(), user.level);
+    const { level, password, ...userWithoutPassword } = user.toObject();
+
+    return res.status(200).json({
+      message: "Đăng ký thành công!",
+      user: userWithoutPassword,
+      token: token,
+      tokenReferesh: tokenReferesh,
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Lỗi khi xác thực." });
+  }
+};
+
+export const resendCode = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const record = await Verification.findOne({ email });
+
+    if (!record) {
+      return res.status(400).json({ error: "Không tìm thấy yêu cầu đăng ký. Vui lòng đăng ký lại." });
+    }
+
+    const now = new Date();
+    const diff = (now - new Date(record.lastSentAt)) / 1000;
+    if (diff < 60) {
+      return res.status(429).json({ error: `Vui lòng đợi ${Math.ceil(60 - diff)}s để gửi lại mã.` });
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    record.code = code;
+    record.lastSentAt = now;
+    record.expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+    await record.save();
+
+    const subject = "Gửi lại mã xác thực đăng ký HKDN";
+    const text = `Mã xác thực mới của bạn là: ${code}`;
+    const html = `<h3>HKDN E-commerce</h3><p>Mã xác thực mới là: <b>${code}</b></p>`;
+
+    await sendMail(email, subject, text, html);
+
+    return res.status(200).json({ message: "Đã gửi lại mã xác thực." });
+
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 };
 function createJWT(id, level) {
   const token = jwt.sign({ id, level }, "van-cong", { expiresIn: "5h" });
@@ -77,7 +185,7 @@ export const handleRefreshToken = (req, res) => {
     return res.status(403).json({ error: "Unauthorized2" });
   }
   try {
-    const decoded = jwt.verify(token, "van-cong-referesh"); //giải mã ra lại ban đầu
+    const decoded = jwt.verify(token, "van-cong-referesh");
     const newAccessToken = createJWT(decoded.id, decoded.level);
     res.json({ token: newAccessToken });
   } catch (error) {
@@ -91,7 +199,6 @@ export const checkLoginUser = async (req, res) => {
   if (!user) {
     return res.status(400).json({ message: "email hoặc pass sai" });
   }
-  // Use the user's actual level from database, not from request
   const token = createJWT(user._id.toString(), user.level);
   const tokenReferesh = createJWTReferesh(user._id.toString(), user.level);
   const { level, password, ...userWithoutPassword } = user.toObject();
