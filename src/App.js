@@ -13,6 +13,7 @@ function App(props) {
     const location = useLocation();
     const path = location.pathname;
     const isCheckoutPage = path.includes('/checkout');
+    const isProductDetail = path.includes('/product/detail');
     const isMyProduct = path.includes('/account');
     const isAdminLogin = path === '/admin/login';
     const isAdminRegister = path === '/admin/register';
@@ -31,7 +32,7 @@ function App(props) {
                             {<Header />}
                             <div className="container">
                                 <div className="row">
-                                    {isCheckoutPage ? (
+                                    {isCheckoutPage || isProductDetail ? (
                                         props.children
                                     ) : isMyProduct ? (
                                         <div>
