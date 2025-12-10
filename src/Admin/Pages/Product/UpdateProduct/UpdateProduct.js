@@ -4,6 +4,7 @@ import classNames from 'classnames/bind';
 import apiAdmin from '../../../../API/apiAdmin';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { TiDelete } from 'react-icons/ti';
 const cx = classNames.bind(styles);
 function UpdateProduct() {
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ function UpdateProduct() {
     const [detail, setDetail] = useState('');
     const [categoryList, setCategoryList] = useState([]);
     const [brandList, setBrandList] = useState([]);
+    const [imageDelete, setImageDelete] = useState([]);
 
     useEffect(() => {
         if (data) {
@@ -54,6 +56,25 @@ function UpdateProduct() {
         getBrand();
     }, []);
 
+    const handleImage = (e) => {
+        const newFiles = Array.from(e.target.files);
+        const total = image.length + newFiles.length;
+
+        if (total > 3) {
+            toast.error('Chỉ được chọn tối đa 3 ảnh');
+            return;
+        }
+        setImage((prev) => [...prev, ...newFiles]);
+    };
+    const removeImage = (img, index) => {
+        if (typeof img === 'string') {
+            setImageDelete((prev) => [...prev, img]);
+        }
+        setImage((prev) => prev.filter((_, i) => i !== index));
+    };
+    console.log(image.length);
+    console.log('deleted:', imageDelete.length);
+
     const handleSubmit = async (id) => {
         try {
             const formData = new FormData();
@@ -63,8 +84,17 @@ function UpdateProduct() {
             formData.append('price', price);
             formData.append('sale', sale);
             formData.append('quantity', quality);
-            formData.append('image', image);
             formData.append('detail', detail);
+            if (Array.isArray(image)) {
+                image.forEach((file) => {
+                    if (file instanceof File) {
+                        formData.append('image', file);
+                    }
+                });
+            }
+            if (imageDelete.length > 0) {
+                formData.append('imageDelete', JSON.stringify(imageDelete));
+            }
             await apiAdmin.put(`/product/update/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -76,6 +106,7 @@ function UpdateProduct() {
             console.log(error);
         }
     };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('back')}>
@@ -146,27 +177,23 @@ function UpdateProduct() {
                     <div className={cx('form-right')}>
                         <div className={cx('form-group')}>
                             <label>Ảnh sản phẩm</label>
-                            <input
-                                type="file"
-                                multiple
-                                accept="image/*"
-                                onChange={(e) => {
-                                    const newFiles = Array.from(e.target.files);
-                                    setImage((prev) => [...prev, ...newFiles]);
-                                }}
-                            />
+                            <input type="file" multiple accept="image/*" onChange={handleImage} />
                             <div className={cx('box-preview')}>
                                 {(Array.isArray(image) ? image : [image]).map((file, index) => (
-                                    <img
-                                        key={index}
-                                        src={
-                                            file instanceof File
-                                                ? URL.createObjectURL(file)
-                                                : `http://localhost:3001/${file}`
-                                        }
-                                        alt="preview"
-                                        className={cx('preview')}
-                                    />
+                                    <div key={index} className={cx('preview-wrapper')}>
+                                        <img
+                                            src={
+                                                file instanceof File
+                                                    ? URL.createObjectURL(file)
+                                                    : `http://localhost:3001/${file}`
+                                            }
+                                            alt="preview"
+                                            className={cx('preview')}
+                                        />
+                                        <span className={cx('box-icon')} onClick={() => removeImage(file, index)}>
+                                            <TiDelete className={cx('icon-remove')} />
+                                        </span>
+                                    </div>
                                 ))}
                             </div>
                         </div>

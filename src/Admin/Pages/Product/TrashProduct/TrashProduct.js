@@ -51,6 +51,7 @@ function TrashProduct() {
     useEffect(() => {
         fetchData();
     }, []);
+
     return (
         <>
             <div className={cx('action')}>
@@ -76,31 +77,42 @@ function TrashProduct() {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((item, index) => (
-                            <tr key={item._id}>
-                                <td>{index + 1}</td>
-                                <td>{item.name}</td>
-                                <td>{item.id_brand.name}</td>
-                                <td>{item.id_category?.name ?? ''}</td>
-                                <td>{item.price.toLocaleString('vi-VN')}</td>
-                                <td>{item.quantity}</td>
-                                <td>
-                                    <img
-                                        className={cx('image')}
-                                        src={`http://localhost:3001/${JSON.parse(item.image)[0]}`}
-                                        alt=""
-                                    />
-                                </td>
-                                <td>
-                                    <button className={cx('btn-edit')} onClick={() => handleRestore(item._id)}>
-                                        Khôi phục
-                                    </button>
-                                    <button className={cx('btn-delete')} onClick={() => handleForceDelete(item._id)}>
-                                        Xóa vĩnh viễn
-                                    </button>
+                        {data.length === 0 ? (
+                            <tr>
+                                <td colSpan={8} style={{ textAlign: 'center' }}>
+                                    Thùng rác trống.
                                 </td>
                             </tr>
-                        ))}
+                        ) : (
+                            data.map((item, index) => (
+                                <tr key={item._id}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.name}</td>
+                                    <td>{item.id_brand?.name}</td>
+                                    <td>{item.id_category?.name ?? ''}</td>
+                                    <td>{item.price.toLocaleString('vi-VN')}</td>
+                                    <td>{item.quantity}</td>
+                                    <td>
+                                        <img
+                                            className={cx('image')}
+                                            src={`http://localhost:3001/${JSON.parse(item.image)[0]}`}
+                                            alt=""
+                                        />
+                                    </td>
+                                    <td>
+                                        <button className={cx('btn-edit')} onClick={() => handleRestore(item._id)}>
+                                            Khôi phục
+                                        </button>
+                                        <button
+                                            className={cx('btn-delete')}
+                                            onClick={() => handleForceDelete(item._id)}
+                                        >
+                                            Xóa vĩnh viễn
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

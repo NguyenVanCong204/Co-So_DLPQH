@@ -105,3 +105,15 @@
         opacity: 0.8;
     }
 }
+.preview-wrapper {
+    position: relative;
+}
+.box-icon {
+    position: absolute;
+    top: 6px;
+    left: 100px;
+    cursor: pointer;
+}
+.icon-remove {
+    font-size: 30px;
+}
