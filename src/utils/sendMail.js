@@ -3,11 +3,11 @@ import nodemailer from "nodemailer";
 const sendMail = async (to, subject, text, html) => {
     try {
         const transporter = nodemailer.createTransport({
-            host: "sandbox.smtp.mailtrap.io",
-            port: 2525,
+            host: process.env.MAIL_HOST,
+            port: process.env.MAIL_PORT,
             auth: {
-                user: "d7e90df0404e79",
-                pass: "25b649db1c088c"
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASS
             }
         });
 
