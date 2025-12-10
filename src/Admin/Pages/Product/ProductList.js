@@ -77,6 +77,7 @@ function ProductList() {
             console.log(error);
         }
     };
+
     const handleSubmit = async () => {
         try {
             switch (action) {
@@ -110,6 +111,7 @@ function ProductList() {
             console.log(error);
         }
     };
+
     return (
         <>
             <div className={cx('wrapper')}>
