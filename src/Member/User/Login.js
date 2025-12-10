@@ -96,12 +96,12 @@ function LoginMember() {
                 ></input>
                 <p>{err.email}</p>
 
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">Mật khẩu</label>
                 <input
                     id="password"
                     name="password"
                     type="password"
-                    placeholder="Nhập password"
+                    placeholder="Nhập mật khẩu"
                     onChange={(e) => handleChangInput(e)}
                 ></input>
                 <p>{err.password}</p>

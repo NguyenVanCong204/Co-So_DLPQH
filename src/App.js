@@ -14,6 +14,8 @@ function App(props) {
     const path = location.pathname;
     const isCheckoutPage = path.includes('/checkout');
     const isProductDetail = path.includes('/product/detail');
+    const isCartPage = path.includes('/cart');
+    const isLoginPage = path.includes('/login') || path === '/';
     const isMyProduct = path.includes('/account');
     const isAdminLogin = path === '/admin/login';
     const isAdminRegister = path === '/admin/register';
@@ -32,7 +34,7 @@ function App(props) {
                             {<Header />}
                             <div className="container">
                                 <div className="row">
-                                    {isCheckoutPage || isProductDetail ? (
+                                    {isCheckoutPage || isProductDetail || isCartPage || isLoginPage ? (
                                         props.children
                                     ) : isMyProduct ? (
                                         <div>

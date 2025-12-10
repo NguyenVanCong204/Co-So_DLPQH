@@ -87,6 +87,7 @@
 .login .login_member:hover {
     filter: brightness(0.95);
     background-color: rgb(49, 49, 255);
+    transform: translateY(-2px);
 }
 
 .login .register_member {

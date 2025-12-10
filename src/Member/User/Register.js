@@ -26,6 +26,19 @@ function RegisterMember() {
         },
     };
     let [err, SetErr] = useState({});
+
+    const [verifyMode, setVerifyMode] = useState(false);
+    const [verificationCode, setVerificationCode] = useState("");
+    const [cooldown, setCooldown] = useState(0);
+    const [tempEmail, setTempEmail] = useState("");
+
+    useEffect(() => {
+        let timer;
+        if (cooldown > 0) {
+            timer = setInterval(() => setCooldown((prev) => prev - 1), 1000);
+        }
+        return () => clearInterval(timer);
+    }, [cooldown]);
     useEffect(() => {
         apiMember
             .get('/country')
@@ -122,9 +135,10 @@ function RegisterMember() {
             auth.post('/register', data, config)
                 .then((res) => {
                     SetErr({});
-                    toast.success('Đăng kí tài khoản thành công');
-                    console.log(res);
-                    navigate('/');
+                    toast.success('Mã xác thực đã được gửi đến email!');
+                    setTempEmail(input.email);
+                    setVerifyMode(true);
+                    setCooldown(60);
                 })
                 .catch((error) => {
                     if (error.response && error.response.data) {
@@ -134,6 +148,7 @@ function RegisterMember() {
                             error.response.data?.message ||
                             error.message;
                         console.log(error);
+                        
                         if (typeof message === 'object' && message !== null) {
                             const keys = Object.keys(message);
                             if (keys.length > 0) {
@@ -143,12 +158,83 @@ function RegisterMember() {
                         } else {
                             toast.error('Lỗi khi đăng kí : ' + message);
                         }
-                        SetErr(errAll);
                     } else {
                         console.error('Lỗi không xác định:', error);
+                        toast.error('Lỗi không xác định');
                     }
                 });
         }
+    }
+
+    const handleVerify = (e) => {
+        e.preventDefault();
+        if (!verificationCode) {
+            toast.warn("Vui lòng nhập mã xác thực!");
+            return;
+        }
+
+        auth.post('/verify', { email: tempEmail, code: verificationCode })
+            .then((res) => {
+                toast.success('Đăng ký thành công!');
+                navigate('/member/login'); 
+            })
+            .catch(err => {
+                toast.error(err.response?.data?.error || "Mã xác thực không đúng!");
+            });
+    };
+
+    const handleResend = (e) => {
+        e.preventDefault();
+        if (cooldown > 0) return;
+
+        auth.post('/resend', { email: tempEmail })
+            .then(() => {
+                toast.success("Mã mới đã được gửi!");
+                setCooldown(60);
+            })
+            .catch(err => toast.error(err.response?.data?.error || "Lỗi khi gửi lại mã"));
+    };
+
+    if (verifyMode) {
+        return (
+            <div className="register">
+                <h2>XÁC THỰC TÀI KHOẢN</h2>
+                <div style={{textAlign: 'center', marginBottom: '20px'}}>
+                    <p>Mã xác thực 6 số đã được gửi đến email: <b>{tempEmail}</b></p>
+                    <p>Vui lòng kiểm tra hộp thư (cả mục Spam) và nhập mã bên dưới.</p>
+                </div>
+                <form>
+                    <label>Mã xác thực</label>
+                    <input 
+                        type="text" 
+                        placeholder="Nhập 6 số..." 
+                        value={verificationCode}
+                        onChange={(e) => setVerificationCode(e.target.value)}
+                        style={{ textAlign: 'center', letterSpacing: '5px', fontSize: '20px' }}
+                    />
+                    
+                    <button className="register_member" onClick={handleVerify}>
+                        Xác nhận
+                    </button>
+
+                    <div style={{marginTop: '15px', textAlign: 'center'}}>
+                        <button 
+                            onClick={handleResend} 
+                            disabled={cooldown > 0}
+                            style={{ 
+                                background: 'transparent', 
+                                border: 'none', 
+                                color: cooldown > 0 ? '#999' : '#FE980F', 
+                                cursor: cooldown > 0 ? 'default' : 'pointer',
+                                textDecoration: 'underline'
+                            }}
+                        >
+                            {cooldown > 0 ? `Gửi lại mã (${cooldown}s)` : 'Gửi lại mã xác thực'}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        )
     }
     return (
         <div className="register">
@@ -164,49 +250,49 @@ function RegisterMember() {
                 />
                 <p>{err.email}</p>
 
-                <label htmlFor="name">Full Name</label>
+                <label htmlFor="name">Tên</label>
                 <input
                     id="name"
                     name="name"
                     type="text"
-                    placeholder="Nhập name"
+                    placeholder="Nhập tên"
                     onChange={(e) => hanldeChangInput(e)}
                 ></input>
                 <p>{err.name}</p>
 
-                <label htmlFor="pass">Password</label>
+                <label htmlFor="pass">Mật khẩu</label>
                 <input
                     id="pass"
                     name="pass"
                     type="password"
-                    placeholder="Nhập password"
+                    placeholder="Nhập mật khẩu"
                     onChange={(e) => hanldeChangInput(e)}
                 ></input>
                 <p>{err.pass}</p>
 
-                <label htmlFor="phone">Phone</label>
+                <label htmlFor="phone">Số điện thoại</label>
                 <input
                     id="phone"
                     name="phone"
                     type="text"
-                    placeholder="Nhập phone"
+                    placeholder="Nhập số điện thoại"
                     onChange={(e) => hanldeChangInput(e)}
                 ></input>
                 <p>{err.phone}</p>
 
-                <label htmlFor="address">Address</label>
+                <label htmlFor="address">Địa chỉ</label>
                 <input
                     id="address"
                     name="address"
                     type="text"
-                    placeholder="Nhập address"
+                    placeholder="Nhập địa chỉ"
                     onChange={(e) => hanldeChangInput(e)}
                 ></input>
                 <p>{err.address}</p>
 
-                <label htmlFor="country">Country</label>
+                <label htmlFor="country">Quốc gia</label>
                 <select id="country" name="country" onChange={(e) => hanldeChangInput(e)}>
-                    <option value="">---Chọn country---</option>
+                    <option value="">---Chọn quốc gia---</option>
                     {country &&
                         country.map((value, index) => {
                             return (
@@ -218,7 +304,7 @@ function RegisterMember() {
                 </select>
                 <p>{err.country}</p>
 
-                <label htmlFor="avatar">Avatar</label>
+                <label htmlFor="avatar">Ảnh đại diện</label>
                 <input
                     id="avatar"
                     name="avatar"

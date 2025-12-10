@@ -1,3 +1,12 @@
+.register h2 {
+    text-align: center;
+    margin-bottom: 24px;
+    color: var(--primary-color);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
 .register input {
     border: 1px solid rgb(222, 222, 222);
 }
@@ -7,27 +16,22 @@
 .register input:focus {
     border: 1px solid #0866ff;
 }
-.register .login_member {
-    color: white;
-    border: none;
-    background-color: #0866ff;
-    border-radius: 5px;
-    font-weight: 600;
-    font-size: 17px;
-    width: 200px;
-    justify-content: center;
-}
+
 .register .register_member {
-    color: white;
+    font-size: 16px;
+    box-sizing: border-box;
+    padding: 12px;
+    display: block;
+    width: 100%;
+    margin: 35px 0 15px 0;
+    cursor: pointer;
     border: none;
-    background-color: rgb(0, 0, 222);
     border-radius: 5px;
-    font-weight: 600;
-    font-size: 17px;
-    width: 200px;
-    justify-content: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background 0.3s;
 }
-.register .login_member:hover,
+
 .register .register_member:hover {
     background-color: rgb(49, 49, 255);
 }
