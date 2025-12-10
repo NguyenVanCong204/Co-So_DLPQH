@@ -34,12 +34,14 @@ import {
   markAsDelivered,
   cancelOrder
 } from "../../controllers/Member/historyController.js";
+import { addReview, getReviews } from "../../controllers/Member/reviewController.js";
 import { requireAuth, authorize } from "../../middlewares/authMiddleware.js";
 
 router.get("/product", getProduct);
 router.get("/product/category/:id_category", getProductByCategory);
 router.get("/search/product", searchProduct);
 router.get("/product/:id", getProductById);
+router.get("/product/:id/reviews", getReviews);
 
 router.get("/country", getCountry);
 
@@ -63,6 +65,7 @@ router.delete("/product/:id", deleteProduct);
 router.put("/product/:id", uploadProduct, updateProduct);
 
 router.post("/comment", createComment);
+router.post("/product/:id/review", addReview);
 
 router.post("/order", createHistory);
 router.get("/order/user/:id_user", getOrdersByUser);
