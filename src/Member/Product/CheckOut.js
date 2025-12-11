@@ -234,7 +234,7 @@ function CheckOut() {
                     msg = error.message || 'Không thể kết nối đến server';
                 }
 
-                toast.error('Lỗi khi đặt hàng: ' + msg);
+                toast.error('Lỗi khi đặt hàng: ' + msg, { autoClose: 2000 });
                 return Promise.reject(error);
             }
         } finally {
@@ -243,7 +243,9 @@ function CheckOut() {
     };
 
     const handleOrderCOD = () => {
-        processOrder('COD');
+        processOrder('COD').catch(err => {
+            console.log("COD Order failed:", err);
+        });
     };
 
     const createOrder = (data, actions) => {
@@ -276,7 +278,10 @@ function CheckOut() {
     const onApprove = (data, actions) => {
         return actions.order.capture().then(async (details) => {
             toast.success(`Thanh toán thành công bởi ${details.payer.name.given_name}`);
-            await processOrder('PayPal');
+            await processOrder('PayPal').catch(err => {
+                 console.error("PayPal Order saving failed:", err);
+                 toast.error("Đã thanh toán PayPal nhưng lỗi lưu đơn hàng. Vui lòng liên hệ CSKH.");
+            });
         });
     };
 

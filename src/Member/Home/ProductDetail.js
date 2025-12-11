@@ -71,6 +71,11 @@ function ProductDetail() {
     function AddProductToCart() {
         const user = localStorage.getItem('user');
         if (user) {
+            if ((input.quantity || input.qualty) <= 0) {
+                toast.error('Sản phẩm này đã hết hàng');
+                return;
+            }
+
             if (qualty <= 0) {
                 toast.warn('Vui lòng chọn số lượng lớn hơn 0');
                 return;
@@ -101,7 +106,10 @@ function ProductDetail() {
     }
 
     function AddQualty() {
-        SetQualty((qualty) => qualty + 1);
+        const maxStock = input.quantity || input.qualty || 0;
+        if (qualty < maxStock) {
+            SetQualty((qualty) => qualty + 1);
+        }
     }
     function DeleteQualty() {
         SetQualty(qualty > 1 ? (qualty) => qualty - 1 : 1);
@@ -243,13 +251,35 @@ function ProductDetail() {
                     <div className="quantity-container">
                         <div className="quantity-label">Số Lượng:</div>
                         <div className="quantity-control">
-                            <button className="quantity-btn" onClick={() => DeleteQualty()}>
+                            <button 
+                                className="quantity-btn" 
+                                onClick={() => DeleteQualty()}
+                                disabled={qualty <= 1}
+                                style={{ 
+                                    opacity: qualty <= 1 ? 0.5 : 1, 
+                                    cursor: qualty <= 1 ? 'not-allowed' : 'pointer' 
+                                }}
+                            >
                                 −
                             </button>
                             <input type="text" className="quantity-input" value={qualty} readOnly />
-                            <button className="quantity-btn" onClick={() => AddQualty()}>
+                            <button 
+                                className="quantity-btn" 
+                                onClick={() => AddQualty()}
+                                disabled={qualty >= (input.quantity || input.qualty)}
+                                style={{ 
+                                    opacity: qualty >= (input.quantity || input.qualty) ? 0.5 : 1, 
+                                    cursor: qualty >= (input.quantity || input.qualty) ? 'not-allowed' : 'pointer' 
+                                }}
+                            >
                                 +
                             </button>
+                        </div>
+                        <div className="quantity-available" style={{ marginLeft: '15px', display: 'flex', alignItems: 'center', color: '#757575' }}>
+                            {(input.quantity || input.qualty) > 0 
+                                ? `${input.quantity || input.qualty} sản phẩm có sẵn` 
+                                : <span style={{color: '#d70018', fontWeight: 'bold'}}>Hết hàng</span>
+                            }
                         </div>
                     </div>
 
