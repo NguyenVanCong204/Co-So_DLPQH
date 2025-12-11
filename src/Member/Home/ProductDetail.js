@@ -25,7 +25,6 @@ function ProductDetail() {
     const dispatch = useDispatch();
     let totallocal = useContext(MemberCartContext);
 
-    // Review states
     const [reviews, setReviews] = useState([]);
     const [filteredReviews, setFilteredReviews] = useState([]);
     const [filterType, setFilterType] = useState('all'); // all, 5, 4, 3, 2, 1, image
@@ -33,7 +32,7 @@ function ProductDetail() {
     const [commentText, setCommentText] = useState("");
     const [currentRating, setCurrentRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
-    const [showReviewForm, setShowReviewForm] = useState(false); // Toggle form
+    const [showReviewForm, setShowReviewForm] = useState(false);
 
     useEffect(() => {
         apiMember.get('/product/' + id).then((res) => {
@@ -44,7 +43,6 @@ function ProductDetail() {
             }
         });
 
-        // Fetch Reviews
         apiMember.get('/product/' + id + '/reviews')
             .then(res => {
                 const data = Array.isArray(res.data.data) ? res.data.data : [];
@@ -59,8 +57,6 @@ function ProductDetail() {
         if (filterType === 'all') {
             setFilteredReviews(reviews);
         } else if (filterType === 'image') {
-            // Placeholder: currently reviews don't have images in model, but if they did:
-            // setFilteredReviews(reviews.filter(r => r.images && r.images.length > 0)); 
             setFilteredReviews(reviews); 
         } else {
             const stars = parseInt(filterType);
@@ -145,7 +141,6 @@ function ProductDetail() {
                 setCommentText('');
                 setCurrentRating(0);
                 setShowReviewForm(false);
-                // Refresh reviews
                 apiMember.get('/product/' + id + '/reviews').then(r => {
                     const data = r.data.data || [];
                     setReviews(data);
@@ -164,9 +159,7 @@ function ProductDetail() {
     const renderStars = (rating) => {
         return [...Array(5)].map((_, index) => {
             const fullStar = index + 1 <= rating;
-            const halfStar = index + 0.5 === rating; // Exact half logic if data supports it
-            // Simple logic: if rating >= index + 1 -> full. 
-            // if rating >= index + 0.5 && rating < index + 1 -> half.
+            const halfStar = index + 0.5 === rating;
             
             let iconClass = "fa fa-star-o";
             let color = "#ccc";
