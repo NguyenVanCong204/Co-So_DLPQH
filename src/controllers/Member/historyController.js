@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 export const createHistory = async (req, res) => {
   try {
     console.log("📦 Creating order...");
+    let reservedItems = [];
     const { user, cart } = req.body;
 
     if (!user || !user._id) {
@@ -77,6 +78,45 @@ export const createHistory = async (req, res) => {
       });
     }
 
+    // Atomic Stock Deduction
+    try {
+      for (const product of products) {
+        const productId = product._id?.toString() || product.id?.toString();
+        const qty = parseInt(cart[productId] || cart[product._id] || cart[product.id] || 0);
+
+        if (!qty || qty <= 0) continue;
+
+        // Atomic update: Check condition AND update in one step
+        const updatedProduct = await Product.findOneAndUpdate(
+          {
+            _id: product._id,
+            quantity: { $gte: qty } // Ensure enough stock exists 
+          },
+          {
+            $inc: { quantity: -qty, qualty: -qty } // Deduct stock
+          },
+          { new: true }
+        );
+
+        if (!updatedProduct) {
+          throw new Error(`Sản phẩm ${product.name} không đủ hàng hoặc đã hết hàng trong quá trình xử lý.`);
+        }
+
+        reservedItems.push({ id: product._id, qty });
+      }
+    } catch (stockError) {
+      console.error("❌ Stock deduction error:", stockError);
+
+      // Rollback immediately if deduction loop fails
+      for (const item of reservedItems) {
+        await Product.findByIdAndUpdate(item.id, { $inc: { quantity: item.qty, qualty: item.qty } });
+      }
+
+      return res.status(400).json({
+        errors: { stock: stockError.message }
+      });
+    }
+
     console.log("✅ Product quantities updated");
 
     const total = products.reduce((sum, p) => {
@@ -130,6 +170,21 @@ export const createHistory = async (req, res) => {
   } catch (error) {
     console.error("❌ Lỗi khi tạo đơn hàng:");
     console.error("Error message:", error.message);
+
+    // Rollback stock if reserved
+    if (reservedItems.length > 0) {
+      console.log("🔄 Rolling back stock reservation...");
+      for (const item of reservedItems) {
+        try {
+          await Product.findByIdAndUpdate(item.id, {
+            $inc: { quantity: item.qty, qualty: item.qty }
+          });
+        } catch (rollbackError) {
+          console.error(`❌ Failed to rollback stock for product ${item.id}`, rollbackError);
+        }
+      }
+    }
+
     console.error("Error stack:", error.stack);
     console.error("Error details:", error);
 
@@ -200,14 +255,27 @@ export const cancelOrder = async (req, res) => {
       return res.status(400).json({ error: "Chỉ có thể hủy đơn hàng khi đang chờ xác nhận" });
     }
 
+
+    let ordersToCancel = [];
     if (order.orderCode) {
+      ordersToCancel = await History.find({ orderCode: order.orderCode });
       await History.updateMany(
         { orderCode: order.orderCode },
         { status: 3 }
       );
-
     } else {
+      ordersToCancel = [order];
       await History.updateOrderStatus(id, 3);
+    }
+
+    // Restore stock
+    console.log("🔄 Restoring stock for cancelled order...");
+    for (const o of ordersToCancel) {
+      if (o.id_product && o.qualty) {
+        await Product.findByIdAndUpdate(o.id_product, {
+          $inc: { quantity: o.qualty, qualty: o.qualty }
+        });
+      }
     }
 
     return res.status(200).json({ message: "Hủy đơn hàng thành công" });
@@ -240,22 +308,12 @@ export const confirmOrder = async (req, res) => {
       await History.updateOrderStatus(id, 1);
     }
 
-    for (const o of ordersToConfirm) {
-      if (o.id_product) {
-        const product = o.id_product;
-
-        const currentQty = parseInt(product.quantity || product.qualty || 0);
-        const orderQty = o.qualty;
-        const newQty = currentQty - orderQty;
-
-        console.log(`Updating product ${product._id}: current=${currentQty}, order=${orderQty}, new=${newQty}`);
-
-        await Product.updateProduct(product._id, {
-          quantity: newQty,
-          qualty: newQty
-        });
-      }
-    }
+    // for (const o of ordersToConfirm) {
+    //   if (o.id_product) {
+    //     // Stock is now deducted at order creation time (createHistory)
+    //     // No further deduction needed here
+    //   }
+    // }
 
     return res.status(200).json({ message: "Xác nhận đơn hàng thành công" });
   } catch (error) {
