@@ -308,13 +308,6 @@ export const confirmOrder = async (req, res) => {
       await History.updateOrderStatus(id, 1);
     }
 
-    // for (const o of ordersToConfirm) {
-    //   if (o.id_product) {
-    //     // Stock is now deducted at order creation time (createHistory)
-    //     // No further deduction needed here
-    //   }
-    // }
-
     return res.status(200).json({ message: "Xác nhận đơn hàng thành công" });
   } catch (error) {
     return res.status(500).json({ error: error.message });

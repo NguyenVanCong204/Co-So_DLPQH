@@ -25,7 +25,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    qualty: Number, // Support for legacy data field name
+    qualty: Number,
   },
   { timestamps: true }
 );
