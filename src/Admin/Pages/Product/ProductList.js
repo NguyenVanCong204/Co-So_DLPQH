@@ -155,9 +155,10 @@ function ProductList() {
                                 <th>Thương hiệu</th>
                                 <th>Danh mục</th>
                                 <th>Giá</th>
-                                <th>Số lượng</th>
+                                <th>Số lượng kho</th>
+                                <th>Số lượng đã bán</th>
                                 <th>Ảnh sản phẩm</th>
-                                <th></th>
+                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -177,6 +178,7 @@ function ProductList() {
                                     <td>{item.id_category?.name ?? ''}</td>
                                     <td>{item.price.toLocaleString('vi-VN')}</td>
                                     <td>{item.quantity}</td>
+                                    <td>{item.quantity_sold}</td>
                                     <td>
                                         <img
                                             className={cx('image')}
