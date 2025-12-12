@@ -15,7 +15,7 @@ const historySchema = new mongoose.Schema(
       required: true,
     },
     price: { type: Number },
-    qualty: { type: Number },
+    quantity: { type: Number },
     status: {
       type: Number,
       required: true,
