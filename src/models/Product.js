@@ -25,7 +25,10 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    qualty: Number,
+    quantity_sold: {
+      type: Number,
+      default: 0
+    },
   },
   { timestamps: true }
 );
