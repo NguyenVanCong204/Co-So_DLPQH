@@ -33,9 +33,7 @@ const HeaderAdmin = () => {
 
     return (
         <header className={cx('wrapper')}>
-            <div className={cx('header-left')}>
-                <input type="text" className={cx('search-input')} placeholder="Tìm kiếm..." />
-            </div>
+            <div className={cx('header-left')}></div>
             <div className={cx('header-right')}>
                 <img className={cx('avatar')} src={getAvatarSrc()} alt="" />
                 <p className={cx('user-name')}>{user.name || 'Admin'}</p>

@@ -1,13 +1,14 @@
 .wrapper {
     display: flex;
+    flex-direction: column;
 }
 .box-content {
     width: 100%;
-    margin-left: 250px;
-    background-color: #eee;
+    display: flex;
 }
 .content {
     width: 100%;
+    margin-left: 220px;
     height: 100vh;
     margin-top: 60px;
 }

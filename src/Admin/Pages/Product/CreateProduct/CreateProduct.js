@@ -103,7 +103,9 @@ function CreateProduct() {
                         <div className={cx('form')}>
                             <div className={cx('form-left')}>
                                 <div className={cx('form-group')}>
-                                    <label>Tên sản phẩm</label>
+                                    <label>
+                                        Tên sản phẩm <span className={cx('required')}>*</span>
+                                    </label>
                                     <input
                                         name="name"
                                         value={values.name}
@@ -114,7 +116,9 @@ function CreateProduct() {
                                 </div>
 
                                 <div className={cx('form-group')}>
-                                    <label>Danh mục</label>
+                                    <label>
+                                        Danh mục<span className={cx('required')}>*</span>
+                                    </label>
                                     <select
                                         name="id_category"
                                         value={values.id_category}
@@ -131,7 +135,9 @@ function CreateProduct() {
                                 </div>
 
                                 <div className={cx('form-group')}>
-                                    <label>Thương hiệu</label>
+                                    <label>
+                                        Thương hiệu <span className={cx('required')}>*</span>
+                                    </label>
                                     <select
                                         name="id_brand"
                                         value={values.id_brand}
@@ -148,7 +154,9 @@ function CreateProduct() {
                                 </div>
 
                                 <div className={cx('form-group')}>
-                                    <label>Giá</label>
+                                    <label>
+                                        Giá <span className={cx('required')}>*</span>
+                                    </label>
                                     <input
                                         type="number"
                                         name="price"
@@ -162,7 +170,9 @@ function CreateProduct() {
                                 </div>
 
                                 <div className={cx('form-group')}>
-                                    <label>Giảm giá (%)</label>
+                                    <label>
+                                        Giảm giá (%) <span className={cx('required')}>*</span>
+                                    </label>
                                     <input
                                         type="number"
                                         name="sale"
@@ -176,7 +186,9 @@ function CreateProduct() {
 
                             <div className={cx('form-right')}>
                                 <div className={cx('form-group')}>
-                                    <label>Số lượng</label>
+                                    <label>
+                                        Số lượng <span className={cx('required')}>*</span>
+                                    </label>
                                     <input
                                         type="number"
                                         name="quantity"
@@ -190,7 +202,8 @@ function CreateProduct() {
                                 </div>
                                 <div className={cx('form-group')}>
                                     <label>
-                                        Ảnh sản phẩm <span>({image.length}/3)</span>
+                                        Ảnh sản phẩm <span className={cx('required')}>*</span>{' '}
+                                        <span>({image.length}/3)</span>
                                     </label>
                                     <input type="file" multiple accept="image/*" onChange={handleImage} />
                                     <div className={cx('box-preview')}>
@@ -214,7 +227,9 @@ function CreateProduct() {
                                     </div>
                                 </div>
                                 <div className={cx('form-group')}>
-                                    <label>Chi tiết</label>
+                                    <label>
+                                        Chi tiết <span className={cx('required')}>*</span>
+                                    </label>
                                     <textarea
                                         name="detail"
                                         value={values.detail}
