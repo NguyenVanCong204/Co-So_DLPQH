@@ -113,7 +113,7 @@ function UpdateProduct() {
                 <Link className={cx('back-list')} to={'/admin/product-list'}>
                     Danh sách sản phẩm
                 </Link>
-                <span>/Cập nhật sản phẩm</span>
+                <span> / Cập nhật sản phẩm</span>
             </div>
             <div className={cx('create-product')}>
                 <h2 className={cx('title')}>Cập nhật sản phẩm</h2>

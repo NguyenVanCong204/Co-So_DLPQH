@@ -11,6 +11,7 @@
     justify-content: space-between;
     border-radius: 4px;
     background-color: #fff;
+    border: 1px solid #ccc;
 }
 .action-box {
     display: flex;
@@ -30,7 +31,7 @@
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 500;
     border-radius: 5px;
     color: #fff;
@@ -51,7 +52,7 @@
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 500;
     &:hover {
         opacity: 0.8;
@@ -60,6 +61,7 @@
 .icon-add {
     display: block;
     margin-top: 3px;
+    color: #fff;
 }
 .list-product {
     background: #fff;

@@ -6,9 +6,9 @@ const cx = classNames.bind(styles);
 function DefaultLayout({ children }) {
     return (
         <div className={cx('wrapper')}>
-            <Sidebar />
+            <HeaderAdmin />
             <div className={cx('box-content')}>
-                <HeaderAdmin />
+                <Sidebar />
                 <div className={cx('content')}>{children}</div>
             </div>
         </div>
