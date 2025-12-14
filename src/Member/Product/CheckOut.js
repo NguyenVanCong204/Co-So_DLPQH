@@ -36,7 +36,7 @@ function CheckOut() {
     const cart = useSelector((state) => state.cartredux);
     const dispatch = useDispatch();
 
-    const [AllQualityCart, SetAllQualityCart] = useState(0);
+    const [AllQuantityCart, SetAllQuantityCart] = useState(0);
     const [inputProducts, SetInputProducts] = useState([]);
     const [isDataLoaded, setIsDataLoaded] = useState(false);
     const [note, setNote] = useState('');
@@ -72,7 +72,7 @@ function CheckOut() {
                     const price = is_on_sale ? value.price * (1 - value.sale / 100) : value.price;
                     total += price * value.qty;
                 });
-                SetAllQualityCart(total);
+                SetAllQuantityCart(total);
             } catch (err) {
                 toast.error('Không thể tải giỏ hàng. Vui lòng thử lại sau.');
                 console.error(err);
@@ -254,7 +254,7 @@ function CheckOut() {
             return Promise.reject('Thiếu thông tin');
         }
         const ecoTax = inputProducts.length > 0 ? 2 : 0;
-        const finalTotal = AllQualityCart + ecoTax;
+        const finalTotal = AllQuantityCart + ecoTax;
         const totalUSD = (finalTotal / VND_TO_USD_RATE).toFixed(2);
 
         if (parseFloat(totalUSD) <= 0) {
@@ -391,7 +391,7 @@ function CheckOut() {
                                 <div className="order-total-summary">
                                     <ul>
                                         <li>
-                                            Tạm tính <span>{formatPrice(AllQualityCart)}</span>
+                                            Tạm tính <span>{formatPrice(AllQuantityCart)}</span>
                                         </li>
                                         <li>
                                             Eco Tax <span>{formatPrice(inputProducts.length > 0 ? 2 : 0)}</span>
@@ -399,7 +399,7 @@ function CheckOut() {
                                         <li className="total">
                                             Tổng cộng{' '}
                                             <span>
-                                                {formatPrice(AllQualityCart + (inputProducts.length > 0 ? 2 : 0))}
+                                                {formatPrice(AllQuantityCart + (inputProducts.length > 0 ? 2 : 0))}
                                             </span>
                                         </li>
                                     </ul>
@@ -409,14 +409,14 @@ function CheckOut() {
                                     <button
                                         className="order-submit-btn"
                                         onClick={handleOrderCOD}
-                                        disabled={AllQualityCart <= 0}
+                                        disabled={AllQuantityCart <= 0}
                                     >
                                         Đặt Hàng (COD)
                                     </button>
-                                ) : AllQualityCart > 0 ? (
+                                ) : AllQuantityCart > 0 ? (
                                     <div style={{ padding: '10px' }}>
                                         <PayPalButtons
-                                            key={AllQualityCart}
+                                            key={AllQuantityCart}
                                             style={{ layout: 'vertical' }}
                                             createOrder={createOrder}
                                             onApprove={onApprove}

@@ -146,6 +146,7 @@
 }
 .product-info-right .add-to-cart-btn:hover {
     transform: translateY(-2px);
+    background-color: #6a9185;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 .product-info-right .add-to-cart-btn i {

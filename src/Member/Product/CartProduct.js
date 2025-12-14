@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import apiMember from '../../API/apiMember';
 import './CartProduct.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFromCart, addQualityCart, removeQualityCart } from '../../features/cart/Cart';
+import { removeFromCart, addQuantityCart, removeQuantityCart } from '../../features/cart/Cart';
 import { addToCart } from '../../features/cart/CartSlider';
 import MemberCartContext from '../../Context/MemberCartContext';
 import { Link, useNavigate } from 'react-router-dom';
@@ -21,13 +21,13 @@ function CartProduct() {
     let totallocal = useContext(MemberCartContext);
     const cartredux = useSelector((state) => state.cartredux);
     const dispatch = useDispatch();
-    const [AllQualityCart, SetAllQualityCart] = useState(0);
+    const [AllQuantityCart, SetAllQuantityCart] = useState(0);
     const [input, SetInput] = useState([]);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        let tongQualityCart = 0;
+        let tongQuantityCart = 0;
         apiMember.post('/cart', cartredux).then((res) => {
             const products = Array.isArray(res.data.data) ? res.data.data : [];
             SetInput(products);
@@ -36,15 +36,15 @@ function CartProduct() {
                 const original_price = value.price;
                 const new_price = is_on_sale ? original_price * (1 - value.sale / 100) : original_price;
 
-                tongQualityCart += new_price * value.qty;
+                tongQuantityCart += new_price * value.qty;
             });
-            SetAllQualityCart(tongQualityCart);
+            SetAllQuantityCart(tongQuantityCart);
         });
     }, [cartredux]);
 
-    function removeQualityCartProduct(id, qty) {
+    function removeQuantityCartProduct(id, qty) {
         if (qty > 1) {
-            dispatch(removeQualityCart(id));
+            dispatch(removeQuantityCart(id));
             if (totallocal.cart > 0) {
                 totallocal.cart -= 1;
                 totallocal.SetCart(totallocal.cart);
@@ -55,8 +55,8 @@ function CartProduct() {
         }
     }
 
-    function addQualityCartProduct(id, qty) {
-        dispatch(addQualityCart(id));
+    function addQuantityCartProduct(id, qty) {
+        dispatch(addQuantityCart(id));
         totallocal.cart += 1;
         totallocal.SetCart(totallocal.cart);
         dispatch(addToCart(1));
@@ -123,14 +123,14 @@ function CartProduct() {
                         <div className="quantity-control">
                             <button
                                 className="quantity-btn"
-                                onClick={() => removeQualityCartProduct(value._id, value.qty)}
+                                onClick={() => removeQuantityCartProduct(value._id, value.qty)}
                             >
                                 −
                             </button>
                             <input type="text" className="quantity-input" value={value.qty} readOnly />
                             <button
                                 className="quantity-btn"
-                                onClick={() => addQualityCartProduct(value._id, value.qty)}
+                                onClick={() => addQuantityCartProduct(value._id, value.qty)}
                             >
                                 +
                             </button>
@@ -151,7 +151,7 @@ function CartProduct() {
 
     const isCartEmpty = input.length === 0;
     const ecoTax = isCartEmpty ? 0 : 2;
-    const finalTotal = isCartEmpty ? 0 : AllQualityCart + ecoTax;
+    const finalTotal = isCartEmpty ? 0 : AllQuantityCart + ecoTax;
 
     return (
         <section id="cart_items_new">
@@ -181,7 +181,7 @@ function CartProduct() {
                         <h3>TỔNG CỘNG</h3>
                         <ul>
                             <li>
-                                Tạm tính <span>{formatPrice(AllQualityCart)}</span>
+                                Tạm tính <span>{formatPrice(AllQuantityCart)}</span>
                             </li>
                             <li>
                                 Eco Tax <span>{formatPrice(ecoTax)}</span>

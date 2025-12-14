@@ -18,7 +18,7 @@ function ProductAdd() {
         sale: '0',
         company: '',
         detail: '',
-        quality: '',
+        quantity: '',
         avatar: [],
     });
     const token = localStorage.getItem('token');
@@ -74,8 +74,8 @@ function ProductAdd() {
             errAll.brand = 'Vui lòng nhập brand';
             check = false;
         }
-        if (input.quality === '') {
-            errAll.quality = 'Vui lòng nhập quality';
+        if (input.quantity === '') {
+            errAll.quantity = 'Vui lòng nhập quantity';
             check = false;
         }
         if (input.status === '') {
@@ -124,7 +124,7 @@ function ProductAdd() {
             data.append('sale', input.sale);
             data.append('detail', input.detail);
             data.append('company', input.company);
-            data.append('quality', input.quality);
+            data.append('quantity', input.quantity);
             input.avatar.map((value, index) => {
                 data.append('image', value);
             });
@@ -225,8 +225,8 @@ function ProductAdd() {
 
                 <input placeholder="Company" type="text" name="company" onChange={handleChangInput}></input>
                 <p>{err.company}</p>
-                <input placeholder="Quality" type="text" name="quality" onChange={handleChangInput}></input>
-                <p>{err.quality}</p>
+                <input placeholder="Quantity" type="text" name="quantity" onChange={handleChangInput}></input>
+                <p>{err.quantity}</p>
                 <input type="file" multiple name="avatar" onChange={handleChangInputAvatar}></input>
                 <p>{err.avatar}</p>
                 <input placeholder="Detail" name="detail" type="text" onChange={handleChangInput}></input>

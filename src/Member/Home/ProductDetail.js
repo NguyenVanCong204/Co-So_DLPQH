@@ -20,7 +20,7 @@ function formatPrice(price) {
 function ProductDetail() {
     const { id } = useParams();
     const [input, SetInput] = useState({});
-    const [quality, SetQuality] = useState(1);
+    const [quantity, SetQuantity] = useState(1);
     const [selectedImg, SetselectedImg] = useState();
     const dispatch = useDispatch();
     let totallocal = useContext(MemberCartContext);
@@ -67,12 +67,13 @@ function ProductDetail() {
     function AddProductToCart() {
         const user = localStorage.getItem('user');
         if (user) {
-            if ((input.quantity || input.quality) <= 0) {
+            const stock = input.quantity;
+            if (stock <= 0) {
                 toast.error('Sản phẩm này đã hết hàng');
                 return;
             }
 
-            if (quality <= 0) {
+            if (quantity <= 0) {
                 toast.warn('Vui lòng chọn số lượng lớn hơn 0');
                 return;
             }
@@ -83,32 +84,32 @@ function ProductDetail() {
             }
 
             if (cart[id]) {
-                cart[id] += quality;
+                cart[id] += quantity;
             } else {
-                cart[id] = quality;
+                cart[id] = quantity;
             }
 
             dispatch(setCartDetails(cart));
 
-            dispatch(addToCart(quality));
+            dispatch(addToCart(quantity));
 
             totallocal.cart = Object.values(cart).reduce((a, b) => a + b, 0);
             totallocal.SetCart(totallocal.cart);
 
-            toast.success(`Đã thêm ${quality} sản phẩm vào giỏ hàng`);
+            toast.success(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
         } else {
             toast.warn('Vui lòng đăng nhập');
         }
     }
 
-    function AddQuality() {
+    function AddQuantity() {
         const maxStock = input.quantity || input.quality || 0;
-        if (quality < maxStock) {
-            SetQuality((quality) => quality + 1);
+        if (quantity < maxStock) {
+            SetQuantity((quantity) => quantity + 1);
         }
     }
-    function DeleteQuality() {
-        SetQuality(quality > 1 ? (quality) => quality - 1 : 1);
+    function DeleteQuantity() {
+        SetQuantity(quantity > 1 ? (quantity) => quantity - 1 : 1);
     }
     function SetselectedImgTop(src) {
         SetselectedImg(src);
@@ -239,23 +240,23 @@ function ProductDetail() {
                         <div className="quantity-control">
                             <button
                                 className="quantity-btn"
-                                onClick={() => DeleteQuality()}
-                                disabled={quality <= 1}
+                                onClick={() => DeleteQuantity()}
+                                disabled={quantity <= 1}
                                 style={{
-                                    opacity: quality <= 1 ? 0.5 : 1,
-                                    cursor: quality <= 1 ? 'not-allowed' : 'pointer',
+                                    opacity: quantity <= 1 ? 0.5 : 1,
+                                    cursor: quantity <= 1 ? 'not-allowed' : 'pointer',
                                 }}
                             >
                                 −
                             </button>
-                            <input type="text" className="quantity-input" value={quality} readOnly />
+                            <input type="text" className="quantity-input" value={quantity} readOnly />
                             <button
                                 className="quantity-btn"
-                                onClick={() => AddQuality()}
-                                disabled={quality >= (input.quantity || input.quality)}
+                                onClick={() => AddQuantity()}
+                                disabled={quantity >= (input.quantity || input.quality)}
                                 style={{
-                                    opacity: quality >= (input.quantity || input.quality) ? 0.5 : 1,
-                                    cursor: quality >= (input.quantity || input.quality) ? 'not-allowed' : 'pointer',
+                                    opacity: quantity >= (input.quantity || input.quality) ? 0.5 : 1,
+                                    cursor: quantity >= (input.quantity || input.quality) ? 'not-allowed' : 'pointer',
                                 }}
                             >
                                 +
@@ -274,9 +275,18 @@ function ProductDetail() {
                     </div>
 
                     <div>
-                        <button className="add-to-cart-btn" onClick={() => AddProductToCart()}>
+                        <button
+                            className="add-to-cart-btn"
+                            onClick={() => AddProductToCart()}
+                            disabled={input.quantity <= 0}
+                            style={{
+                                opacity: input.quantity <= 0 ? 0.6 : 1,
+                                cursor: input.quantity <= 0 ? 'not-allowed' : 'pointer',
+                                background: input.quantity <= 0 ? '#ccc' : 'var(--primary-color)',
+                            }}
+                        >
                             <i className="fa fa-shopping-cart"></i>
-                            Thêm vào giỏ
+                            {input.quantity <= 0 ? 'Hết hàng' : 'Thêm vào giỏ'}
                         </button>
                         <button className="buy-by-phone-btn">
                             <i className="fa fa-phone"></i>

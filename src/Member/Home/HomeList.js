@@ -98,10 +98,19 @@ function HomeList() {
         setVisibleCount((prev) => prev + 12);
     };
 
-    function AddCart(id) {
+    function AddCart(product) {
         const user = localStorage.getItem('user');
         if (user) {
+            // Check stock
+            const stock = product.quantity;
+            if (stock <= 0) {
+                toast.error('Sản phẩm này đã hết hàng');
+                return;
+            }
+
             let cart = JSON.parse(localStorage.getItem('cart')) || {};
+            const id = product._id;
+
             if (cart[id]) {
                 cart[id] = Number(cart[id]) + 1;
             } else {
@@ -162,7 +171,7 @@ function HomeList() {
                                 </div>
                             </div>
 
-                            <button onClick={() => AddCart(value._id)} className="buy-button">
+                            <button onClick={() => AddCart(value)} className="buy-button">
                                 <i className="fa fa-shopping-cart" />
                                 Thêm vào giỏ
                             </button>

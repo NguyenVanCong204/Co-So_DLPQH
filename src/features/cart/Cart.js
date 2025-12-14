@@ -12,7 +12,7 @@ const Cart = createSlice({
             localStorage.setItem('cart', JSON.stringify(state));
         },
 
-        addQualityCart: (state, action) => {
+        addQuantityCart: (state, action) => {
             const id = action.payload;
             if (state[id] != 0) {
                 state[id] += 1;
@@ -22,7 +22,7 @@ const Cart = createSlice({
             localStorage.setItem('cart', JSON.stringify(state));
         },
 
-        removeQualityCart: (state, action) => {
+        removeQuantityCart: (state, action) => {
             const id = action.payload;
             if (state[id] && state[id] > 0) {
                 state[id] -= 1;
@@ -43,5 +43,5 @@ const Cart = createSlice({
         },
     },
 });
-export const { addQualityCart, removeFromCart, removeQualityCart, resetCartRedux, setCartDetails } = Cart.actions;
+export const { addQuantityCart, removeFromCart, removeQuantityCart, resetCartRedux, setCartDetails } = Cart.actions;
 export default Cart.reducer;

@@ -177,7 +177,7 @@ function OrderList() {
         const orderCode = Object.keys(orderGroup)[0];
         const items = orderGroup[orderCode];
         const firstOrder = items[0];
-        const total = items.reduce((sum, item) => sum + item.price * (item.quality || item.qualty), 0);
+        const total = items.reduce((sum, item) => sum + item.price * (item.quantity || item.qualty), 0);
 
         return (
             <div key={orderCode} className="order-card">
@@ -219,7 +219,7 @@ function OrderList() {
                                     <Link to={`/member/home/product/detail/${product._id}`}>
                                         <h4>{product.name}</h4>
                                     </Link>
-                                    <p>Số lượng: {item.quality || item.qualty}</p>
+                                    <p>Số lượng: {item.quantity || item.qualty}</p>
                                     <p>Giá: {formatPrice(item.price)}</p>
                                 </div>
                             </div>
@@ -296,9 +296,39 @@ function OrderList() {
             );
         }
 
+        // Custom sorting based on tab
+        const sortedOrderGroups = orderGroups.sort((a, b) => {
+            const codeA = Object.keys(a)[0];
+            const itemsA = a[codeA];
+            const firstA = itemsA[0];
+
+            const codeB = Object.keys(b)[0];
+            const itemsB = b[codeB];
+            const firstB = itemsB[0];
+
+            let timeA, timeB;
+
+            if (activeTab === 'waiting') {
+                timeA = new Date(firstA.createdAt).getTime();
+                timeB = new Date(firstB.createdAt).getTime();
+            } else if (activeTab === 'delivery') {
+                timeA = new Date(firstA.confirmedAt || firstA.updatedAt).getTime();
+                timeB = new Date(firstB.confirmedAt || firstB.updatedAt).getTime();
+            } else if (activeTab === 'delivered') {
+                timeA = new Date(firstA.deliveredAt || firstA.updatedAt).getTime();
+                timeB = new Date(firstB.deliveredAt || firstB.updatedAt).getTime();
+            } else {
+                // cancelled
+                timeA = new Date(firstA.cancelledAt || firstA.updatedAt).getTime();
+                timeB = new Date(firstB.cancelledAt || firstB.updatedAt).getTime();
+            }
+
+            return timeB - timeA; // Descending order
+        });
+
         return (
             <div className="orders-container">
-                {orderGroups.map((group) => {
+                {sortedOrderGroups.map((group) => {
                     let status = 0;
                     if (activeTab === 'delivery') status = 1;
                     if (activeTab === 'delivered') status = 2;
@@ -387,8 +417,8 @@ function OrderList() {
                                                     <h4>{product.name}</h4>
                                                 </Link>
                                                 <p>Giá: {formatPrice(item.price)}</p>
-                                                <p>Số lượng: {item.quality || item.qualty}</p>
-                                                <p>Tổng: {formatPrice(item.price * (item.quality || item.qualty))}</p>
+                                                <p>Số lượng: {item.quantity || item.qualty}</p>
+                                                <p>Tổng: {formatPrice(item.price * (item.quantity || item.qualty))}</p>
                                             </div>
                                         </div>
                                     );

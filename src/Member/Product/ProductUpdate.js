@@ -24,7 +24,7 @@ function ProductUpdate() {
         sale: '0',
         company: '',
         detail: '',
-        quality: '',
+        quantity: '',
         avatar: [],
     });
     let config = {
@@ -47,7 +47,7 @@ function ProductUpdate() {
                     status: res.data.data.status,
                     sale: res.data.data.sale,
                     company: res.data.data.company,
-                    quality: res.data.data.quality,
+                    quantity: res.data.data.quantity || res.data.data.quality,
                     detail: res.data.data.detail,
                     avatar: JSON.parse(res?.data?.data?.image),
                 });
@@ -102,8 +102,8 @@ function ProductUpdate() {
             errAll.brand = 'Vui lòng nhập brand';
             check = false;
         }
-        if (input.quality === '') {
-            errAll.quality = 'Vui lòng nhập quality';
+        if (input.quantity === '') {
+            errAll.quantity = 'Vui lòng nhập quantity';
             check = false;
         }
         if (input.status === '') {
@@ -157,7 +157,7 @@ function ProductUpdate() {
             }
             data.append('detail', input.detail);
             data.append('company', input.company);
-            data.append('quality', input.quality);
+            data.append('quantity', input.quantity);
             avatarDelete.map((value, index) => {
                 data.append('imageDelete', value);
             });
@@ -313,10 +313,10 @@ function ProductUpdate() {
                 ></input>
                 <p>{err.company}</p>
                 <input
-                    placeholder="Quality"
+                    placeholder="Quantity"
                     type="text"
-                    name="quality"
-                    value={input.quality}
+                    name="quantity"
+                    value={input.quantity}
                     onChange={handleChangInput}
                 ></input>
                 <p>{err.company}</p>

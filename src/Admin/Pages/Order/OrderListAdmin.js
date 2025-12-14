@@ -109,7 +109,7 @@ function OrderListAdmin() {
                             Object.entries(groupedOrders).map(([code, items]) => {
                                 const firstOrder = items[0];
                                 const total = items.reduce(
-                                    (sum, item) => sum + item.price * (item.quality || item.qualty),
+                                    (sum, item) => sum + item.price * (item.quantity || item.qualty),
                                     0,
                                 );
                                 const user = firstOrder.id_user;
@@ -135,7 +135,7 @@ function OrderListAdmin() {
                                             <ul style={{ listStyle: 'none', padding: 0 }}>
                                                 {items.map((item, idx) => (
                                                     <li key={idx} style={{ marginBottom: '5px' }}>
-                                                        {item.id_product?.name} x {item.quality || item.qualty}
+                                                        {item.id_product?.name} x {item.quantity || item.qualty}
                                                     </li>
                                                 ))}
                                             </ul>
