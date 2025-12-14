@@ -61,7 +61,7 @@ export const createHistory = async (req, res) => {
                 continue;
             }
 
-            const availableQty = parseInt(product.quantity || product.quality || 0);
+            const availableQty = parseInt(product.quantity || 0);
             if (isNaN(availableQty)) {
                 stockErrors.push(`${product.name}: Không thể xác định số lượng tồn kho`);
                 continue;
@@ -93,7 +93,7 @@ export const createHistory = async (req, res) => {
                         quantity: { $gte: qty }, // Ensure enough stock exists
                     },
                     {
-                        $inc: { quantity: -qty, quality: -qty }, // Deduct stock
+                        $inc: { quantity: -qty }, // Deduct stock
                     },
                     { new: true },
                 );
@@ -109,7 +109,7 @@ export const createHistory = async (req, res) => {
 
             // Rollback immediately if deduction loop fails
             for (const item of reservedItems) {
-                await Product.findByIdAndUpdate(item.id, { $inc: { quantity: item.qty, quality: item.qty } });
+                await Product.findByIdAndUpdate(item.id, { $inc: { quantity: item.qty } });
             }
 
             return res.status(400).json({
@@ -146,7 +146,7 @@ export const createHistory = async (req, res) => {
                 id_product: value._id,
                 price: finalPrice,
                 id_user: user._id,
-                quality: qty,
+                quantity: qty,
                 orderCode,
                 paymentMethod,
                 address,
@@ -177,7 +177,7 @@ export const createHistory = async (req, res) => {
             for (const item of reservedItems) {
                 try {
                     await Product.findByIdAndUpdate(item.id, {
-                        $inc: { quantity: item.qty, quality: item.qty },
+                        $inc: { quantity: item.qty },
                     });
                 } catch (rollbackError) {
                     console.error(`❌ Failed to rollback stock for product ${item.id}`, rollbackError);
@@ -228,9 +228,10 @@ export const markAsDelivered = async (req, res) => {
         }
 
         if (order.orderCode) {
-            await History.updateMany({ orderCode: order.orderCode }, { status: 2 });
+            await History.updateMany({ orderCode: order.orderCode }, { status: 2, deliveredAt: new Date() });
         } else {
             await History.updateOrderStatus(id, 2);
+            await History.findByIdAndUpdate(id, { deliveredAt: new Date() });
         }
 
         const updatedOrder = await History.findById(id).populate('id_product');
@@ -255,18 +256,19 @@ export const cancelOrder = async (req, res) => {
         let ordersToCancel = [];
         if (order.orderCode) {
             ordersToCancel = await History.find({ orderCode: order.orderCode });
-            await History.updateMany({ orderCode: order.orderCode }, { status: 3 });
+            await History.updateMany({ orderCode: order.orderCode }, { status: 3, cancelledAt: new Date() });
         } else {
             ordersToCancel = [order];
             await History.updateOrderStatus(id, 3);
+            await History.findByIdAndUpdate(id, { cancelledAt: new Date() });
         }
 
         // Restore stock
         console.log('🔄 Restoring stock for cancelled order...');
         for (const o of ordersToCancel) {
-            if (o.id_product && o.quality) {
+            if (o.id_product && o.quantity) {
                 await Product.findByIdAndUpdate(o.id_product, {
-                    $inc: { quantity: o.quality, quality: o.quality },
+                    $inc: { quantity: o.quantity },
                 });
             }
         }
@@ -292,10 +294,11 @@ export const confirmOrder = async (req, res) => {
         let ordersToConfirm = [];
         if (order.orderCode) {
             ordersToConfirm = await History.find({ orderCode: order.orderCode }).populate('id_product');
-            await History.updateMany({ orderCode: order.orderCode }, { status: 1 });
+            await History.updateMany({ orderCode: order.orderCode }, { status: 1, confirmedAt: new Date() });
         } else {
             ordersToConfirm = [await History.findById(id).populate('id_product')];
             await History.updateOrderStatus(id, 1);
+            await History.findByIdAndUpdate(id, { confirmedAt: new Date() });
         }
 
         return res.status(200).json({ message: 'Xác nhận đơn hàng thành công' });

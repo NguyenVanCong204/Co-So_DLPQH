@@ -15,7 +15,7 @@ const historySchema = new mongoose.Schema(
             required: true,
         },
         price: { type: Number },
-        quality: { type: Number },
+        quantity: { type: Number },
         qualty: { type: Number }, // Support for legacy orders
         status: {
             type: Number,
