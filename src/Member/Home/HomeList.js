@@ -51,11 +51,12 @@ function HomeList() {
             if (filters.brand) query += `brand=${filters.brand}&`;
             if (filters.category) query += `category=${filters.category}&`;
 
-            apiMember.get(query)
-                .then(res => {
+            apiMember
+                .get(query)
+                .then((res) => {
                     SetInput(Array.isArray(res.data.data) ? res.data.data : []);
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error(err);
                     SetInput([]);
                 });
@@ -174,10 +175,10 @@ function HomeList() {
 
     function renderHeroSlider() {
         if (!Array.isArray(sliderProducts)) return null;
-        
+
         // Get top 6 sale products
         const saleProducts = sliderProducts
-            .filter(p => p.sale > 0)
+            .filter((p) => p.sale > 0)
             .sort((a, b) => b.sale - a.sale)
             .slice(0, 6);
 
@@ -227,9 +228,7 @@ function HomeList() {
 
     return (
         <div>
-            <div className="hero-section">
-                {renderHeroSlider()}
-            </div>
+            <div className="hero-section">{renderHeroSlider()}</div>
 
             <div className="features_items" id="products-grid">
                 <h2 className="title text-center">Sản Phẩm Nổi Bật</h2>
@@ -237,21 +236,21 @@ function HomeList() {
                 {renderData()}
             </div>
 
-                {visibleCount < input.length && (
-                    <div style={{ textAlign: 'center', width: '100%', marginTop: '20px', clear: 'both' }}>
-                        <button
-                            onClick={handleLoadMore}
-                            className="btn btn-default"
-                            style={{
-                                fontSize: '18px',
-                                fontWeight: 'bold',
-                                padding: '10px 25px',
-                            }}
-                        >
-                            Hiển thị thêm sản phẩm
-                        </button>
-                    </div>
-                )}
+            {visibleCount < input.length && (
+                <div style={{ textAlign: 'center', width: '100%', marginTop: '20px', clear: 'both' }}>
+                    <button
+                        onClick={handleLoadMore}
+                        className="btn btn-default"
+                        style={{
+                            fontSize: '18px',
+                            fontWeight: 'bold',
+                            padding: '10px 25px',
+                        }}
+                    >
+                        Hiển thị thêm sản phẩm
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

@@ -36,7 +36,7 @@ function CheckOut() {
     const cart = useSelector((state) => state.cartredux);
     const dispatch = useDispatch();
 
-    const [AllQualtyCart, SetAllQualtyCart] = useState(0);
+    const [AllQualityCart, SetAllQualityCart] = useState(0);
     const [inputProducts, SetInputProducts] = useState([]);
     const [isDataLoaded, setIsDataLoaded] = useState(false);
     const [note, setNote] = useState('');
@@ -72,7 +72,7 @@ function CheckOut() {
                     const price = is_on_sale ? value.price * (1 - value.sale / 100) : value.price;
                     total += price * value.qty;
                 });
-                SetAllQualtyCart(total);
+                SetAllQualityCart(total);
             } catch (err) {
                 toast.error('Không thể tải giỏ hàng. Vui lòng thử lại sau.');
                 console.error(err);
@@ -243,8 +243,8 @@ function CheckOut() {
     };
 
     const handleOrderCOD = () => {
-        processOrder('COD').catch(err => {
-            console.log("COD Order failed:", err);
+        processOrder('COD').catch((err) => {
+            console.log('COD Order failed:', err);
         });
     };
 
@@ -254,7 +254,7 @@ function CheckOut() {
             return Promise.reject('Thiếu thông tin');
         }
         const ecoTax = inputProducts.length > 0 ? 2 : 0;
-        const finalTotal = AllQualtyCart + ecoTax;
+        const finalTotal = AllQualityCart + ecoTax;
         const totalUSD = (finalTotal / VND_TO_USD_RATE).toFixed(2);
 
         if (parseFloat(totalUSD) <= 0) {
@@ -278,9 +278,9 @@ function CheckOut() {
     const onApprove = (data, actions) => {
         return actions.order.capture().then(async (details) => {
             toast.success(`Thanh toán thành công bởi ${details.payer.name.given_name}`);
-            await processOrder('PayPal').catch(err => {
-                 console.error("PayPal Order saving failed:", err);
-                 toast.error("Đã thanh toán PayPal nhưng lỗi lưu đơn hàng. Vui lòng liên hệ CSKH.");
+            await processOrder('PayPal').catch((err) => {
+                console.error('PayPal Order saving failed:', err);
+                toast.error('Đã thanh toán PayPal nhưng lỗi lưu đơn hàng. Vui lòng liên hệ CSKH.');
             });
         });
     };
@@ -299,7 +299,7 @@ function CheckOut() {
             }}
         >
             <section className="checkout-page">
-                <div className="container" style={{marginBottom: '20px'}}>
+                <div className="container" style={{ marginBottom: '20px' }}>
                     <Breadcrumb items={[{ label: 'Thanh toán' }]} />
                 </div>
                 {isLoading && (
@@ -391,13 +391,16 @@ function CheckOut() {
                                 <div className="order-total-summary">
                                     <ul>
                                         <li>
-                                            Tạm tính <span>{formatPrice(AllQualtyCart)}</span>
+                                            Tạm tính <span>{formatPrice(AllQualityCart)}</span>
                                         </li>
                                         <li>
                                             Eco Tax <span>{formatPrice(inputProducts.length > 0 ? 2 : 0)}</span>
                                         </li>
                                         <li className="total">
-                                            Tổng cộng <span>{formatPrice(AllQualtyCart + (inputProducts.length > 0 ? 2 : 0))}</span>
+                                            Tổng cộng{' '}
+                                            <span>
+                                                {formatPrice(AllQualityCart + (inputProducts.length > 0 ? 2 : 0))}
+                                            </span>
                                         </li>
                                     </ul>
                                 </div>
@@ -406,14 +409,14 @@ function CheckOut() {
                                     <button
                                         className="order-submit-btn"
                                         onClick={handleOrderCOD}
-                                        disabled={AllQualtyCart <= 0}
+                                        disabled={AllQualityCart <= 0}
                                     >
                                         Đặt Hàng (COD)
                                     </button>
-                                ) : AllQualtyCart > 0 ? (
+                                ) : AllQualityCart > 0 ? (
                                     <div style={{ padding: '10px' }}>
                                         <PayPalButtons
-                                            key={AllQualtyCart}
+                                            key={AllQualityCart}
                                             style={{ layout: 'vertical' }}
                                             createOrder={createOrder}
                                             onApprove={onApprove}

@@ -128,7 +128,7 @@ function ProductList() {
                     </td>
                     <td>{value.sale} %</td>
                     <td>{value.price} VND</td>
-                    <td>{value.qualty} </td>
+                    <td>{value.quality} </td>
                     <td className="active">
                         <Link to={`/member/account/product/update/${value._id}`}>
                             <i className="fa-solid fa-pen-to-square"></i>
@@ -156,7 +156,7 @@ function ProductList() {
                             <th>Image</th>
                             <th>Sale</th>
                             <th>Price</th>
-                            <th>Qualty</th>
+                            <th>Quality</th>
                             <th>Active</th>
                         </tr>
                     </thead>

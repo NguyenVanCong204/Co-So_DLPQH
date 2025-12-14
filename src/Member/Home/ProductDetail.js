@@ -20,7 +20,7 @@ function formatPrice(price) {
 function ProductDetail() {
     const { id } = useParams();
     const [input, SetInput] = useState({});
-    const [qualty, SetQualty] = useState(1);
+    const [quality, SetQuality] = useState(1);
     const [selectedImg, SetselectedImg] = useState();
     const dispatch = useDispatch();
     let totallocal = useContext(MemberCartContext);
@@ -28,8 +28,8 @@ function ProductDetail() {
     const [reviews, setReviews] = useState([]);
     const [filteredReviews, setFilteredReviews] = useState([]);
     const [filterType, setFilterType] = useState('all'); // all, 5, 4, 3, 2, 1, image
-    
-    const [commentText, setCommentText] = useState("");
+
+    const [commentText, setCommentText] = useState('');
     const [currentRating, setCurrentRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [showReviewForm, setShowReviewForm] = useState(false);
@@ -43,36 +43,36 @@ function ProductDetail() {
             }
         });
 
-        apiMember.get('/product/' + id + '/reviews')
-            .then(res => {
+        apiMember
+            .get('/product/' + id + '/reviews')
+            .then((res) => {
                 const data = Array.isArray(res.data.data) ? res.data.data : [];
                 setReviews(data);
                 setFilteredReviews(data);
             })
-            .catch(err => console.log(err));
-
+            .catch((err) => console.log(err));
     }, [id]);
 
     useEffect(() => {
         if (filterType === 'all') {
             setFilteredReviews(reviews);
         } else if (filterType === 'image') {
-            setFilteredReviews(reviews); 
+            setFilteredReviews(reviews);
         } else {
             const stars = parseInt(filterType);
-            setFilteredReviews(reviews.filter(r => r.rating === stars));
+            setFilteredReviews(reviews.filter((r) => r.rating === stars));
         }
     }, [filterType, reviews]);
 
     function AddProductToCart() {
         const user = localStorage.getItem('user');
         if (user) {
-            if ((input.quantity || input.qualty) <= 0) {
+            if ((input.quantity || input.quality) <= 0) {
                 toast.error('Sản phẩm này đã hết hàng');
                 return;
             }
 
-            if (qualty <= 0) {
+            if (quality <= 0) {
                 toast.warn('Vui lòng chọn số lượng lớn hơn 0');
                 return;
             }
@@ -83,32 +83,32 @@ function ProductDetail() {
             }
 
             if (cart[id]) {
-                cart[id] += qualty;
+                cart[id] += quality;
             } else {
-                cart[id] = qualty;
+                cart[id] = quality;
             }
 
             dispatch(setCartDetails(cart));
 
-            dispatch(addToCart(qualty));
+            dispatch(addToCart(quality));
 
             totallocal.cart = Object.values(cart).reduce((a, b) => a + b, 0);
             totallocal.SetCart(totallocal.cart);
 
-            toast.success(`Đã thêm ${qualty} sản phẩm vào giỏ hàng`);
+            toast.success(`Đã thêm ${quality} sản phẩm vào giỏ hàng`);
         } else {
             toast.warn('Vui lòng đăng nhập');
         }
     }
 
-    function AddQualty() {
-        const maxStock = input.quantity || input.qualty || 0;
-        if (qualty < maxStock) {
-            SetQualty((qualty) => qualty + 1);
+    function AddQuality() {
+        const maxStock = input.quantity || input.quality || 0;
+        if (quality < maxStock) {
+            SetQuality((quality) => quality + 1);
         }
     }
-    function DeleteQualty() {
-        SetQualty(qualty > 1 ? (qualty) => qualty - 1 : 1);
+    function DeleteQuality() {
+        SetQuality(quality > 1 ? (quality) => quality - 1 : 1);
     }
     function SetselectedImgTop(src) {
         SetselectedImg(src);
@@ -130,25 +130,26 @@ function ProductDetail() {
         }
 
         const config = {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${token}` },
         };
 
-        apiMember.post(`/product/${id}/review`, { rating: currentRating, comment: commentText }, config)
-            .then(res => {
+        apiMember
+            .post(`/product/${id}/review`, { rating: currentRating, comment: commentText }, config)
+            .then((res) => {
                 toast.success('Đánh giá thành công!');
                 setCommentText('');
                 setCurrentRating(0);
                 setCommentText('');
                 setCurrentRating(0);
                 setShowReviewForm(false);
-                apiMember.get('/product/' + id + '/reviews').then(r => {
+                apiMember.get('/product/' + id + '/reviews').then((r) => {
                     const data = r.data.data || [];
                     setReviews(data);
                 });
             })
-            .catch(err => {
+            .catch((err) => {
                 console.error(err);
-                if (err.response?.status === 400 && err.response.data.error.includes("đã đánh giá")) {
+                if (err.response?.status === 400 && err.response.data.error.includes('đã đánh giá')) {
                     toast.error('Bạn đã đánh giá sản phẩm này rồi!');
                 } else {
                     toast.error(err.response?.data?.error || 'Lỗi khi gửi đánh giá');
@@ -160,38 +161,30 @@ function ProductDetail() {
         return [...Array(5)].map((_, index) => {
             const fullStar = index + 1 <= rating;
             const halfStar = index + 0.5 === rating;
-            
-            let iconClass = "fa fa-star-o";
-            let color = "#ccc";
-            
+
+            let iconClass = 'fa fa-star-o';
+            let color = '#ccc';
+
             if (rating >= index + 1) {
-                iconClass = "fa fa-star";
-                color = "#FE980F";
+                iconClass = 'fa fa-star';
+                color = '#FE980F';
             } else if (rating >= index + 0.5) {
-                iconClass = "fa fa-star-half-o";
-                color = "#FE980F";
+                iconClass = 'fa fa-star-half-o';
+                color = '#FE980F';
             }
 
-            return (
-                <i 
-                    key={index} 
-                    className={iconClass} 
-                    style={{ color: color, marginRight: '2px' }}
-                ></i>
-            );
+            return <i key={index} className={iconClass} style={{ color: color, marginRight: '2px' }}></i>;
         });
-    }
+    };
 
     // Stats calculation
     const totalReviews = reviews.length;
-    const avgRating = totalReviews > 0 
-        ? (reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1) 
-        : 0;
-    
+    const avgRating = totalReviews > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1) : 0;
+
     // Count per star
-    const starCounts = { 5:0, 4:0, 3:0, 2:0, 1:0 };
-    reviews.forEach(r => {
-        if(starCounts[r.rating] !== undefined) starCounts[r.rating]++;
+    const starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    reviews.forEach((r) => {
+        if (starCounts[r.rating] !== undefined) starCounts[r.rating]++;
     });
     function renderData() {
         const avatar = input?.image ? JSON.parse(input.image) : [];
@@ -244,35 +237,39 @@ function ProductDetail() {
                     <div className="quantity-container">
                         <div className="quantity-label">Số Lượng:</div>
                         <div className="quantity-control">
-                            <button 
-                                className="quantity-btn" 
-                                onClick={() => DeleteQualty()}
-                                disabled={qualty <= 1}
-                                style={{ 
-                                    opacity: qualty <= 1 ? 0.5 : 1, 
-                                    cursor: qualty <= 1 ? 'not-allowed' : 'pointer' 
+                            <button
+                                className="quantity-btn"
+                                onClick={() => DeleteQuality()}
+                                disabled={quality <= 1}
+                                style={{
+                                    opacity: quality <= 1 ? 0.5 : 1,
+                                    cursor: quality <= 1 ? 'not-allowed' : 'pointer',
                                 }}
                             >
                                 −
                             </button>
-                            <input type="text" className="quantity-input" value={qualty} readOnly />
-                            <button 
-                                className="quantity-btn" 
-                                onClick={() => AddQualty()}
-                                disabled={qualty >= (input.quantity || input.qualty)}
-                                style={{ 
-                                    opacity: qualty >= (input.quantity || input.qualty) ? 0.5 : 1, 
-                                    cursor: qualty >= (input.quantity || input.qualty) ? 'not-allowed' : 'pointer' 
+                            <input type="text" className="quantity-input" value={quality} readOnly />
+                            <button
+                                className="quantity-btn"
+                                onClick={() => AddQuality()}
+                                disabled={quality >= (input.quantity || input.quality)}
+                                style={{
+                                    opacity: quality >= (input.quantity || input.quality) ? 0.5 : 1,
+                                    cursor: quality >= (input.quantity || input.quality) ? 'not-allowed' : 'pointer',
                                 }}
                             >
                                 +
                             </button>
                         </div>
-                        <div className="quantity-available" style={{ marginLeft: '15px', display: 'flex', alignItems: 'center', color: '#757575' }}>
-                            {(input.quantity || input.qualty) > 0 
-                                ? `${input.quantity || input.qualty} sản phẩm có sẵn` 
-                                : <span style={{color: '#d70018', fontWeight: 'bold'}}>Hết hàng</span>
-                            }
+                        <div
+                            className="quantity-available"
+                            style={{ marginLeft: '15px', display: 'flex', alignItems: 'center', color: '#757575' }}
+                        >
+                            {(input.quantity || input.quality) > 0 ? (
+                                `${input.quantity || input.quality} sản phẩm có sẵn`
+                            ) : (
+                                <span style={{ color: '#d70018', fontWeight: 'bold' }}>Hết hàng</span>
+                            )}
                         </div>
                     </div>
 
@@ -294,12 +291,14 @@ function ProductDetail() {
     return (
         <div>
             {input.name && (
-                <Breadcrumb 
+                <Breadcrumb
                     items={[
                         { label: 'Sản Phẩm', path: '/member/home' },
-                        ...(input.id_category ? [{ label: input.id_category.category, path: `/member/category/${input.id_category._id}` }] : []), // Assuming populate returns .category or .name
-                        { label: input.name }
-                    ]} 
+                        ...(input.id_category
+                            ? [{ label: input.id_category.category, path: `/member/category/${input.id_category._id}` }]
+                            : []), // Assuming populate returns .category or .name
+                        { label: input.name },
+                    ]}
                 />
             )}
             {renderData()}
@@ -351,88 +350,165 @@ function ProductDetail() {
                     </div>
 
                     <div className="tab-pane fade" id="reviews">
-                        
                         {/* Rating Dashboard */}
-                        <div className="rating-dashboard" style={{marginBottom: '30px', border: '1px solid #eee', padding: '20px', borderRadius: '8px', display: 'flex', flexWrap: 'wrap'}}>
-                             <div className="rating-summary col-sm-5" style={{borderRight: '1px solid #eee', textAlign: 'center', paddingRight: '20px'}}>
-                                 <div className="avg-score" style={{fontSize: '48px', fontWeight: 'bold', color: '#FE980F', lineHeight: '1'}}>
-                                     {avgRating}<span style={{fontSize: '24px', color: '#999'}}>/5</span>
-                                 </div>
-                                 <div className="avg-stars" style={{fontSize: '18px', margin: '10px 0'}}>
-                                     {renderStars(parseFloat(avgRating))}
-                                 </div>
-                                 <div className="total-rating-count" style={{color: '#666', marginBottom: '15px'}}>
-                                     {totalReviews} lượt đánh giá
-                                 </div>
-                                 <button 
-                                     className="btn btn-primary" 
-                                     style={{background: '#d70018', border: 'none', padding: '10px 30px', fontWeight: 'bold'}}
-                                     onClick={() => setShowReviewForm(!showReviewForm)}
-                                 >
-                                     Viết đánh giá
-                                 </button>
-                             </div>
-                             
-                             <div className="rating-bars col-sm-7" style={{paddingLeft: '30px'}}>
-                                 {[5,4,3,2,1].map(star => {
-                                     const count = starCounts[star];
-                                     const percent = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
-                                     return (
-                                         <div key={star} className="rating-bar-row" style={{display: 'flex', alignItems: 'center', marginBottom: '8px'}}>
-                                             <span style={{width: '20px', fontWeight: 'bold'}}>{star} <i className="fa fa-star" style={{fontSize: '10px', color: '#ccc'}}></i></span>
-                                             <div className="progress" style={{flex: 1, height: '8px', margin: '0 10px', background: '#eee', borderRadius: '4px'}}>
-                                                 <div 
-                                                     className="progress-bar" 
-                                                     style={{width: `${percent}%`, background: '#d70018', height: '100%', borderRadius: '4px'}}
-                                                 ></div>
-                                             </div>
-                                             <span style={{width: '70px', fontSize: '12px', color: '#666', textAlign: 'right'}}>{count} đánh giá</span>
-                                         </div>
-                                     )
-                                 })}
-                             </div>
+                        <div
+                            className="rating-dashboard"
+                            style={{
+                                marginBottom: '30px',
+                                border: '1px solid #eee',
+                                padding: '20px',
+                                borderRadius: '8px',
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                            }}
+                        >
+                            <div
+                                className="rating-summary col-sm-5"
+                                style={{ borderRight: '1px solid #eee', textAlign: 'center', paddingRight: '20px' }}
+                            >
+                                <div
+                                    className="avg-score"
+                                    style={{ fontSize: '48px', fontWeight: 'bold', color: '#FE980F', lineHeight: '1' }}
+                                >
+                                    {avgRating}
+                                    <span style={{ fontSize: '24px', color: '#999' }}>/5</span>
+                                </div>
+                                <div className="avg-stars" style={{ fontSize: '18px', margin: '10px 0' }}>
+                                    {renderStars(parseFloat(avgRating))}
+                                </div>
+                                <div className="total-rating-count" style={{ color: '#666', marginBottom: '15px' }}>
+                                    {totalReviews} lượt đánh giá
+                                </div>
+                                <button
+                                    className="btn btn-primary"
+                                    style={{
+                                        background: '#d70018',
+                                        border: 'none',
+                                        padding: '10px 30px',
+                                        fontWeight: 'bold',
+                                    }}
+                                    onClick={() => setShowReviewForm(!showReviewForm)}
+                                >
+                                    Viết đánh giá
+                                </button>
+                            </div>
+
+                            <div className="rating-bars col-sm-7" style={{ paddingLeft: '30px' }}>
+                                {[5, 4, 3, 2, 1].map((star) => {
+                                    const count = starCounts[star];
+                                    const percent = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+                                    return (
+                                        <div
+                                            key={star}
+                                            className="rating-bar-row"
+                                            style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}
+                                        >
+                                            <span style={{ width: '20px', fontWeight: 'bold' }}>
+                                                {star}{' '}
+                                                <i
+                                                    className="fa fa-star"
+                                                    style={{ fontSize: '10px', color: '#ccc' }}
+                                                ></i>
+                                            </span>
+                                            <div
+                                                className="progress"
+                                                style={{
+                                                    flex: 1,
+                                                    height: '8px',
+                                                    margin: '0 10px',
+                                                    background: '#eee',
+                                                    borderRadius: '4px',
+                                                }}
+                                            >
+                                                <div
+                                                    className="progress-bar"
+                                                    style={{
+                                                        width: `${percent}%`,
+                                                        background: '#d70018',
+                                                        height: '100%',
+                                                        borderRadius: '4px',
+                                                    }}
+                                                ></div>
+                                            </div>
+                                            <span
+                                                style={{
+                                                    width: '70px',
+                                                    fontSize: '12px',
+                                                    color: '#666',
+                                                    textAlign: 'right',
+                                                }}
+                                            >
+                                                {count} đánh giá
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
 
                         {showReviewForm && (
-                            <div className="replay-box" style={{marginTop: '20px', border: '1px solid #eee', padding: '20px', borderRadius: '8px', background: '#f9f9f9'}}>
+                            <div
+                                className="replay-box"
+                                style={{
+                                    marginTop: '20px',
+                                    border: '1px solid #eee',
+                                    padding: '20px',
+                                    borderRadius: '8px',
+                                    background: '#f9f9f9',
+                                }}
+                            >
                                 <div className="row">
                                     <div className="col-sm-12">
-                                        <h2 style={{marginTop: 0}}>Viết đánh giá của bạn</h2>
+                                        <h2 style={{ marginTop: 0 }}>Viết đánh giá của bạn</h2>
                                         <div className="text-area">
                                             <div className="blank-arrow">
                                                 <label>Đánh giá:</label>
                                             </div>
-                                            
-                                            <div style={{fontSize: '24px', marginBottom: '15px', cursor: 'pointer'}}>
+
+                                            <div style={{ fontSize: '24px', marginBottom: '15px', cursor: 'pointer' }}>
                                                 {[...Array(5)].map((_, index) => {
                                                     const starValue = index + 1;
                                                     return (
-                                                        <i 
+                                                        <i
                                                             key={index}
                                                             className="fa fa-star"
-                                                            style={{ color: starValue <= (hoverRating || currentRating) ? '#FE980F' : '#ccc', marginRight: '5px' }}
+                                                            style={{
+                                                                color:
+                                                                    starValue <= (hoverRating || currentRating)
+                                                                        ? '#FE980F'
+                                                                        : '#ccc',
+                                                                marginRight: '5px',
+                                                            }}
                                                             onClick={() => setCurrentRating(starValue)}
                                                             onMouseEnter={() => setHoverRating(starValue)}
                                                             onMouseLeave={() => setHoverRating(0)}
                                                         ></i>
                                                     );
                                                 })}
-                                                <span style={{fontSize: '14px', color: '#666', marginLeft: '10px'}}>{currentRating ? '' : '(Chọn số sao)'}</span>
+                                                <span style={{ fontSize: '14px', color: '#666', marginLeft: '10px' }}>
+                                                    {currentRating ? '' : '(Chọn số sao)'}
+                                                </span>
                                             </div>
 
-                                            <textarea 
-                                                name="message" 
-                                                rows="4" 
+                                            <textarea
+                                                name="message"
+                                                rows="4"
                                                 placeholder="Mời bạn chia sẻ cảm nhận về sản phẩm..."
                                                 value={commentText}
                                                 onChange={(e) => setCommentText(e.target.value)}
-                                                style={{marginBottom: '15px', width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ddd'}}
+                                                style={{
+                                                    marginBottom: '15px',
+                                                    width: '100%',
+                                                    padding: '10px',
+                                                    borderRadius: '4px',
+                                                    border: '1px solid #ddd',
+                                                }}
                                             ></textarea>
-                                            
-                                            <button 
-                                                type="button" 
-                                                className="btn btn-primary" 
-                                                style={{background: '#d70018', border: 'none', padding: '10px 30px'}}
+
+                                            <button
+                                                type="button"
+                                                className="btn btn-primary"
+                                                style={{ background: '#d70018', border: 'none', padding: '10px 30px' }}
                                                 onClick={handleReviewSubmit}
                                             >
                                                 Gửi đánh giá
@@ -443,16 +519,25 @@ function ProductDetail() {
                             </div>
                         )}
 
-                        <div className="review-filters" style={{display: 'flex', alignItems: 'center', gap: '10px', margin: '20px 0', flexWrap: 'wrap'}}>
-                            <span style={{fontWeight: 'bold', fontSize: '16px'}}>Lọc đánh giá theo:</span>
-                            {['all', '5', '4', '3', '2', '1'].map(type => {
+                        <div
+                            className="review-filters"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                margin: '20px 0',
+                                flexWrap: 'wrap',
+                            }}
+                        >
+                            <span style={{ fontWeight: 'bold', fontSize: '16px' }}>Lọc đánh giá theo:</span>
+                            {['all', '5', '4', '3', '2', '1'].map((type) => {
                                 let label = '';
                                 if (type === 'all') label = 'Tất cả';
                                 else label = `${type} sao`;
-                                
+
                                 const isActive = filterType === type;
                                 return (
-                                    <button 
+                                    <button
                                         key={type}
                                         onClick={() => setFilterType(type)}
                                         style={{
@@ -462,55 +547,88 @@ function ProductDetail() {
                                             padding: '5px 15px',
                                             borderRadius: '20px',
                                             cursor: 'pointer',
-                                            outline: 'none'
+                                            outline: 'none',
                                         }}
                                     >
                                         {label}
                                     </button>
-                                )
+                                );
                             })}
                         </div>
-                        
+
                         <div className="response-area">
                             <ul className="media-list">
-                                {filteredReviews.length > 0 ? filteredReviews.map((review, index) => {
-                                    const date = new Date(review.createdAt).toLocaleDateString();
-                                    return (
-                                        <li className="media" key={index} style={{marginBottom: '20px', borderBottom: '1px solid #eee', paddingBottom: '20px'}}>
-                                            <a className="pull-left" href="#">
-                                                <div 
-                                                    style={{
-                                                        width: '50px', 
-                                                        height: '50px', 
-                                                        borderRadius: '50%', 
-                                                        background: '#ccc', 
-                                                        display: 'flex', 
-                                                        alignItems: 'center', 
-                                                        justifyContent: 'center',
-                                                        color: '#fff',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '20px',
-                                                        overflow: 'hidden'
-                                                    }}
-                                                >
-                                                    {review.avatar_user ? (
-                                                        <img src={`http://localhost:3001/${review.avatar_user}`} alt="" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-                                                    ) : (
-                                                        review.name_user ? review.name_user.charAt(0).toUpperCase() : 'U'
-                                                    )}
+                                {filteredReviews.length > 0 ? (
+                                    filteredReviews.map((review, index) => {
+                                        const date = new Date(review.createdAt).toLocaleDateString();
+                                        return (
+                                            <li
+                                                className="media"
+                                                key={index}
+                                                style={{
+                                                    marginBottom: '20px',
+                                                    borderBottom: '1px solid #eee',
+                                                    paddingBottom: '20px',
+                                                }}
+                                            >
+                                                <a className="pull-left" href="#">
+                                                    <div
+                                                        style={{
+                                                            width: '50px',
+                                                            height: '50px',
+                                                            borderRadius: '50%',
+                                                            background: '#ccc',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            color: '#fff',
+                                                            fontWeight: 'bold',
+                                                            fontSize: '20px',
+                                                            overflow: 'hidden',
+                                                        }}
+                                                    >
+                                                        {review.avatar_user ? (
+                                                            <img
+                                                                src={`http://localhost:3001/${review.avatar_user}`}
+                                                                alt=""
+                                                                style={{
+                                                                    width: '100%',
+                                                                    height: '100%',
+                                                                    objectFit: 'cover',
+                                                                }}
+                                                            />
+                                                        ) : review.name_user ? (
+                                                            review.name_user.charAt(0).toUpperCase()
+                                                        ) : (
+                                                            'U'
+                                                        )}
+                                                    </div>
+                                                </a>
+                                                <div className="media-body">
+                                                    <h4
+                                                        className="media-heading"
+                                                        style={{ fontSize: '16px', fontWeight: 'bold' }}
+                                                    >
+                                                        {review.name_user || 'Khách hàng'}
+                                                    </h4>
+                                                    <div style={{ margin: '5px 0' }}>
+                                                        {renderStars(review.rating)}
+                                                        <span
+                                                            style={{
+                                                                fontSize: '12px',
+                                                                color: '#999',
+                                                                marginLeft: '10px',
+                                                            }}
+                                                        >
+                                                            <i className="fa fa-clock-o"></i> {date}
+                                                        </span>
+                                                    </div>
+                                                    <p style={{ marginTop: '10px' }}>{review.comment}</p>
                                                 </div>
-                                            </a>
-                                            <div className="media-body">
-                                                <h4 className="media-heading" style={{fontSize: '16px', fontWeight: 'bold'}}>{review.name_user || 'Khách hàng'}</h4>
-                                                <div style={{margin: '5px 0'}}>
-                                                    {renderStars(review.rating)}
-                                                    <span style={{fontSize: '12px', color: '#999', marginLeft: '10px'}}><i className="fa fa-clock-o"></i> {date}</span>
-                                                </div>
-                                                <p style={{marginTop: '10px'}}>{review.comment}</p>
-                                            </div>
-                                        </li>
-                                    );
-                                }) : (
+                                            </li>
+                                        );
+                                    })
+                                ) : (
                                     <p>Chưa có đánh giá nào phù hợp bộ lọc.</p>
                                 )}
                             </ul>

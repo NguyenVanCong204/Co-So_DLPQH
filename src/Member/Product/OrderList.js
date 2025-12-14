@@ -177,7 +177,7 @@ function OrderList() {
         const orderCode = Object.keys(orderGroup)[0];
         const items = orderGroup[orderCode];
         const firstOrder = items[0];
-        const total = items.reduce((sum, item) => sum + item.price * item.qualty, 0);
+        const total = items.reduce((sum, item) => sum + item.price * (item.quality || item.qualty), 0);
 
         return (
             <div key={orderCode} className="order-card">
@@ -219,7 +219,7 @@ function OrderList() {
                                     <Link to={`/member/home/product/detail/${product._id}`}>
                                         <h4>{product.name}</h4>
                                     </Link>
-                                    <p>Số lượng: {item.qualty}</p>
+                                    <p>Số lượng: {item.quality || item.qualty}</p>
                                     <p>Giá: {formatPrice(item.price)}</p>
                                 </div>
                             </div>
@@ -311,7 +311,9 @@ function OrderList() {
 
     return (
         <div className="order-list-page">
-            <Breadcrumb items={[{ label: 'Tài Khoản', path: '/member/account/update' }, { label: 'Đơn hàng của tôi' }]} />
+            <Breadcrumb
+                items={[{ label: 'Tài Khoản', path: '/member/account/update' }, { label: 'Đơn hàng của tôi' }]}
+            />
             <h2>QUẢN LÝ ĐƠN HÀNG</h2>
 
             <div className="order-tabs">
@@ -385,8 +387,8 @@ function OrderList() {
                                                     <h4>{product.name}</h4>
                                                 </Link>
                                                 <p>Giá: {formatPrice(item.price)}</p>
-                                                <p>Số lượng: {item.qualty}</p>
-                                                <p>Tổng: {formatPrice(item.price * item.qualty)}</p>
+                                                <p>Số lượng: {item.quality || item.qualty}</p>
+                                                <p>Tổng: {formatPrice(item.price * (item.quality || item.qualty))}</p>
                                             </div>
                                         </div>
                                     );
