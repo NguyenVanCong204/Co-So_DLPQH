@@ -19,6 +19,12 @@ const Sidebar = () => {
         <div className={cx('sidebar')}>
             <ul className={cx('sidebar-menu')}>
                 <li>
+                    <Link to="/admin/dashboard">
+                        <FaUser className={cx('icon')} />
+                        <span>Dashboard</span>
+                    </Link>
+                </li>
+                <li>
                     <Link to="/admin/order-list">
                         <FaShippingFast className={cx('icon')} />
                         <span>Đơn hàng</span>
@@ -29,12 +35,6 @@ const Sidebar = () => {
                         <FaRegListAlt className={cx('icon')} />
                         <span>Sản phẩm</span>
                     </a>
-                </li>
-                <li>
-                    <Link to="/dashboard/update/admin">
-                        <FaUser className={cx('icon')} />
-                        <span>Người dùng</span>
-                    </Link>
                 </li>
                 <li>
                     <Link to="/admin/category">

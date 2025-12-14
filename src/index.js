@@ -26,6 +26,7 @@ import UpdateProduct from './Admin/Pages/Product/UpdateProduct/UpdateProduct';
 import TrashProduct from './Admin/Pages/Product/TrashProduct/TrashProduct';
 import Category from './Admin/Pages/Category/Category';
 import Brand from './Admin/Pages/Brand/Brand';
+import Dashboard from './Admin/Pages/Dashboard/Dashboard';
 import MemberProtectedRoute from './component/Member/MemberProtectedRoute';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -44,6 +45,7 @@ root.render(
                     <Routes>
                         <Route path="/admin/register" element={<RegisterTest />} />
                         <Route path="/admin/login" element={<LoginTest />} />
+                        <Route path="/admin/dashboard" element={<Dashboard />} />
                         <Route path="/admin/order-list" element={<OrderListAdmin />} />
                         <Route path="/admin/product-list" element={<ProductListAdmin />} />
                         <Route path="/admin/product/create-product" element={<CreateProduct />} />
