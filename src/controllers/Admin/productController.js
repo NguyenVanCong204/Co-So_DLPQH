@@ -319,23 +319,52 @@ export const getDashboardOverview = async (req, res) => {
         const { range } = req.query;
         const { startDate, endDate } = GetDateRange(range);
 
-        const matchCondition = {
-            deleted: false,
-            createdAt: { $gte: startDate, $lte: endDate },
-        };
-
         const result = await History.aggregate([
-            { $match: matchCondition },
-
+            {
+                $match: {
+                    deleted: false,
+                    createdAt: { $gte: startDate, $lte: endDate },
+                },
+            },
             {
                 $group: {
                     _id: null,
-                    totalRevenue: { $sum: { $multiply: ['$price', '$quantity'] } },
+
+                    totalRevenue: {
+                        $sum: {
+                            $cond: [{ $ne: ['$status', 3] }, { $multiply: ['$price', '$quantity'] }, 0],
+                        },
+                    },
+
                     totalOrders: { $sum: 1 },
-                    totalQuantity: { $sum: '$quantity' },
+
+                    totalQuantity: {
+                        $sum: {
+                            $cond: [{ $ne: ['$status', 3] }, '$quantity', 0],
+                        },
+                    },
+
                     canceledOrders: {
                         $sum: {
+                            $cond: [{ $eq: ['$status', 3] }, 1, 0],
+                        },
+                    },
+
+                    pendingOrders: {
+                        $sum: {
                             $cond: [{ $eq: ['$status', 0] }, 1, 0],
+                        },
+                    },
+
+                    shippingOrders: {
+                        $sum: {
+                            $cond: [{ $eq: ['$status', 1] }, 1, 0],
+                        },
+                    },
+
+                    successOrders: {
+                        $sum: {
+                            $cond: [{ $eq: ['$status', 2] }, 1, 0],
                         },
                     },
                 },
@@ -347,11 +376,12 @@ export const getDashboardOverview = async (req, res) => {
             totalOrders: 0,
             totalQuantity: 0,
             canceledOrders: 0,
+            pendingOrders: 0,
+            shippingOrders: 0,
+            successOrders: 0,
         };
 
-        return res.json({
-            overview,
-        });
+        return res.json({ overview });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
@@ -367,7 +397,7 @@ export const revenueChart = async (req, res) => {
             {
                 $match: {
                     deleted: false,
-                    status: 2,
+                    status: { $in: [0, 1, 2] },
                     createdAt: { $gte: startDate, $lte: endDate },
                 },
             },

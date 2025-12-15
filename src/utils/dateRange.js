@@ -1,38 +1,27 @@
 function GetDateRange(range) {
-    const now = new Date();
-    let startDate;
+    const endDate = new Date();
+    endDate.setHours(23, 59, 59, 999);
+
+    let startDate = new Date();
 
     switch (range) {
         case 'yesterday':
-            startDate = new Date();
-            startDate.setDate(now.getDate() - 1);
-            startDate.setHours(0, 0, 0, 0);
-            now.setHours(23, 59, 59, 999);
+            startDate.setDate(startDate.getDate() - 1);
             break;
-
         case '7days':
-            startDate = new Date();
-            startDate.setDate(now.getDate() - 6);
+            startDate.setDate(startDate.getDate() - 6);
             break;
-
         case '15days':
-            startDate = new Date();
-            startDate.setDate(now.getDate() - 14);
+            startDate.setDate(startDate.getDate() - 14);
             break;
-
         case '30days':
-            startDate = new Date();
-            startDate.setDate(now.getDate() - 29);
+            startDate.setDate(startDate.getDate() - 29);
             break;
-
         default:
-            startDate = new Date();
-            startDate.setHours(0, 0, 0, 0);
-            now.setHours(23, 59, 59, 999);
             break;
     }
 
-    return { startDate, endDate: now };
+    startDate.setHours(0, 0, 0, 0);
+    return { startDate, endDate };
 }
-
 export default GetDateRange;
