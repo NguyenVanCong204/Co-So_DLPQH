@@ -95,9 +95,10 @@ function Dashboard() {
                 </div>
             </div>
             <div className={cx('data-overview')}>
+                <span className={cx('overview-title')}>Chỉ số</span>
                 <div className={cx('data-overview-list')}>
                     <div className={cx('data-overview-item')}>
-                        <span className={cx('title')}>Doanh thu</span>
+                        <span className={cx('title')}>Doanh thu ước tính</span>
                         <span className={cx('content')}>{(overview.totalRevenue || 0).toLocaleString('vi-VN')}đ</span>
                     </div>
                     <div className={cx('data-overview-item')}>
@@ -109,10 +110,23 @@ function Dashboard() {
                         <span className={cx('content')}>{overview.totalQuantity}</span>
                     </div>
                     <div className={cx('data-overview-item')}>
+                        <span className={cx('title')}>Chờ xác nhận</span>
+                        <span className={cx('content')}>{overview.pendingOrders}</span>
+                    </div>
+                    <div className={cx('data-overview-item')}>
+                        <span className={cx('title')}>Chờ giao hàng</span>
+                        <span className={cx('content')}>{overview.shippingOrders}</span>
+                    </div>
+                    <div className={cx('data-overview-item')}>
+                        <span className={cx('title')}>Đã hoàn thành</span>
+                        <span className={cx('content')}>{overview.successOrders}</span>
+                    </div>
+                    <div className={cx('data-overview-item')}>
                         <span className={cx('title')}>Đơn đã hủy</span>
                         <span className={cx('content')}>{overview.canceledOrders}</span>
                     </div>
                 </div>
+                <span className={cx('overview-title-dashboard')}>Biểu đồ doanh thu</span>
                 <RevenueLineChart data={chartData} />
             </div>
         </div>

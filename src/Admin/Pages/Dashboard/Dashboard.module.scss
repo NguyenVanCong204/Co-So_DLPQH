@@ -59,9 +59,22 @@
     background-color: #fff;
     box-shadow: 0 1px 4px 0 #4a4a4e29;
 }
+.overview-title {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 500;
+}
+.overview-title-dashboard {
+    display: block;
+    margin-top: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
 .data-overview-list {
     display: flex;
     gap: 12px;
+    flex-wrap: wrap;
 }
 .data-overview-item {
     width: calc(25% - 12px);

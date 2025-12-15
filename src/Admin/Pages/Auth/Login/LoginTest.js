@@ -49,7 +49,7 @@ function LoginTest() {
                     localStorage.setItem('adminId', res.data.user._id);
                     localStorage.setItem('adminToken', res.data.token);
                     localStorage.setItem('adminTokenRefresh', res.data.tokenRefresh);
-                    navigate('/admin/product-list');
+                    navigate('/admin/dashboard');
                     toast.success('Đăng nhập thành công');
                 })
                 .catch((error) => {
