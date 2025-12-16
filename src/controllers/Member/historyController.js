@@ -78,7 +78,6 @@ export const createHistory = async (req, res) => {
             });
         }
 
-        // Atomic Stock Deduction
         try {
             for (const product of products) {
                 const productId = product._id?.toString() || product.id?.toString();
@@ -86,14 +85,13 @@ export const createHistory = async (req, res) => {
 
                 if (!qty || qty <= 0) continue;
 
-                // Atomic update: Check condition AND update in one step
                 const updatedProduct = await Product.findOneAndUpdate(
                     {
                         _id: product._id,
-                        quantity: { $gte: qty }, // Ensure enough stock exists
+                        quantity: { $gte: qty },
                     },
                     {
-                        $inc: { quantity: -qty }, // Deduct stock
+                        $inc: { quantity: -qty },
                     },
                     { new: true },
                 );
@@ -107,7 +105,6 @@ export const createHistory = async (req, res) => {
         } catch (stockError) {
             console.error('❌ Stock deduction error:', stockError);
 
-            // Rollback immediately if deduction loop fails
             for (const item of reservedItems) {
                 await Product.findByIdAndUpdate(item.id, { $inc: { quantity: item.qty } });
             }
@@ -121,9 +118,6 @@ export const createHistory = async (req, res) => {
 
         let discountMultiplier = 1;
         if (voucherCode === 'NEWUSER') {
-            // Check if user has any previous orders (excluding cancelled ones if desired, but simplified here to any history)
-            // Ideally we check if they have any non-cancelled orders.
-            // Status 3 is cancelled.
             const existingOrder = await History.findOne({ id_user: user._id, status: { $ne: 3 } });
 
             if (!existingOrder) {
@@ -186,7 +180,6 @@ export const createHistory = async (req, res) => {
         console.error('❌ Lỗi khi tạo đơn hàng:');
         console.error('Error message:', error.message);
 
-        // Rollback stock if reserved
         if (reservedItems.length > 0) {
             console.log('🔄 Rolling back stock reservation...');
             for (const item of reservedItems) {
