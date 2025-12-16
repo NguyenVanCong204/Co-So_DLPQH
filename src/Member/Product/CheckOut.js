@@ -43,8 +43,7 @@ function CheckOut() {
     const [paymentMethod, setPaymentMethod] = useState('cod');
     const [isLoading, setIsLoading] = useState(false);
 
-    // Voucher States
-    const [hasPurchased, setHasPurchased] = useState(true); // Assume true (not eligible) by default for safety
+    const [hasPurchased, setHasPurchased] = useState(true);
     const [voucherApplied, setVoucherApplied] = useState(false);
     const [showVoucherList, setShowVoucherList] = useState(false);
 
@@ -64,19 +63,17 @@ function CheckOut() {
         address: '',
     });
 
-    // Check availability of voucher (purchase history)
     useEffect(() => {
         if (user && user._id) {
             apiMember
                 .get(`/order/user/${user._id}`, config)
                 .then((res) => {
                     const orders = Array.isArray(res.data.data) ? res.data.data : [];
-                    // Check if user has any non-cancelled order (Status 3 is Cancelled)
                     const validOrders = orders.filter((o) => o.status !== 3);
                     if (validOrders.length === 0) {
-                        setHasPurchased(false); // New user (or only cancelled orders)
+                        setHasPurchased(false);
                     } else {
-                        setHasPurchased(true); // Already purchased
+                        setHasPurchased(true);
                     }
                 })
                 .catch((err) => console.error('Error checking order history:', err));
@@ -85,7 +82,6 @@ function CheckOut() {
 
     useEffect(() => {
         const fetchCart = async () => {
-            // ... existing code ...
             try {
                 const res = await apiMember.post('/cart', cart);
                 const products = Array.isArray(res.data.data) ? res.data.data : [];
@@ -274,11 +270,9 @@ function CheckOut() {
         });
     };
 
-    // Calculate totals
     const ecoTax = inputProducts.length > 0 ? 2 : 0;
     const discountAmount = voucherApplied ? AllQuantityCart * 0.05 : 0;
     const finalTotalVND = AllQuantityCart - discountAmount + ecoTax;
-    // Calculate USD for PayPal (memoized or just calculated)
     const totalUSD = (finalTotalVND / VND_TO_USD_RATE).toFixed(2);
 
     const createOrder = (data, actions) => {
