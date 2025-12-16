@@ -1,7 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import styles from './Sidebar.module.scss';
 import classNames from 'classnames/bind';
-import { FaUser, FaGlobeAsia, FaSignOutAlt, FaRegListAlt, FaShippingFast } from 'react-icons/fa';
+import { FaGlobeAsia, FaSignOutAlt, FaRegListAlt, FaShippingFast } from 'react-icons/fa';
+import { FaMoneyBillTrendUp } from 'react-icons/fa6';
 import { TbCategoryFilled } from 'react-icons/tb';
 import { toast } from 'react-toastify';
 
@@ -18,37 +19,52 @@ const Sidebar = () => {
     return (
         <div className={cx('sidebar')}>
             <ul className={cx('sidebar-menu')}>
-                <li>
-                    <Link to="/admin/dashboard">
-                        <FaUser className={cx('icon')} />
+                <li className={cx('sidebar-menu-item')}>
+                    <NavLink
+                        to="/admin/dashboard"
+                        className={({ isActive }) => cx('sidebar-menu-link', { active: isActive })}
+                    >
+                        <FaMoneyBillTrendUp className={cx('icon')} />
                         <span>Dashboard</span>
-                    </Link>
+                    </NavLink>
                 </li>
-                <li>
-                    <Link to="/admin/order-list">
+                <li className={cx('sidebar-menu-item')}>
+                    <NavLink
+                        to="/admin/order-list"
+                        className={({ isActive }) => cx('sidebar-menu-link', { active: isActive })}
+                    >
                         <FaShippingFast className={cx('icon')} />
                         <span>Đơn hàng</span>
-                    </Link>
+                    </NavLink>
                 </li>
-                <li>
-                    <a href="/admin/product-list">
+                <li className={cx('sidebar-menu-item')}>
+                    <NavLink
+                        to="/admin/product-list"
+                        className={({ isActive }) => cx('sidebar-menu-link', { active: isActive })}
+                    >
                         <FaRegListAlt className={cx('icon')} />
                         <span>Sản phẩm</span>
-                    </a>
+                    </NavLink>
                 </li>
-                <li>
-                    <Link to="/admin/category">
+                <li className={cx('sidebar-menu-item')}>
+                    <NavLink
+                        to="/admin/category"
+                        className={({ isActive }) => cx('sidebar-menu-link', { active: isActive })}
+                    >
                         <TbCategoryFilled className={cx('icon')} />
                         <span>Danh mục</span>
-                    </Link>
+                    </NavLink>
                 </li>
-                <li>
-                    <Link to="/admin/brand">
+                <li className={cx('sidebar-menu-item')}>
+                    <NavLink
+                        to="/admin/brand"
+                        className={({ isActive }) => cx('sidebar-menu-link', { active: isActive })}
+                    >
                         <FaGlobeAsia className={cx('icon')} />
                         <span>Thương hiệu</span>
-                    </Link>
+                    </NavLink>
                 </li>
-                <li>
+                <li className={cx('sidebar-menu-item')}>
                     <a onClick={() => Logout()}>
                         <FaSignOutAlt className={cx('icon')} />
                         <span>Đăng xuất</span>
