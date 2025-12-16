@@ -306,7 +306,7 @@ function ProductDetail() {
                         { label: 'Sản Phẩm', path: '/member/home' },
                         ...(input.id_category
                             ? [{ label: input.id_category.category, path: `/member/category/${input.id_category._id}` }]
-                            : []), // Assuming populate returns .category or .name
+                            : []),
                         { label: input.name },
                     ]}
                 />

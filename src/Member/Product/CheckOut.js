@@ -43,6 +43,11 @@ function CheckOut() {
     const [paymentMethod, setPaymentMethod] = useState('cod');
     const [isLoading, setIsLoading] = useState(false);
 
+    // Voucher States
+    const [hasPurchased, setHasPurchased] = useState(true); // Assume true (not eligible) by default for safety
+    const [voucherApplied, setVoucherApplied] = useState(false);
+    const [showVoucherList, setShowVoucherList] = useState(false);
+
     const [user] = useState(() => {
         try {
             return JSON.parse(localStorage.getItem('user'));
@@ -59,8 +64,28 @@ function CheckOut() {
         address: '',
     });
 
+    // Check availability of voucher (purchase history)
+    useEffect(() => {
+        if (user && user._id) {
+            apiMember
+                .get(`/order/user/${user._id}`, config)
+                .then((res) => {
+                    const orders = Array.isArray(res.data.data) ? res.data.data : [];
+                    // Check if user has any non-cancelled order (Status 3 is Cancelled)
+                    const validOrders = orders.filter((o) => o.status !== 3);
+                    if (validOrders.length === 0) {
+                        setHasPurchased(false); // New user (or only cancelled orders)
+                    } else {
+                        setHasPurchased(true); // Already purchased
+                    }
+                })
+                .catch((err) => console.error('Error checking order history:', err));
+        }
+    }, [user]);
+
     useEffect(() => {
         const fetchCart = async () => {
+            // ... existing code ...
             try {
                 const res = await apiMember.post('/cart', cart);
                 const products = Array.isArray(res.data.data) ? res.data.data : [];
@@ -155,6 +180,7 @@ function CheckOut() {
             user: { ...user, ...formData, note },
             cart,
             paymentMethod: paymentMethod,
+            voucherCode: voucherApplied ? 'NEWUSER' : null,
         };
 
         setIsLoading(true);
@@ -248,14 +274,18 @@ function CheckOut() {
         });
     };
 
+    // Calculate totals
+    const ecoTax = inputProducts.length > 0 ? 2 : 0;
+    const discountAmount = voucherApplied ? AllQuantityCart * 0.05 : 0;
+    const finalTotalVND = AllQuantityCart - discountAmount + ecoTax;
+    // Calculate USD for PayPal (memoized or just calculated)
+    const totalUSD = (finalTotalVND / VND_TO_USD_RATE).toFixed(2);
+
     const createOrder = (data, actions) => {
         if (!formData.name || !formData.address || !formData.phone || !formData.email) {
             toast.error('Vui lòng điền đầy đủ thông tin mua hàng trước.');
             return Promise.reject('Thiếu thông tin');
         }
-        const ecoTax = inputProducts.length > 0 ? 2 : 0;
-        const finalTotal = AllQuantityCart + ecoTax;
-        const totalUSD = (finalTotal / VND_TO_USD_RATE).toFixed(2);
 
         if (parseFloat(totalUSD) <= 0) {
             toast.error('Không thể thanh toán PayPal cho đơn hàng 0đ.');
@@ -388,6 +418,48 @@ function CheckOut() {
                             <div className="order-summary-box">
                                 <h3>ĐƠN HÀNG ({inputProducts.length} sản phẩm)</h3>
                                 <div className="order-product-list">{RenderOrderData()}</div>
+
+                                {/* Voucher Section */}
+                                <div
+                                    className="voucher-section"
+                                    style={{
+                                        padding: '10px 0',
+                                        borderTop: '1px solid #eee',
+                                        borderBottom: '1px solid #eee',
+                                    }}
+                                >
+                                    <div
+                                        className="voucher-header"
+                                        onClick={() => setShowVoucherList(!showVoucherList)}
+                                    >
+                                        <i className="fas fa-ticket-alt"></i> 1 voucher available
+                                    </div>
+                                    {showVoucherList && (
+                                        <div className="voucher-list">
+                                            <div
+                                                className={`voucher-item ${hasPurchased ? 'disabled' : ''} ${
+                                                    voucherApplied ? 'active' : ''
+                                                }`}
+                                                onClick={() => !hasPurchased && setVoucherApplied(!voucherApplied)}
+                                            >
+                                                <div className="voucher-info">
+                                                    <span className="voucher-name">(NEWUSER) Dành cho người mới.</span>
+                                                    <span className="voucher-desc">Giảm 5% cho đơn hàng đầu tiên.</span>
+                                                </div>
+                                                <div className="voucher-action">
+                                                    {hasPurchased ? (
+                                                        <span className="used-status">Đã dùng</span>
+                                                    ) : voucherApplied ? (
+                                                        <i className="fas fa-check"></i>
+                                                    ) : (
+                                                        <span className="apply-text">Áp dụng</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div className="order-total-summary">
                                     <ul>
                                         <li>
@@ -396,11 +468,13 @@ function CheckOut() {
                                         <li>
                                             Eco Tax <span>{formatPrice(inputProducts.length > 0 ? 2 : 0)}</span>
                                         </li>
+                                        {voucherApplied && (
+                                            <li className="discount-item">
+                                                Voucher (NEWUSER) <span>- 5%</span>
+                                            </li>
+                                        )}
                                         <li className="total">
-                                            Tổng cộng{' '}
-                                            <span>
-                                                {formatPrice(AllQuantityCart + (inputProducts.length > 0 ? 2 : 0))}
-                                            </span>
+                                            Tổng cộng <span>{formatPrice(finalTotalVND)}</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -416,7 +490,7 @@ function CheckOut() {
                                 ) : AllQuantityCart > 0 ? (
                                     <div style={{ padding: '10px' }}>
                                         <PayPalButtons
-                                            key={AllQuantityCart}
+                                            key={`${finalTotalVND}-${voucherApplied}`}
                                             style={{ layout: 'vertical' }}
                                             createOrder={createOrder}
                                             onApprove={onApprove}

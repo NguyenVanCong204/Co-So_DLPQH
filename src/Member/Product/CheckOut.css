@@ -253,3 +253,77 @@
         transform: rotate(360deg);
     }
 }
+
+/* Voucher Section */
+.voucher-section {
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.voucher-header {
+    cursor: pointer;
+    color: rgb(252, 91, 33);
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+.voucher-list {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 5px;
+}
+
+.voucher-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    background: #fff;
+    border: 1px solid #ddd;
+    transition: all 0.2s ease;
+}
+
+.voucher-item.active {
+    border: 1px solid #28a745;
+}
+
+.voucher-item.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.voucher-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.voucher-name {
+    display: block;
+    font-weight: bold;
+}
+
+.voucher-desc {
+    font-size: 12px;
+}
+
+.voucher-action i {
+    color: #28a745;
+}
+
+.voucher-action span.used-status {
+    font-size: 12px;
+    color: #666;
+}
+
+.voucher-action span.apply-text {
+    font-size: 12px;
+    color: #007bff;
+}
+
+.discount-item {
+    color: #000dff !important;
+}
