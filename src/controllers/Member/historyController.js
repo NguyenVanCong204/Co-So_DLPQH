@@ -8,7 +8,7 @@ export const createHistory = async (req, res) => {
     try {
         console.log('📦 Creating order...');
         let reservedItems = [];
-        const { user, cart } = req.body;
+        const { user, cart, voucherCode } = req.body;
 
         if (!user || !user._id) {
             console.error('❌ Missing user data');
@@ -119,12 +119,27 @@ export const createHistory = async (req, res) => {
 
         console.log('✅ Product quantities updated');
 
+        let discountMultiplier = 1;
+        if (voucherCode === 'NEWUSER') {
+            // Check if user has any previous orders (excluding cancelled ones if desired, but simplified here to any history)
+            // Ideally we check if they have any non-cancelled orders.
+            // Status 3 is cancelled.
+            const existingOrder = await History.findOne({ id_user: user._id, status: { $ne: 3 } });
+
+            if (!existingOrder) {
+                console.log('🎟️ Applying NEW USER voucher (5% off)');
+                discountMultiplier = 0.95;
+            } else {
+                console.log('⚠️ Voucher NEWUSER rejected: User already has orders');
+            }
+        }
+
         const total = products.reduce((sum, p) => {
             const productId = p._id?.toString() || p.id?.toString();
             const qty = parseInt(cart[productId] || cart[p._id] || cart[p.id] || 0);
             const is_on_sale = p.sale > 0;
             const price = is_on_sale ? p.price * (1 - p.sale / 100) : p.price;
-            return sum + price * qty;
+            return sum + price * discountMultiplier * qty;
         }, 0);
 
         const ecoTax = products.length > 0 ? 2 : 0;
@@ -140,7 +155,7 @@ export const createHistory = async (req, res) => {
             const productId = value._id?.toString() || value.id?.toString();
             const qty = parseInt(cart[productId] || cart[value._id] || cart[value.id] || 0);
             const is_on_sale = value.sale > 0;
-            const finalPrice = is_on_sale ? value.price * (1 - value.sale / 100) : value.price;
+            const finalPrice = (is_on_sale ? value.price * (1 - value.sale / 100) : value.price) * discountMultiplier;
 
             return History.createHistory({
                 id_product: value._id,
