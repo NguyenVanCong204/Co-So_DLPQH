@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Search, resetCartSlider } from '../../features/cart/CartSlider';
 import { resetCartRedux } from '../../features/cart/Cart';
 import './Header.css';
-import apiAdmin from '../../API/apiAdmin';
 import apiMember from '../../API/apiMember';
 import MemberCartContext from '../../Context/MemberCartContext';
 
@@ -253,9 +252,6 @@ function Header() {
                                             <Link to={`/member/category/${category._id}`}>{category.name}</Link>
                                         </li>
                                     ))}
-                                    <li>
-                                        <Link to="/member/blog/list">Tin tức</Link>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
