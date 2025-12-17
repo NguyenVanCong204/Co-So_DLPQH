@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import Product from './Product.js';
 import User from './User.js';
 import mongooseDelete from 'mongoose-delete';
 const historySchema = new mongoose.Schema(

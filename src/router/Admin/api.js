@@ -2,14 +2,6 @@ import express from 'express';
 import { getUser, updateUser, upload } from '../../controllers/Admin/userController.js';
 import { createCountry, deleteCountry, updateCountry } from '../../controllers/Admin/countryController.js';
 import {
-    createBlog,
-    upload as uploadBlog,
-    getBlog,
-    getBlogbyId,
-    updateBlog,
-    deleteBlog,
-} from '../../controllers/Admin/blogController.js';
-import {
     getProduct,
     createProduct,
     upload as uploadProduct,
@@ -69,11 +61,5 @@ router.get('/user/:id', getUser);
 router.post('/country', createCountry);
 router.delete('/country/:id', deleteCountry);
 router.put('/country/:id', updateCountry);
-
-router.post('/blog', uploadBlog, createBlog);
-router.get('/blog', getBlog);
-router.get('/blog/:id', getBlogbyId);
-router.put('/blog/:id', uploadBlog, updateBlog);
-router.delete('/blog/:id', deleteBlog);
 
 export default router;
