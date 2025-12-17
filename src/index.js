@@ -8,8 +8,6 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import RegisterMember from './Member/User/Register';
 import LoginMember from './Member/User/Login';
 import UpdateMember from './Member/User/Update';
-import ListBlogMember from './Member/Blog/ListBlog';
-import BlogDetail from './Member/Blog/BlogDetail';
 import ProductAdd from './Member/Product/ProductAdd';
 import OrderList from './Member/Product/OrderList';
 import ProductUpdate from './Member/Product/ProductUpdate';
@@ -56,8 +54,6 @@ root.render(
                         <Route path="/member/register" element={<RegisterMember />} />
                         <Route index path="/" element={<LoginMember />} />
                         <Route path="/member/account/update" element={<UpdateMember />} />
-                        <Route path="/member/blog/list" element={<ListBlogMember />} />
-                        <Route path="/member/blog/detail/:id" element={<BlogDetail />} />
                         <Route path="/member/account/product/add" element={<ProductAdd />} />
                         <Route path="/member/account/product/list" element={<OrderList />} />
                         <Route path="/member/account/product/update/:id" element={<ProductUpdate />} />

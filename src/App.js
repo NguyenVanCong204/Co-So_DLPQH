@@ -15,7 +15,7 @@ function App(props) {
     const isCheckoutPage = path.includes('/checkout');
     const isProductDetail = path.includes('/product/detail');
     const isCartPage = path.includes('/cart');
-    const isLoginPage = path.includes('/login') || path === '/';
+    const isLoginPage = path.includes('/login') || path === '/' || path.includes('/register');
     const isMyProduct = path.includes('/account');
     const isAdminLogin = path === '/admin/login';
     const isAdminRegister = path === '/admin/register';
