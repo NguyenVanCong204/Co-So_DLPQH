@@ -126,10 +126,20 @@
     text-decoration: none;
     font-size: 16px;
     transition: background 0.2s, transform 0.15s;
+    padding: 0 !important;
 }
 .footer-top .social-icons li a:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
+}
+
+.footer-top .social-icons li a i {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    display: inline-block !important;
+    text-align: center !important;
 }
 
 .footer-bottom {

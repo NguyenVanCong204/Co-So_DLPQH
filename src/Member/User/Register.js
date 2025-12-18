@@ -28,9 +28,9 @@ function RegisterMember() {
     let [err, SetErr] = useState({});
 
     const [verifyMode, setVerifyMode] = useState(false);
-    const [verificationCode, setVerificationCode] = useState("");
+    const [verificationCode, setVerificationCode] = useState('');
     const [cooldown, setCooldown] = useState(0);
-    const [tempEmail, setTempEmail] = useState("");
+    const [tempEmail, setTempEmail] = useState('');
 
     useEffect(() => {
         let timer;
@@ -148,7 +148,7 @@ function RegisterMember() {
                             error.response.data?.message ||
                             error.message;
                         console.log(error);
-                        
+
                         if (typeof message === 'object' && message !== null) {
                             const keys = Object.keys(message);
                             if (keys.length > 0) {
@@ -169,17 +169,17 @@ function RegisterMember() {
     const handleVerify = (e) => {
         e.preventDefault();
         if (!verificationCode) {
-            toast.warn("Vui lòng nhập mã xác thực!");
+            toast.warn('Vui lòng nhập mã xác thực!');
             return;
         }
 
         auth.post('/verify', { email: tempEmail, code: verificationCode })
             .then((res) => {
                 toast.success('Đăng ký thành công!');
-                navigate('/member/login'); 
+                navigate('/');
             })
-            .catch(err => {
-                toast.error(err.response?.data?.error || "Mã xác thực không đúng!");
+            .catch((err) => {
+                toast.error(err.response?.data?.error || 'Mã xác thực không đúng!');
             });
     };
 
@@ -189,44 +189,46 @@ function RegisterMember() {
 
         auth.post('/resend', { email: tempEmail })
             .then(() => {
-                toast.success("Mã mới đã được gửi!");
+                toast.success('Mã mới đã được gửi!');
                 setCooldown(60);
             })
-            .catch(err => toast.error(err.response?.data?.error || "Lỗi khi gửi lại mã"));
+            .catch((err) => toast.error(err.response?.data?.error || 'Lỗi khi gửi lại mã'));
     };
 
     if (verifyMode) {
         return (
             <div className="register">
                 <h2>XÁC THỰC TÀI KHOẢN</h2>
-                <div style={{textAlign: 'center', marginBottom: '20px'}}>
-                    <p>Mã xác thực 6 số đã được gửi đến email: <b>{tempEmail}</b></p>
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <p>
+                        Mã xác thực 6 số đã được gửi đến email: <b>{tempEmail}</b>
+                    </p>
                     <p>Vui lòng kiểm tra hộp thư (cả mục Spam) và nhập mã bên dưới.</p>
                 </div>
                 <form>
                     <label>Mã xác thực</label>
-                    <input 
-                        type="text" 
-                        placeholder="Nhập 6 số..." 
+                    <input
+                        type="text"
+                        placeholder="Nhập 6 số..."
                         value={verificationCode}
                         onChange={(e) => setVerificationCode(e.target.value)}
                         style={{ textAlign: 'center', letterSpacing: '5px', fontSize: '20px' }}
                     />
-                    
+
                     <button className="register_member" onClick={handleVerify}>
                         Xác nhận
                     </button>
 
-                    <div style={{marginTop: '15px', textAlign: 'center'}}>
-                        <button 
-                            onClick={handleResend} 
+                    <div style={{ marginTop: '15px', textAlign: 'center' }}>
+                        <button
+                            onClick={handleResend}
                             disabled={cooldown > 0}
-                            style={{ 
-                                background: 'transparent', 
-                                border: 'none', 
-                                color: cooldown > 0 ? '#999' : '#FE980F', 
+                            style={{
+                                background: 'transparent',
+                                border: 'none',
+                                color: cooldown > 0 ? '#999' : '#FE980F',
                                 cursor: cooldown > 0 ? 'default' : 'pointer',
-                                textDecoration: 'underline'
+                                textDecoration: 'underline',
                             }}
                         >
                             {cooldown > 0 ? `Gửi lại mã (${cooldown}s)` : 'Gửi lại mã xác thực'}
@@ -234,7 +236,7 @@ function RegisterMember() {
                     </div>
                 </form>
             </div>
-        )
+        );
     }
     return (
         <div className="register">

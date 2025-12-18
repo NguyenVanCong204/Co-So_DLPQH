@@ -3,8 +3,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { Search, resetCartSlider } from '../../features/cart/CartSlider';
-import { resetCartRedux } from '../../features/cart/Cart';
+import { setSearch, resetCart } from '../../features/cart/Cart';
 import './Header.css';
 import apiMember from '../../API/apiMember';
 import MemberCartContext from '../../Context/MemberCartContext';
@@ -28,7 +27,7 @@ function Header() {
             });
     }, []);
 
-    const totalCart = useSelector((state) => state.cart.value);
+    const totalCart = useSelector((state) => state.cart.total);
     const [keyword, setKeyword] = useState('');
     const [suggestions, setSuggestions] = useState([]);
 
@@ -61,14 +60,14 @@ function Header() {
 
     function handleSearchSubmit(e) {
         e.preventDefault();
-        dispath(Search(keyword));
+        dispath(setSearch(keyword));
         setSuggestions([]);
     }
 
     function handleSuggestionClick(product) {
         setKeyword('');
         setSuggestions([]);
-        dispath(Search(''));
+        dispath(setSearch(''));
         navigate(`/member/home/product/detail/${product._id}`);
     }
 
@@ -101,9 +100,7 @@ function Header() {
         localStorage.removeItem('user');
         localStorage.removeItem('IdUser');
         SetCart && SetCart(0);
-        dispath(resetCartRedux());
-        dispath(resetCartSlider());
-        dispath(Search(''));
+        dispath(resetCart());
         setUser(null);
         navigate('/');
         toast.success('Logout thành công');

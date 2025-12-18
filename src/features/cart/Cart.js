@@ -1,47 +1,89 @@
 import { createSlice } from '@reduxjs/toolkit';
-import MemberCartContext from '../../Context/MemberCartContext';
 
-const cartStorage = JSON.parse(localStorage.getItem('cart')) || {};
-const Cart = createSlice({
-    name: 'cartredux',
-    initialState: cartStorage,
+const calculateTotal = (items) => Object.values(items).reduce((sum, qty) => sum + (Number(qty) || 0), 0);
+
+const cartItems = JSON.parse(localStorage.getItem('cart')) || {};
+const cartTotal = calculateTotal(cartItems);
+
+const cartSlice = createSlice({
+    name: 'cart',
+    initialState: {
+        items: cartItems,
+        total: cartTotal,
+        search: '',
+    },
     reducers: {
-        removeFromCart: (state, action) => {
-            const id = action.payload;
-            delete state[id];
-            localStorage.setItem('cart', JSON.stringify(state));
+        setCartDetails: (state, action) => {
+            state.items = action.payload;
+            state.total = calculateTotal(state.items);
+            localStorage.setItem('cart', JSON.stringify(state.items));
+            localStorage.setItem('total', JSON.stringify(state.total));
         },
 
         addQuantityCart: (state, action) => {
             const id = action.payload;
-            if (state[id] != 0) {
-                state[id] += 1;
-            } else {
-                state[id] = 1;
-            }
-            localStorage.setItem('cart', JSON.stringify(state));
+            state.items[id] = (state.items[id] || 0) + 1;
+            state.total = calculateTotal(state.items);
+            localStorage.setItem('cart', JSON.stringify(state.items));
+            localStorage.setItem('total', JSON.stringify(state.total));
         },
 
         removeQuantityCart: (state, action) => {
             const id = action.payload;
-            if (state[id] && state[id] > 0) {
-                state[id] -= 1;
+            if (state.items[id] > 1) {
+                state.items[id] -= 1;
+            } else {
+                delete state.items[id];
             }
-            localStorage.setItem('cart', JSON.stringify(state));
+            state.total = calculateTotal(state.items);
+            localStorage.setItem('cart', JSON.stringify(state.items));
+            localStorage.setItem('total', JSON.stringify(state.total));
         },
 
-        resetCartRedux: (state) => {
-            state = {};
+        removeFromCart: (state, action) => {
+            const id = action.payload;
+            delete state.items[id];
+            state.total = calculateTotal(state.items);
+            localStorage.setItem('cart', JSON.stringify(state.items));
+            localStorage.setItem('total', JSON.stringify(state.total));
+        },
+
+        setSearch: (state, action) => {
+            state.search = action.payload;
+        },
+
+        resetCart: (state) => {
+            state.items = {};
+            state.total = 0;
+            state.search = '';
             localStorage.removeItem('cart');
-            return state;
+            localStorage.removeItem('total');
         },
 
-        setCartDetails: (state, action) => {
-            const newCart = action.payload;
-            localStorage.setItem('cart', JSON.stringify(newCart));
-            return newCart;
+        addToCart: (state, action) => {
+            let id, qtyToAdd;
+            if (typeof action.payload === 'object' && action.payload && action.payload.id) {
+                id = action.payload.id;
+                qtyToAdd = action.payload.qty || 1;
+            } else if (typeof action.payload === 'number') {
+                state.total += action.payload;
+                localStorage.setItem('total', JSON.stringify(state.total));
+                return;
+            } else {
+                id = action.payload;
+                qtyToAdd = 1;
+            }
+
+            state.items[id] = (state.items[id] || 0) + Number(qtyToAdd);
+            state.total = calculateTotal(state.items);
+
+            localStorage.setItem('cart', JSON.stringify(state.items));
+            localStorage.setItem('total', JSON.stringify(state.total));
         },
     },
 });
-export const { addQuantityCart, removeFromCart, removeQuantityCart, resetCartRedux, setCartDetails } = Cart.actions;
-export default Cart.reducer;
+
+export const { setCartDetails, addQuantityCart, removeQuantityCart, removeFromCart, setSearch, resetCart, addToCart } =
+    cartSlice.actions;
+
+export default cartSlice.reducer;

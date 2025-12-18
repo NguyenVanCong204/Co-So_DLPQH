@@ -4,8 +4,7 @@ import apiMember from '../../API/apiMember';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import MemberCartContext from '../../Context/MemberCartContext';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../../features/cart/CartSlider';
-import { setCartDetails } from '../../features/cart/Cart';
+import { addQuantityCart } from '../../features/cart/Cart';
 import { toast } from 'react-toastify';
 
 function formatPrice(price) {
@@ -101,27 +100,13 @@ function HomeList() {
     function AddCart(product) {
         const user = localStorage.getItem('user');
         if (user) {
-            // Check stock
             const stock = product.quantity;
             if (stock <= 0) {
                 toast.error('Sản phẩm này đã hết hàng');
                 return;
             }
 
-            let cart = JSON.parse(localStorage.getItem('cart')) || {};
-            const id = product._id;
-
-            if (cart[id]) {
-                cart[id] = Number(cart[id]) + 1;
-            } else {
-                cart[id] = 1;
-            }
-
-            dispath(setCartDetails(cart));
-            dispath(addToCart(1));
-            totallocal.cart = Object.values(cart).reduce((a, b) => a + b, 0);
-            totallocal.SetCart(totallocal.cart);
-
+            dispath(addQuantityCart(product._id));
             toast.success('Thêm sản phẩm vào giỏ hàng thành công');
         } else {
             toast.warn('Vui lòng đăng nhập');
@@ -185,7 +170,6 @@ function HomeList() {
     function renderHeroSlider() {
         if (!Array.isArray(sliderProducts)) return null;
 
-        // Get top 6 sale products
         const saleProducts = sliderProducts
             .filter((p) => p.sale > 0)
             .sort((a, b) => b.sale - a.sale)

@@ -1,11 +1,9 @@
 import { useParams } from 'react-router-dom';
 import './ProductDetail.css';
-import { addToCart } from '../../features/cart/CartSlider';
-import { setCartDetails } from '../../features/cart/Cart';
+import { addToCart } from '../../features/cart/Cart';
 import { useContext, useEffect, useState } from 'react';
 import apiMember from '../../API/apiMember';
 import { useDispatch } from 'react-redux';
-import MemberCartContext from '../../Context/MemberCartContext';
 import { toast } from 'react-toastify';
 import Breadcrumb from '../../component/Member/Breadcrumb';
 
@@ -23,11 +21,10 @@ function ProductDetail() {
     const [quantity, SetQuantity] = useState(1);
     const [selectedImg, SetselectedImg] = useState();
     const dispatch = useDispatch();
-    let totallocal = useContext(MemberCartContext);
 
     const [reviews, setReviews] = useState([]);
     const [filteredReviews, setFilteredReviews] = useState([]);
-    const [filterType, setFilterType] = useState('all'); // all, 5, 4, 3, 2, 1, image
+    const [filterType, setFilterType] = useState('all');
 
     const [commentText, setCommentText] = useState('');
     const [currentRating, setCurrentRating] = useState(0);
@@ -78,23 +75,7 @@ function ProductDetail() {
                 return;
             }
 
-            let cart = JSON.parse(localStorage.getItem('cart'));
-            if (!cart) {
-                cart = {};
-            }
-
-            if (cart[id]) {
-                cart[id] += quantity;
-            } else {
-                cart[id] = quantity;
-            }
-
-            dispatch(setCartDetails(cart));
-
-            dispatch(addToCart(quantity));
-
-            totallocal.cart = Object.values(cart).reduce((a, b) => a + b, 0);
-            totallocal.SetCart(totallocal.cart);
+            dispatch(addToCart({ id, qty: quantity }));
 
             toast.success(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
         } else {
@@ -178,11 +159,9 @@ function ProductDetail() {
         });
     };
 
-    // Stats calculation
     const totalReviews = reviews.length;
     const avgRating = totalReviews > 0 ? (reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1) : 0;
 
-    // Count per star
     const starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
     reviews.forEach((r) => {
         if (starCounts[r.rating] !== undefined) starCounts[r.rating]++;

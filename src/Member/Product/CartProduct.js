@@ -3,8 +3,6 @@ import apiMember from '../../API/apiMember';
 import './CartProduct.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, addQuantityCart, removeQuantityCart } from '../../features/cart/Cart';
-import { addToCart } from '../../features/cart/CartSlider';
-import MemberCartContext from '../../Context/MemberCartContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Breadcrumb from '../../component/Member/Breadcrumb';
@@ -18,8 +16,7 @@ function formatPrice(price) {
 }
 
 function CartProduct() {
-    let totallocal = useContext(MemberCartContext);
-    const cartredux = useSelector((state) => state.cartredux);
+    const cartItems = useSelector((state) => state.cart.items);
     const dispatch = useDispatch();
     const [AllQuantityCart, SetAllQuantityCart] = useState(0);
     const [input, SetInput] = useState([]);
@@ -28,7 +25,7 @@ function CartProduct() {
 
     useEffect(() => {
         let tongQuantityCart = 0;
-        apiMember.post('/cart', cartredux).then((res) => {
+        apiMember.post('/cart', cartItems).then((res) => {
             const products = Array.isArray(res.data.data) ? res.data.data : [];
             SetInput(products);
             products.map((value, index) => {
@@ -40,16 +37,11 @@ function CartProduct() {
             });
             SetAllQuantityCart(tongQuantityCart);
         });
-    }, [cartredux]);
+    }, [cartItems]);
 
     function removeQuantityCartProduct(id, qty) {
         if (qty > 1) {
             dispatch(removeQuantityCart(id));
-            if (totallocal.cart > 0) {
-                totallocal.cart -= 1;
-                totallocal.SetCart(totallocal.cart);
-                dispatch(addToCart(-1));
-            }
         } else {
             toast.info('Số lượng sản phẩm tối thiểu là 1');
         }
@@ -57,18 +49,10 @@ function CartProduct() {
 
     function addQuantityCartProduct(id, qty) {
         dispatch(addQuantityCart(id));
-        totallocal.cart += 1;
-        totallocal.SetCart(totallocal.cart);
-        dispatch(addToCart(1));
     }
 
     function removeFromCartProduct(id, qty) {
         dispatch(removeFromCart(id));
-        totallocal.cart -= qty;
-        totallocal.SetCart(totallocal.cart);
-
-        dispatch(addToCart(-qty));
-
         toast.success('Xóa sản phẩm khỏi giỏ hàng thành công');
     }
 

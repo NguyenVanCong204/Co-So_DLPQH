@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import apiMember from '../../API/apiMember';
-import { resetCartRedux } from '../../features/cart/Cart';
-import { resetCartSlider } from '../../features/cart/CartSlider';
+import { resetCart } from '../../features/cart/Cart';
 import { useSelector, useDispatch } from 'react-redux';
 import refershToken from '../../RefershToken/RefershToken';
 import MemberCartContext from '../../Context/MemberCartContext';
@@ -32,8 +31,7 @@ function CheckOut() {
     };
 
     const navigate = useNavigate();
-    const totallocal = useContext(MemberCartContext);
-    const cart = useSelector((state) => state.cartredux);
+    const cart = useSelector((state) => state.cart.items);
     const dispatch = useDispatch();
 
     const [AllQuantityCart, SetAllQuantityCart] = useState(0);
@@ -184,11 +182,7 @@ function CheckOut() {
         try {
             const res = await apiMember.post('/order', orderData, config);
             toast.success(`Đặt hàng (${paymentSource}) thành công!`);
-            localStorage.removeItem('cart');
-            localStorage.removeItem('total');
-            totallocal.SetCart(0);
-            dispatch(resetCartRedux());
-            dispatch(resetCartSlider());
+            dispatch(resetCart());
             navigate('/member/home');
             return res;
         } catch (error) {
@@ -210,11 +204,7 @@ function CheckOut() {
                     };
                     const res2 = await apiMember.post('/order', orderData, newConfig);
                     toast.success(`Đặt hàng (${paymentSource}) thành công! (sau khi refresh)`);
-                    localStorage.removeItem('cart');
-                    localStorage.removeItem('total');
-                    totallocal.SetCart(0);
-                    dispatch(resetCartRedux());
-                    dispatch(resetCartSlider());
+                    dispatch(resetCart());
                     navigate('/member/home');
                     return res2;
                 } catch (refreshError) {
