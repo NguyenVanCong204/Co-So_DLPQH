@@ -14,6 +14,7 @@ import {
     forceDelete,
     getDashboardOverview,
     revenueChart,
+    getTopProducts,
 } from '../../controllers/Admin/productController.js';
 import { confirmOrder, getAllOrders } from '../../controllers/Member/historyController.js';
 import { createBrand, deleteBrand, getBrand, updateBrand } from '../../controllers/Admin/brandController.js';
@@ -31,6 +32,7 @@ router.use(requireAuth, authorize(1));
 
 router.get('/dashboard/overview', getDashboardOverview);
 router.get('/dashboard/chart', revenueChart);
+router.get('/dashboard/top-product', getTopProducts);
 
 router.get('/brand', getBrand);
 router.post('/brand', createBrand);

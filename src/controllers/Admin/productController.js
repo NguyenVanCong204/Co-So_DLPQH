@@ -429,3 +429,57 @@ export const revenueChart = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+export const getTopProducts = async (req, res) => {
+    try {
+        const { range } = req.query;
+        const { startDate, endDate } = GetDateRange(range);
+
+        const data = await History.aggregate([
+            {
+                $match: {
+                    deleted: false,
+                    status: { $ne: 3 },
+                    createdAt: { $gte: startDate, $lte: endDate },
+                },
+            },
+            {
+                $group: {
+                    _id: '$id_product',
+                    totalQuantity: { $sum: '$quantity' },
+                    totalRevenue: {
+                        $sum: { $multiply: ['$price', '$quantity'] },
+                    },
+                    totalOrders: { $sum: 1 },
+                },
+            },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'product',
+                },
+            },
+            { $unwind: '$product' },
+            { $sort: { totalQuantity: -1 } },
+            { $limit: 5 },
+            {
+                $project: {
+                    _id: 0,
+                    productId: '$product._id',
+                    name: '$product.name',
+                    image: '$product.image',
+                    totalQuantity: 1,
+                    totalRevenue: 1,
+                    totalOrders: 1,
+                },
+            },
+        ]);
+
+        res.json({ topProducts: data });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};

@@ -91,7 +91,7 @@ export const createHistory = async (req, res) => {
                         quantity: { $gte: qty },
                     },
                     {
-                        $inc: { quantity: -qty },
+                        $inc: { quantity: -qty, quantity_sold: qty },
                     },
                     { new: true },
                 );
@@ -276,7 +276,7 @@ export const cancelOrder = async (req, res) => {
         for (const o of ordersToCancel) {
             if (o.id_product && o.quantity) {
                 await Product.findByIdAndUpdate(o.id_product, {
-                    $inc: { quantity: o.quantity },
+                    $inc: { quantity: o.quantity, quantity_sold: -o.quantity },
                 });
             }
         }
