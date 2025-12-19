@@ -33,7 +33,9 @@ const HeaderAdmin = () => {
 
     return (
         <header className={cx('wrapper')}>
-            <div className={cx('header-left')}></div>
+            <div className={cx('header-left')}>
+                <img className={cx('logo')} src="http://localhost:3000/images/home/logo.png" alt="" />
+            </div>
             <div className={cx('header-right')}>
                 <img className={cx('avatar')} src={getAvatarSrc()} alt="" />
                 <p className={cx('user-name')}>{user.name || 'Admin'}</p>
