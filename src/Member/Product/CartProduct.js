@@ -24,7 +24,7 @@ function CartProduct() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        let tongQuantityCart = 0;
+        let totalQuantityCart = 0;
         apiMember.post('/cart', cartItems).then((res) => {
             const products = Array.isArray(res.data.data) ? res.data.data : [];
             SetInput(products);
@@ -33,9 +33,9 @@ function CartProduct() {
                 const original_price = value.price;
                 const new_price = is_on_sale ? original_price * (1 - value.sale / 100) : original_price;
 
-                tongQuantityCart += new_price * value.qty;
+                totalQuantityCart += new_price * value.qty;
             });
-            SetAllQuantityCart(tongQuantityCart);
+            SetAllQuantityCart(totalQuantityCart);
         });
     }, [cartItems]);
 

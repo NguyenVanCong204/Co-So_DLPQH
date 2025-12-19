@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 function RegisterMember() {
     const navigate = useNavigate();
+
     let [input, SetInput] = useState({
         email: '',
         name: '',
@@ -18,13 +19,16 @@ function RegisterMember() {
         level: 0,
         avatar: [],
     });
+
     let [country, SetCountry] = useState([]);
+
     let config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             Accept: 'application/json',
         },
     };
+
     let [err, SetErr] = useState({});
 
     const [verifyMode, setVerifyMode] = useState(false);
@@ -34,11 +38,13 @@ function RegisterMember() {
 
     useEffect(() => {
         let timer;
+
         if (cooldown > 0) {
             timer = setInterval(() => setCooldown((prev) => prev - 1), 1000);
         }
         return () => clearInterval(timer);
     }, [cooldown]);
+
     useEffect(() => {
         apiMember
             .get('/country')
@@ -47,16 +53,19 @@ function RegisterMember() {
             })
             .catch((errors) => console.log(errors));
     }, []);
+
     function hanldeChangInput(e) {
         let name = e.target.name;
         let value = e.target.value;
         SetInput((states) => ({ ...states, [name]: value }));
     }
+
     function handleChangInputFile(e) {
         let files = Array.from(e.target.files);
         let name = e.target.name;
         SetInput((states) => ({ ...states, [name]: files }));
     }
+
     function CheckInput(e) {
         e.preventDefault();
         let errAll = {};
@@ -64,6 +73,7 @@ function RegisterMember() {
         let allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phoneRegex = /^(0|\+84)[0-9]{9}$/;
+
         if (input.email == '') {
             errAll.email = 'Vui lòng nhập email';
             chek = false;
@@ -73,14 +83,17 @@ function RegisterMember() {
                 chek = false;
             }
         }
+
         if (input.name == '') {
             errAll.name = 'Vui lòng nhập name';
             chek = false;
         }
+
         if (input.pass == '') {
             errAll.pass = 'Vui lòng nhập pass';
             chek = false;
         }
+
         if (input.phone == '') {
             errAll.phone = 'Vui lòng nhập phone';
             chek = false;
@@ -90,34 +103,41 @@ function RegisterMember() {
                 chek = false;
             }
         }
+
         if (input.address == '') {
             errAll.address = 'Vui lòng nhập address';
             chek = false;
         }
+
         if (input.country == '') {
             errAll.country = 'Vui lòng nhập country';
             chek = false;
         }
+
         if (input.avatar.length <= 0) {
             errAll.files = 'Vui lòng chọn files';
             chek = false;
         }
+
         if (input.avatar.length > 3) {
             errAll.files = 'Chỉ chọn được tối đa 3 files';
             chek = false;
         } else {
             input.avatar.map((value, index) => {
                 console.log('File type:', value.type);
+
                 if (value.size > 1024 * 1024) {
                     errAll.files = 'Vui lòng chọn ảnh nhỏ hơn 1mb';
                     chek = false;
                 }
+
                 if (!allowedTypes.includes(value.type)) {
                     errAll.files = 'Vui lòng chọn đúng định dạng files';
                     chek = false;
                 }
             });
         }
+
         if (!chek) {
             SetErr(errAll);
         } else {

@@ -1,70 +1,77 @@
-# Getting Started with Create React App
+# Thiên Đường Gia Dụng - Fullstack E-Commerce Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Dự án Thương mại điện tử (E-Commerce) hoàn chỉnh được phát triển bởi nhóm sinh viên thực tập tại **SafeHorizons Software**. Hệ thống bao gồm cả giải pháp Frontend và Backend chuyên nghiệp.
 
-## Available Scripts
+## 👥 Sinh viên thực hiện
 
-In the project directory, you can run:
+-   **Nguyễn Đăng Chiến**
+-   **Nguyễn Văn Công**
+-   **Ngô Văn Dương**
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## � Video Demo
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+[![Xem Video Demo](https://img.youtube.com/vi/CgLrueBmr_4/0.jpg)](https://www.youtube.com/watch?v=CgLrueBmr_4)
+_Nhấn vào ảnh để xem video demo thực hành các tính năng của dự án._
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## �🚀 Tính năng hệ thống
 
-### `npm run build`
+### 🛠 Backend (Node.js & MongoDB)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+-   **Kiến trúc**: Xây dựng theo mô hình MVC (Model-View-Controller) giúp dễ dàng quản lý và mở rộng.
+-   **Authentication**: Xác thực người dùng bằng JWT (JSON Web Token), hỗ trợ cơ chế Refresh Token để bảo mật cao hơn.
+-   **Quản lý dữ liệu**: Sử dụng Mongoose để giao tiếp với MongoDB, lưu trữ thông tin sản phẩm, đơn hàng, khách hàng và danh mục.
+-   **Xử lý tệp tin**: Tích hợp Multer để quản lý upload hình ảnh sản phẩm và avatar người dùng.
+-   **Email Service**: Sử dụng Nodemailer kết hợp Mailtrap/Gmail để gửi mã xác thực OTP 6 số khi đăng ký.
+-   **Database**: Sử dụng MongoDB với Mongoose (có tích hợp xóa mềm - Soft Delete).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 🎨 Frontend (ReactJS)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+-   **Giao diện**: Responsive trên Desktop, Tablet và Mobile bằng Bootstrap 5 và Sass.
+-   **Quản lý State**: Sử dụng Redux Toolkit cho giỏ hàng, tìm kiếm và Context API cho thông tin người dùng.
+-   **Trải nghiệm người dùng**:
+    -   Tìm kiếm và lọc sản phẩm (Category, Brand, Price) thông minh.
+    -   Hệ thống bình luận, đánh giá (Rating & Reviews) 5 sao.
+    -   Phân trang dạng "Load More" tối ưu hiệu năng.
+-   **Thanh toán**: Tích hợp thanh toán quốc tế PayPal và hệ thống Voucher cho người dùng mới.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🛠 Công nghệ sử dụng (Tech Stack)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| Thành phần   | Công nghệ                                                            |
+| :----------- | :------------------------------------------------------------------- |
+| **Frontend** | React 19, Redux Toolkit, React Router DOM, Axios, Sass, Bootstrap 5. |
+| **Backend**  | Node.js, Express.js, JWT, Nodemailer.                                |
+| **Database** | MongoDB (Mongoose), Prisma (Optional).                               |
+| **Tools**    | Formik, Yup, SweetAlert2, React-Toastify.                            |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 📦 Cài đặt dự án
 
-## Learn More
+### 1. Yêu cầu hệ thống
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+-   Đã cài đặt Node.js (phiên bản 18+).
+-   Đã cài đặt và đang chạy MongoDB (Local hoặc MongoDB Atlas).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 2. Khởi chạy Backend
 
-### Code Splitting
+1. Truy cập vào thư mục `backend`.
+2. Chạy lệnh: `npm install`
+3. Tạo file `.env` và cấu hình các biến: `PORT`, `MONGO_URI`, `JWT_SECRET`, `EMAIL_USER`, `EMAIL_PASS`.
+4. Chạy lệnh: `npm start` (Sử dụng nodemon).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 3. Khởi chạy Frontend
 
-### Analyzing the Bundle Size
+1. Truy cập vào thư mục `frontend`.
+2. Chạy lệnh: `npm install`
+3. Chạy lệnh: `npm start`
+4. Truy cập: `http://localhost:3000`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**SafeHorizons Software - Internship Project 2025**

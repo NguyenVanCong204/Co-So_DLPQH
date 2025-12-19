@@ -296,7 +296,6 @@ function OrderList() {
             );
         }
 
-        // Custom sorting based on tab
         const sortedOrderGroups = orderGroups.sort((a, b) => {
             const codeA = Object.keys(a)[0];
             const itemsA = a[codeA];
@@ -318,12 +317,11 @@ function OrderList() {
                 timeA = new Date(firstA.deliveredAt || firstA.updatedAt).getTime();
                 timeB = new Date(firstB.deliveredAt || firstB.updatedAt).getTime();
             } else {
-                // cancelled
                 timeA = new Date(firstA.cancelledAt || firstA.updatedAt).getTime();
                 timeB = new Date(firstB.cancelledAt || firstB.updatedAt).getTime();
             }
 
-            return timeB - timeA; // Descending order
+            return timeB - timeA;
         });
 
         return (
