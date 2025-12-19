@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import { MdFilterAlt } from 'react-icons/md';
+import { FaSort } from 'react-icons/fa';
 import styles from './Dashboard.module.scss';
 import { useEffect, useState } from 'react';
 import RevenueLineChart from '../../../component/Admin/Chart/RevenueLineChart';
@@ -11,6 +12,27 @@ function Dashboard() {
     const [overview, setOverView] = useState([]);
     const [range, setRange] = useState('today');
     const [chartData, setChartData] = useState([]);
+    const [topProduct, setTopProduct] = useState([]);
+    const [sortField, setSortField] = useState(null);
+    const [sortOrder, setSortOrder] = useState('desc');
+
+    const handleSort = (field) => {
+        if (sortField === field) {
+            setSortOrder((prev) => (prev === 'desc' ? 'asc' : 'desc'));
+        } else {
+            setSortField(field);
+            setSortOrder('desc');
+        }
+    };
+    const sortedTopProduct = [...topProduct].sort((a, b) => {
+        if (!sortField) {
+            return 0;
+        }
+        const valueA = a[sortField];
+        const valueB = b[sortField];
+
+        return sortOrder === 'desc' ? valueB - valueA : valueA - valueB;
+    });
 
     const fetchDashboard = async (time) => {
         try {
@@ -28,10 +50,19 @@ function Dashboard() {
             console.log(err);
         }
     };
+    const fetchTopProduct = async (rangeTop) => {
+        try {
+            const res = await apiAdmin.get(`/dashboard/top-product?range=${rangeTop}`);
+            setTopProduct(res.data.topProducts);
+        } catch (error) {
+            console.log(error);
+        }
+    };
     useEffect(() => {
         const fetchData = async () => {
             await fetchDashboard(range);
             await fetchRevenueChart(range);
+            await fetchTopProduct(range);
         };
 
         fetchData();
@@ -128,6 +159,44 @@ function Dashboard() {
                 </div>
                 <span className={cx('overview-title-dashboard')}>Biểu đồ doanh thu</span>
                 <RevenueLineChart data={chartData} />
+            </div>
+            <div className={cx('top-product')}>
+                <span className={cx('top-product-title')}>Top 5 sản phẩm</span>
+                <table className={cx('product-table')}>
+                    <thead>
+                        <tr>
+                            <th>Stt</th>
+                            <th>Tên sản phẩm</th>
+                            <th onClick={() => handleSort('totalRevenue')}>
+                                Doanh thu
+                                <FaSort className={cx('icon-sort')} />
+                            </th>
+                            <th onClick={() => handleSort('totalOrders')}>
+                                Số lần đặt
+                                <FaSort className={cx('icon-sort')} />
+                            </th>
+                            <th onClick={() => handleSort('totalQuantity')}>
+                                Số lượng đặt
+                                <FaSort className={cx('icon-sort')} />
+                            </th>
+                            <th>Ảnh</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {sortedTopProduct.map((item, index) => (
+                            <tr key={item.productId}>
+                                <td>{index + 1}</td>
+                                <td>{item.name}</td>
+                                <td>{item.totalRevenue.toLocaleString('vi-VN')}đ</td>
+                                <td>{item.totalOrders}</td>
+                                <td>{item.totalQuantity}</td>
+                                <td>
+                                    <img src={`http://localhost:3001/${JSON.parse(item.image)[0]}`} alt="" />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
