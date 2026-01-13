@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import refershToken from '../../RefershToken/RefershToken';
 import './Update.css';
 import Breadcrumb from '../../component/Member/Breadcrumb';
+import Loading from '../../component/Loading/Loading';
+
 function UpdateMember() {
     let [input, SetInput] = useState({
         email: '',
@@ -24,10 +26,12 @@ function UpdateMember() {
         },
     };
     let [country, SetCountry] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     let [FileNew, SetFileNew] = useState([]);
     let [err, SetErr] = useState({});
     useEffect(() => {
+        setLoading(true);
         apiMember
             .get('/country')
             .then((res) => {
@@ -48,6 +52,10 @@ function UpdateMember() {
                 country: res.data.id_country,
                 avatar: JSON.parse(res.data.avatar),
             });
+            setLoading(false);
+        }).catch(err => {
+            console.error(err);
+            setLoading(false);
         });
     }
     function changInput(e) {
@@ -122,6 +130,7 @@ function UpdateMember() {
         if (!check) {
             SetErr(errAll);
         } else {
+            setLoading(true);
             let data = new FormData();
             data.append('name', input.name);
             data.append('password', input.pass);
@@ -134,6 +143,7 @@ function UpdateMember() {
             apiMember
                 .put('/user/' + iduser, data, config)
                 .then((res) => {
+                    setLoading(false);
                     SetErr({});
                     console.log(res);
                     toast.success('Update thành công');
@@ -152,6 +162,7 @@ function UpdateMember() {
                     getDataUser();
                 })
                 .catch(async (error) => {
+                    setLoading(false);
                     if (error.response) {
                         const status = error.response.status;
                         const message =
@@ -204,6 +215,7 @@ function UpdateMember() {
     }
     return (
         <div>
+            {loading && <Loading />}
             <Breadcrumb items={[{ label: 'Tài Khoản', path: '/member/account/update' }, { label: 'Cập nhật thông tin' }]} />
             <div className="register">
                 <h3>Cập Nhật Thông Tin</h3>

@@ -5,6 +5,7 @@ import auth from '../../API/auth';
 import './Register.css';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../../component/Loading/Loading';
 
 function RegisterMember() {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ function RegisterMember() {
     });
 
     let [country, SetCountry] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     let config = {
         headers: {
@@ -46,12 +48,17 @@ function RegisterMember() {
     }, [cooldown]);
 
     useEffect(() => {
+        setLoading(true);
         apiMember
             .get('/country')
             .then((res) => {
                 SetCountry(res.data);
+                setLoading(false);
             })
-            .catch((errors) => console.log(errors));
+            .catch((errors) => {
+                console.log(errors);
+                setLoading(false);
+            });
     }, []);
 
     function hanldeChangInput(e) {
@@ -141,6 +148,7 @@ function RegisterMember() {
         if (!chek) {
             SetErr(errAll);
         } else {
+            setLoading(true);
             let data = new FormData();
             data.append('name', input.name);
             data.append('email', input.email);
@@ -154,6 +162,7 @@ function RegisterMember() {
             });
             auth.post('/register', data, config)
                 .then((res) => {
+                    setLoading(false);
                     SetErr({});
                     toast.success('Mã xác thực đã được gửi đến email!');
                     setTempEmail(input.email);
@@ -161,6 +170,7 @@ function RegisterMember() {
                     setCooldown(60);
                 })
                 .catch((error) => {
+                    setLoading(false);
                     if (error.response && error.response.data) {
                         const message =
                             error.response.data?.error ||
@@ -260,6 +270,7 @@ function RegisterMember() {
     }
     return (
         <div className="register">
+            {loading && <Loading />}
             <h2>ĐĂNG KÝ</h2>
             <form encType="multipart/form-data">
                 <label htmlFor="email">Email</label>

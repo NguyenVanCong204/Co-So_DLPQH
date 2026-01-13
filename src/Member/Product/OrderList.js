@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { confirmDialog } from '../../component/confirmDialog';
 import './OrderList.css';
 import Breadcrumb from '../../component/Member/Breadcrumb';
+import Loading from '../../component/Loading/Loading';
 
 function formatPrice(price) {
     if (!price) return '';
@@ -33,6 +34,7 @@ function OrderList() {
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [activeTab, setActiveTab] = useState('waiting');
+    const [loading, setLoading] = useState(false);
 
     let config = {
         headers: {
@@ -43,10 +45,13 @@ function OrderList() {
     };
 
     const getOrders = async () => {
+        setLoading(true);
         try {
             const res = await apiMember.get(`/order/user/${idUser}`, config);
             setOrders(Array.isArray(res.data.data) ? res.data.data : []);
+            setLoading(false);
         } catch (error) {
+            setLoading(false);
             if (error.response?.status === 401) {
                 try {
                     const newtoken = await refershToken();
@@ -339,6 +344,7 @@ function OrderList() {
 
     return (
         <div className="order-list-page">
+            {loading && <Loading />}
             <Breadcrumb
                 items={[{ label: 'Tài Khoản', path: '/member/account/update' }, { label: 'Đơn hàng của tôi' }]}
             />

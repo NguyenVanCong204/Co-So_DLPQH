@@ -4,10 +4,12 @@ import apiMember from '../../API/apiMember';
 import auth from '../../API/auth';
 import './Login.css';
 import { toast } from 'react-toastify';
+import Loading from '../../component/Loading/Loading';
 
 function LoginMember() {
     const navigate = useNavigate();
     let [err, SetErr] = useState({});
+    const [loading, setLoading] = useState(false);
     const [input, SetInput] = useState({
         email: '',
         password: '',
@@ -47,6 +49,7 @@ function LoginMember() {
         if (!check) {
             SetErr(errAll);
         } else {
+            setLoading(true);
             const data = {
                 email: input.email,
                 password: input.password,
@@ -64,9 +67,13 @@ function LoginMember() {
                     window.dispatchEvent(new Event('user-updated'));
 
                     toast.success('Đăng nhập thành công');
-                    navigate('/member/home');
+                    setTimeout(() => {
+                        setLoading(false);
+                        navigate('/member/home');
+                    }, 500);
                 })
                 .catch((error) => {
+                    setLoading(false);
                     if (error.response && error.response.data && error.response.data.message) {
                         console.log(error.response.data.message);
                         errAll.api = error.response.data.message;
@@ -80,10 +87,15 @@ function LoginMember() {
     }
     function handleRegister(e) {
         e.preventDefault();
-        navigate('/member/register');
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+            navigate('/member/register');
+        }, 500);
     }
     return (
         <div className="login">
+            {loading && <Loading />}
             <h2>ĐĂNG NHẬP</h2>
             <form>
                 <label htmlFor="email">Email</label>

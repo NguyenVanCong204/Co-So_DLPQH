@@ -6,6 +6,7 @@ import apiMember from '../../API/apiMember';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import Breadcrumb from '../../component/Member/Breadcrumb';
+import Loading from '../../component/Loading/Loading';
 
 function formatPrice(price) {
     if (!price) return '';
@@ -21,6 +22,7 @@ function ProductDetail() {
     const [quantity, SetQuantity] = useState(1);
     const [selectedImg, SetselectedImg] = useState();
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
 
     const [reviews, setReviews] = useState([]);
     const [filteredReviews, setFilteredReviews] = useState([]);
@@ -32,12 +34,17 @@ function ProductDetail() {
     const [showReviewForm, setShowReviewForm] = useState(false);
 
     useEffect(() => {
+        setLoading(true);
         apiMember.get('/product/' + id).then((res) => {
             SetInput(res.data.data);
             if (res.data?.data?.image) {
                 const avatar = JSON.parse(res.data.data.image);
                 SetselectedImg(avatar[0]);
             }
+            setLoading(false);
+        }).catch(err => {
+            console.error(err);
+            setLoading(false);
         });
 
         apiMember
@@ -279,6 +286,7 @@ function ProductDetail() {
 
     return (
         <div>
+            {loading && <Loading />}
             {input.name && (
                 <Breadcrumb
                     items={[

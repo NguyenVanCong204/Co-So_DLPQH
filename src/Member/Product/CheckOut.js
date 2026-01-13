@@ -9,6 +9,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 import './CheckOut.css';
 import Breadcrumb from '../../component/Member/Breadcrumb';
+import Loading from '../../component/Loading/Loading';
 
 const VND_TO_USD_RATE = 25000;
 
@@ -316,11 +317,7 @@ function CheckOut() {
                 <div className="container" style={{ marginBottom: '20px' }}>
                     <Breadcrumb items={[{ label: 'Thanh toán' }]} />
                 </div>
-                {isLoading && (
-                    <div className="loading-overlay">
-                        <div className="spinner"></div>
-                    </div>
-                )}
+                {isLoading && <Loading />}
 
                 <div className="checkout-title-bar">THANH TOÁN</div>
 

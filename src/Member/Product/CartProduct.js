@@ -6,6 +6,7 @@ import { removeFromCart, addQuantityCart, removeQuantityCart } from '../../featu
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Breadcrumb from '../../component/Member/Breadcrumb';
+import Loading from '../../component/Loading/Loading';
 
 function formatPrice(price) {
     if (!price) return '';
@@ -20,11 +21,13 @@ function CartProduct() {
     const dispatch = useDispatch();
     const [AllQuantityCart, SetAllQuantityCart] = useState(0);
     const [input, SetInput] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         let totalQuantityCart = 0;
+        setLoading(true);
         apiMember.post('/cart', cartItems).then((res) => {
             const products = Array.isArray(res.data.data) ? res.data.data : [];
             SetInput(products);
@@ -36,6 +39,10 @@ function CartProduct() {
                 totalQuantityCart += new_price * value.qty;
             });
             SetAllQuantityCart(totalQuantityCart);
+            setLoading(false);
+        }).catch(err => {
+            console.error(err);
+            setLoading(false);
         });
     }, [cartItems]);
 
@@ -139,6 +146,7 @@ function CartProduct() {
 
     return (
         <section id="cart_items_new">
+            {loading && <Loading />}
             <Breadcrumb items={[{ label: 'Giỏ hàng' }]} />
             <h2 className="cart_title">Giỏ Hàng Của Bạn</h2>
 

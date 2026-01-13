@@ -6,6 +6,7 @@ import MemberCartContext from '../../Context/MemberCartContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { addQuantityCart } from '../../features/cart/Cart';
 import { toast } from 'react-toastify';
+import Loading from '../../component/Loading/Loading';
 
 function formatPrice(price) {
     if (!price) return '';
@@ -22,20 +23,24 @@ function HomeList() {
     const [visibleCount, setVisibleCount] = useState(12);
     const [sliderIndex, setSliderIndex] = useState(0);
     const [sliderProducts, setSliderProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const { categoryId } = useParams();
     const location = useLocation();
     const search = useSelector((state) => state.cart.search);
 
     function getAllProduct() {
+        setLoading(true);
         apiMember
             .get('/product')
             .then((res) => {
                 SetInput(Array.isArray(res.data.data) ? res.data.data : []);
+                setLoading(false);
             })
             .catch((err) => {
                 console.log(err);
                 SetInput([]);
+                setLoading(false);
             });
     }
 
@@ -43,6 +48,7 @@ function HomeList() {
         setVisibleCount(12);
 
         const fetchFilteredProducts = (filters) => {
+            setLoading(true);
             let query = '/search/product?';
             if (filters.name) query += `name=${filters.name}&`;
             if (filters.minPrice) query += `minPrice=${filters.minPrice}&`;
@@ -54,10 +60,12 @@ function HomeList() {
                 .get(query)
                 .then((res) => {
                     SetInput(Array.isArray(res.data.data) ? res.data.data : []);
+                    setLoading(false);
                 })
                 .catch((err) => {
                     console.error(err);
                     SetInput([]);
+                    setLoading(false);
                 });
         };
 
@@ -115,6 +123,24 @@ function HomeList() {
 
     function renderData() {
         if (!Array.isArray(input)) return null;
+
+        if (input.length === 0 && !loading) {
+            return (
+                <div
+                    style={{
+                        textAlign: 'center',
+                        width: '100%',
+                        padding: '50px 0',
+                        fontSize: '20px',
+                        color: '#666',
+                    }}
+                >
+                    <i className="fa fa-info-circle" style={{ marginRight: '10px' }} />
+                    Hiện chưa có sản phẩm nào phù hợp với tìm kiếm của bạn.
+                </div>
+            );
+        }
+
         const currentItems = input.slice(0, visibleCount);
 
         return currentItems.map((value, index) => {
@@ -221,6 +247,7 @@ function HomeList() {
 
     return (
         <div>
+            {loading && <Loading />}
             <div className="hero-section">{renderHeroSlider()}</div>
 
             <div className="features_items" id="products-grid">
@@ -229,7 +256,7 @@ function HomeList() {
                 {renderData()}
             </div>
 
-            {visibleCount < input.length && (
+            {visibleCount < input.length && !loading && (
                 <div style={{ textAlign: 'center', width: '100%', marginTop: '20px', clear: 'both' }}>
                     <button
                         onClick={handleLoadMore}
