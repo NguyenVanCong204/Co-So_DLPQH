@@ -103,7 +103,15 @@ function UpdateProduct() {
             toast.success('Cập nhật sản phẩm thành công!');
             navigate('/admin/product-list');
         } catch (error) {
-            console.log(error);
+            console.log('Update error:', error.response?.data || error);
+            const errors = error.response?.data?.errors;
+            if (errors) {
+                Object.values(errors).forEach((msg) => {
+                    toast.error(msg);
+                });
+            } else {
+                toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật!');
+            }
         }
     };
 
