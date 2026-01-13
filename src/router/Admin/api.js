@@ -49,8 +49,8 @@ router.delete('/product/delete/:id', deleteProduct);
 router.delete('/product/delete-many', deleteMany);
 router.put('/product/update/:id', uploadProduct, updateProduct);
 
-router.get('/trash-product', trash);
 router.get('/trash-product/count', countTrashProduct);
+router.get('/trash-product', trash);
 router.patch('/trash-product/restore/:id', restore);
 router.delete('/trash-product/force-delete/:id', forceDelete);
 

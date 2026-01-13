@@ -16,9 +16,10 @@ app.use('/public', express.static('public'));
 app.use(express.json());
 app.use(
     cors({
-        origin: 'http://localhost:3000',
+        origin: [process.env.FRONTEND_URL, 'http://localhost:3000'].filter(Boolean),
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
         allowedHeaders: ['Content-Type', 'Authorization'],
+        credentials: true,
     }),
 );
 app.use(express.urlencoded({ extended: true }));
@@ -38,3 +39,5 @@ mongoose
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+export default app;
